@@ -6,6 +6,7 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -26,6 +27,17 @@ const Login = () => {
         <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
           Log In to Statly
         </h1>
+        {message && (
+          <div
+            className={`mb-4 p-3 text-center rounded ${
+              message.includes("successful")
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {message}
+          </div>
+        )}
         <form onSubmit={handleLogin} className="flex flex-col space-y-4">
           <div>
             <label htmlFor="email" className="block text-textSubtle mb-1">

@@ -1,4 +1,9 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
+import api, {
+  loginUser,
+  registerUser,
+  refreshAccessToken,
+} from "../hooks/UserAuthentication/userAuth";
 
 export const AuthContext = createContext();
 
@@ -14,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const response = await AuthProvider.get("/auth/dashboard");
+      const response = await api.get("/auth/dashboard");
       if (response.data) {
         setIsAuthenticated(true);
       } else {
@@ -33,6 +38,27 @@ export const AuthProvider = ({ children }) => {
     verifyAuth();
   }, [verifyAuth]);
 
+  const login = async (email, password) => {
+    const data = await loginUser(email, password);
+    localStorage.setItem("access_token", data.token);
+    await verifyAuth();
+  };
+
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout error:", error.message);
+    } finally {
+      localStorage.removeItem("access_token");
+      setIsAuthenticated(false);
+    }
+  };
+
+  const register = async (username, email, password) => {
+    await registerUser(username, email, password);
+  };
+
   const refreshAuth = async () => {
     try {
       const newToken = await refreshAccessToken();
@@ -45,10 +71,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Need login, logout, register,
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, authLoading, refreshAuth }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        authLoading,
+        login,
+        logout,
+        register,
+        refreshAuth,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

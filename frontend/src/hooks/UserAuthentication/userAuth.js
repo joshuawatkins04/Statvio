@@ -1,0 +1,60 @@
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:5000/api",
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export const loginUser = async (email, password) => {
+  try {
+    const response = await api.post("/auth/login", { email, password });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message || "Login failed");
+    } else {
+      throw new Error("Network error or server is unreachable");
+    }
+  }
+};
+
+export const registerUser = async (username, email, password) => {
+  const response = await fetch("http://localhost:5000/api/auth/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "applicaiton/json",
+    },
+    body: JSON.stringify({ username, email, password }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to register user");
+  }
+
+  return response.json();
+};
+
+export async function refreshAccessToken() {
+  try {
+    const response = await api.post("/auth/refresh-token");
+    localStorage.setItem("access_token", response.data.accessToken);
+    return response.data.accessToken;
+  } catch (error) {
+    throw new Error("Failed to refresh access token.");
+  }
+}
+
+export default api;

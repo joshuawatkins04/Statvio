@@ -1,15 +1,21 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../hooks/UserAuthentication/userAuth";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (password != confirmPassword) {
+      alert("Password does not match");
+      return;
+    }
     try {
       await registerUser(username, email, password);
       setMessage("Registration successful");
@@ -29,6 +35,18 @@ const Signup = () => {
         <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
           Create Your Statly Account
         </h1>
+        {/* Display Message */}
+        {message && (
+          <div
+            className={`mb-4 p-3 text-center rounded ${
+              message.includes("successful")
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {message}
+          </div>
+        )}
         <form onSubmit={handleRegister} className="flex flex-col space-y-4">
           <div>
             <label htmlFor="email" className="block text-textSubtle mb-1">
@@ -88,9 +106,9 @@ const Signup = () => {
 
         <div className="mt-4 text-center text-sm text-textSubtle">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary hover:underline">
+          <a href="/login" className="text-primary hover:underline">
             Log In
-          </Link>
+          </a>
         </div>
       </div>
     </div>

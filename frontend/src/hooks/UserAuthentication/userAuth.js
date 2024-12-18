@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "http://localhost:5000/api/auth",
 });
 
 api.interceptors.request.use(
@@ -19,7 +19,7 @@ api.interceptors.request.use(
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await api.post("/auth/login", { email, password });
+    const response = await api.post("/login", { email, password });
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
@@ -31,25 +31,35 @@ export const loginUser = async (email, password) => {
 };
 
 export const registerUser = async (username, email, password) => {
-  const response = await fetch("http://localhost:5000/api/auth/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "applicaiton/json",
-    },
-    body: JSON.stringify({ username, email, password }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to register user");
+  try {
+    const response = await api.post("/signup", {
+      username,
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message || "Registration failed");
+    } else {
+      throw new Error("Network error or server is unreachable");
+    }
   }
-
-  return response.json();
 };
+
+export const fetchDashboardData = async () => {
+  try {
+    const response = await api.get("/dashboard");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to fetch dashboard data");
+  }
+}
 
 export async function refreshAccessToken() {
   try {
-    const response = await api.post("/auth/refresh-token");
+    const response = await api.post("/refresh-token");
     localStorage.setItem("access_token", response.data.accessToken);
     return response.data.accessToken;
   } catch (error) {

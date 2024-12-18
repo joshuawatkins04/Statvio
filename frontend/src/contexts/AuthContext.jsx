@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const response = await api.get("/auth/dashboard");
+      const response = await api.get("/dashboard");
       if (response.data) {
         setIsAuthenticated(true);
       } else {
@@ -39,14 +39,16 @@ export const AuthProvider = ({ children }) => {
   }, [verifyAuth]);
 
   const login = async (email, password) => {
+    console.log("Starting login process...");
     const data = await loginUser(email, password);
+    console.log("Login response data:", data);
     localStorage.setItem("access_token", data.token);
     await verifyAuth();
   };
 
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/logout");
     } catch (error) {
       console.error("Logout error:", error.message);
     } finally {

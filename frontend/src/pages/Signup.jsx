@@ -12,7 +12,7 @@ const Signup = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       alert("Password does not match");
       return;
     }
@@ -21,10 +21,7 @@ const Signup = () => {
       setMessage("Registration successful");
       navigate("/login");
     } catch (error) {
-      setMessage(
-        "Registration failed: " +
-          (error.response?.data?.message || error.message)
-      );
+      setMessage("Registration failed: " + error.message);
     }
   };
 
@@ -48,6 +45,21 @@ const Signup = () => {
           </div>
         )}
         <form onSubmit={handleRegister} className="flex flex-col space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-textSubtle mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+
           <div>
             <label htmlFor="email" className="block text-textSubtle mb-1">
               Email

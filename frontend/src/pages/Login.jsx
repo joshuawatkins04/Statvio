@@ -14,7 +14,7 @@ const Login = () => {
     try {
       await login(email, password);
       setMessage("Login successful! Redirecting...");
-      navigate("/account");
+      navigate("/dashboard");
     } catch (error) {
       setMessage(error.message);
     }

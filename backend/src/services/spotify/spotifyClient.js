@@ -1,53 +1,65 @@
-const fetch = require("node-fetch");
+const axios = require("axios");
 require("dotenv").config();
 
-const authUrl = process.env.SPOTIFY_AUTH_URL;
+const apiUrl = process.env.SPOTIFY_API_URL;
 
 class SpotifyClient {
   constructor(accessToken) {
     this.accessToken = accessToken;
+    this.api = axios.create({
+      baseURL: apiUrl,
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   async getUserProfile() {
-    const url = `${authUrl}/me`;
-    const profile = await this._makeRequest(url);
-    return {
-      id: profile.id,
-      displayName: profile.display_name,
-      email: profile.email,
-      imageUrl:
-        profile.images && profile.images[0] ? profile.image[0].url : null,
-    };
+    try {
+      const response = await this.api.get("/me");
+      const profile = response.data;
+      return {
+        id: profile.id,
+        displayName: profile.display_name,
+        email: profile.email,
+        imageUrl: profile.images?.[0]?.url || null,
+      };
+    } catch (error) {
+      this._handleError(error);
+    }
   }
 
   async getUserPlaylists() {
-    const url = `${authUrl}/me/playlists?limit=50`;
-    const data = await this._makeRequest(url);
-    console.log("Playlist data:", data.items);
-    return data.items.map(playlist => ({
-      id: playlist.id,
-      name: playlist.name,
-      trackCount: playlist.tracks.total,
-      imageUrl: playlist.images && playlist.images.length > 0 ? playlist.images[0].url : null
-    }));
+    console.log("Requesting playlists from Spotify API...");
+    try {
+      const response = await this.api.get("/me/playlists", {
+        params: { limit: 50 },
+      });
+      const playlists = response.data.items;
+      return playlists.map((playlist) => ({
+        id: playlist.id,
+        name: playlist.name,
+        trackCount: playlist.tracks.total,
+        imageUrl: playlist.images?.[0]?.url || null,
+      }));
+    } catch (error) {
+      this._handleError(error);
+    }
   }
 
-  async _makeRequest(url, method = "GET", body = null) {
-    const headers = {
-      Authorization: `Bearer ${this.accessToken}`,
-      "Content-Type": "application/json",
-    };
-
-    const options = { method, headers };
-    if (body) options.body = JSON.stringify(body);
-
-    const res = await fetch(url, options);
-    if (!res.ok) {
-      const errorBody = await res.text();
-      throw new Error(`Spotify API error (${res.status}): ${errorBody}`);
+  _handleError(error) {
+    if (error.response) {
+      console.error(
+        `Spotify API error (${error.response.status}):`,
+        error.response.data
+      );
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error in request setup:", error.message);
     }
-
-    return res.json();
+    throw error;
   }
 }
 

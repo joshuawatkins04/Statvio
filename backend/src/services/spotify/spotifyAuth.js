@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const axios = require("axios");
 const querystring = require("querystring");
 require("dotenv").config();
 
@@ -8,7 +8,6 @@ const authUrl = process.env.SPOTIFY_AUTH_URL;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 class SpotifyAuth {
-
   static getAuthorisationUrl(
     scopes = ["user-read-email", "playlist-read-private"]
   ) {
@@ -19,7 +18,9 @@ class SpotifyAuth {
       scope: scopes.join(" "),
     };
 
-    return `${authUrl}/authorize?${querystring.stringify(params)}`;
+    const url = `${authUrl}/authorize?${querystring.stringify(params)}`;
+    console.log("[SpotifyAuth] Authorization URL generated:", url);
+    return url;
   }
 
   static async getAccessTokenFromCode(code) {
@@ -32,27 +33,27 @@ class SpotifyAuth {
 
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic " +
-        Buffer.from(`${clientId}:${clientSecret}`).toString("base64"),
+      Authorization: `Basic ${Buffer.from(
+        `${clientId}:${clientSecret}`
+      ).toString("base64")}`,
     };
 
-    const res = await fetch(tokenUrl, {
-      method: "POST",
-      headers,
-      body: querystring.stringify(body),
-    });
+    try {
+      console.log("[SpotifyAuth] Exchanging code for access token...");
+      const response = await axios.post(tokenUrl, querystring.stringify(body), {
+        headers,
+      });
+      console.log("[SpotifyAuth] Access token response:", response.data);
 
-    if (!res.ok) {
-      throw new Error(`Token exchange error: ${res.status}`);
+      const { access_token, refresh_token, expires_in } = response.data;
+      return {
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        expiresIn: expires_in,
+      };
+    } catch (error) {
+      SpotifyAuth._handleError(error, "getAccessTokenFromCode");
     }
-
-    const json = await res.json();
-    return {
-      accessToken: json.access_token,
-      refreshToken: json.refresh_token,
-      expiresIn: json.expires_in,
-    };
   }
 
   static async refreshAccessToken(refreshToken) {
@@ -64,27 +65,44 @@ class SpotifyAuth {
 
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic " +
-        Buffer.from(`${clientId}:${clientSecret}`).toString("base64"),
+      Authorization: `Basic ${Buffer.from(
+        `${clientId}:${clientSecret}`
+      ).toString("base64")}`,
     };
 
-    const res = await fetch(tokenUrl, {
-      method: 'POST',
-      headers,
-      body: querystring.stringify(body)
-    });
+    try {
+      console.log("[SpotifyAuth] Frefreshing access token...");
+      const response = await axios.post(tokenUrl, querystring.stringify(body), {
+        headers,
+      });
+      console.log("[SpotifyAuth] Refresh token response:", response.data);
 
-    if (!res.ok) {
-      throw new Error(`Refresh token error: ${res.status}`);
+      const {
+        access_token,
+        expires_in,
+        refresh_token: newRefreshToken,
+      } = response.data;
+      return {
+        accessToken: access_token,
+        expiresIn: expires_in,
+        expiresIn: newRefreshToken || refreshToken,
+      };
+    } catch (error) {
+      SpotifyAuth._handleError(error, "refreshAccessToken");
     }
+  }
 
-    const json = await res.json();
-    return {
-      accessToken: json.access_token,
-      expiresIn: json.expires_in,
-      refreshToken: json.refresh_token ? json.refresh_token : refreshToken
-    };
+  static _handleError(error, methodName) {
+    console.error(`[SpotifyAuth] Error in ${methodName}:`);
+    if (error.response) {
+      console.error(`Status Code: ${error.response.status}`);
+      console.error("Response Data:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
   }
 }
 

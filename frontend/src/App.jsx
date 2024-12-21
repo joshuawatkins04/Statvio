@@ -10,6 +10,8 @@ import InsightsPage from "./pages/Insights";
 import NotificationsPage from "./pages/Notifications";
 import NotFoundPage from "./pages/NotFound";
 
+import SpotifyPage from "./pages/Spotify";
+
 function App() {
   const { isAuthenticated, authLoading } = useContext(AuthContext);
 
@@ -39,6 +41,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/spotify"
+          element={
+            <ProtectedRoute>
+              <SpotifyPage />
             </ProtectedRoute>
           }
         />

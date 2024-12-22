@@ -6,6 +6,7 @@ const { configureMiddleware } = require("./middleware/middleware");
 const errorHandler = require("./middleware/errorHandler");
 const userRoutes = require("./routes/userRoutes");
 const spotifyRoutes = require("./routes/spotifyRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(session({ secret: "some-secret", resave: false, saveUninitialized: true 
 
 app.use("/api/auth", userRoutes);
 app.use("/music/spotify", spotifyRoutes);
+app.use("/paypal", paymentRoutes);
 app.use(errorHandler);
 
 

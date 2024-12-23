@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { fetchDashboardData } from "../hooks/UserAuthentication/userAuth";
+import Paypal from "./PaypalButton";
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -84,6 +85,8 @@ const Dashboard = () => {
             </Link>
           ))}
         </div>
+
+        <Paypal />
       </div>
     </div>
   );

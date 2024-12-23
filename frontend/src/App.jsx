@@ -12,6 +12,8 @@ import NotFoundPage from "./pages/NotFound";
 
 import SpotifyPage from "./pages/Spotify";
 
+import SuccessPage from "./pages/SuccessPage";
+
 function App() {
   const { isAuthenticated, authLoading } = useContext(AuthContext);
 
@@ -65,6 +67,14 @@ function App() {
           element={
             <ProtectedRoute>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/complete-order"
+          element={
+            <ProtectedRoute>
+              <SuccessPage />
             </ProtectedRoute>
           }
         />

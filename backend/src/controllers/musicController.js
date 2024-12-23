@@ -16,7 +16,7 @@ module.exports = {
       const { accessToken, refreshToken, expiresIn } = await SpotifyAuth.getAccessTokenFromCode(code);
 
       req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt: Date.now() };
-      const frontendUrl = "http://localhost:5173/dashboard";
+      const frontendUrl = "http://localhost:5173/dashboard/spotify";
       res.redirect(frontendUrl);
     } catch (error) {
       console.error(error);

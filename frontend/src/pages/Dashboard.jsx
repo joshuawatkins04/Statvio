@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { fetchDashboardData } from "../hooks/UserAuthentication/userAuth";
-import Paypal from "./PaypalButton";
+import Subscribe from "./Subscribe";
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -23,29 +23,48 @@ const Dashboard = () => {
     getDashboardData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-500 text-xl">Error: {error}</div>
+      </div>
+    );
 
   return (
-    <div className="bg-gray min-h-screen p-6">
+    // <div className="bg-gray-100 min-h-screen p-6">
+    <div className="min-h-screen p-6 bg-backdrop text-textPrimary transition-colors duration-300">
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <h1 className="text-3xl font-bold text-center mb-6">Your Dashboard</h1>
 
         {/* User Info Section */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6 max-w-3xl mx-auto">
-          <h2 className="text-xl font-semibold mb-4">User Information</h2>
-          {dashboardData?.user ? (
-            <div className="text-gray-700">
-              <p>
-                <strong>Username:</strong> {dashboardData.user.username}
-              </p>
-              <p>
-                <strong>Email:</strong> {dashboardData.user.email}
-              </p>
+        <div className="bg-surface text-onSurface rounded-xl shadow-card p-6 mb-6">
+          {/* Profile pic replacement */}
+          <div className="grid grid-cols-1 sm:grid-cols-2">
+            <div className="py-6 flex items-center justify-center space-x-8">
+              <img src="https://www.gravatar.com/avatar/?d=mp" className="w-36 h-36 object-cover rounded-full" />
             </div>
-          ) : (
-            <p>No user data available.</p>
-          )}
+            <div className="py-6">
+              <h2 className="text-xl font-semibold mb-4">User Information</h2>
+              {dashboardData?.user ? (
+                <div className="">
+                  <p>
+                    <strong>Username:</strong> {dashboardData.user.username}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {dashboardData.user.email}
+                  </p>
+                </div>
+              ) : (
+                <p>No user data available.</p>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Categories Section */}
@@ -86,7 +105,10 @@ const Dashboard = () => {
           ))}
         </div>
 
-        <Paypal />
+        {/* Payment Section */}
+        <div className="bg-surface text-onSurface shadow-lg rounded-xl p-6">
+          <Subscribe />
+        </div>
       </div>
     </div>
   );

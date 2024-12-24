@@ -101,7 +101,7 @@ async function createOrder() {
         cancel_url: `${config.BASE_URL}/cancel-order`,
         shipping_preference: "NO_SHIPPING",
         user_action: "PAY_NOW",
-        brand_name: "manfra.io",
+        brand_name: "Statly",
       },
     };
 

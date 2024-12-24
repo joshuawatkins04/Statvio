@@ -1,14 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*/*.{js,jsx,ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx,html}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        primary: {
-          light: "#6366F1",
-          DEFAULT: "#4F46E5",
-          dark: "#4338CA",
-        },
+        // Backdrop and primary colors
+        backdrop: "#121212",
+        surface: "#1e1e1e",
+        onSurface: "#e0e0e0",
+        primary: "#bb86fc",
+        secondary: "#03dac6",
+        error: "#cf6679",
+
+        // Text colors
+        textPrimary: "#ffffff",
+        textSecondary: "#b3b3b3",
+
+        // Borders and outlines
+        outline: "#292929",
         accent: {
           light: "#FBBF24",
           DEFAULT: "#F59E0B",
@@ -52,7 +62,9 @@ export default {
     },
     borderRadius: {
       xl: "1.25rem",
+      md: "0.375rem",
       "2xl": "1.5rem",
+      full: "9999px",
     },
   },
   plugins: [require("@tailwindcss/typography")],

@@ -10,6 +10,16 @@ const generateToken = (userId) => {
   });
 };
 
+// Function for generating cookie
+const generateCookie = ({ res, token }) => {
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 1000,
+  });
+};
+
 /* Business logic functions */
 
 // Create user business logic
@@ -32,6 +42,49 @@ const authenticateUser = async ({ email, password }) => {
   return user;
 };
 
+// User dashboard business logic
+const getDashboardData = async ({ res, userId }) => {
+  console.log("[userController - getUserDashboard] Fetching user info...");
+
+  const user = await User.findById(userId).select("-password");
+    
+  if (!user) {
+    console.warn("[userController - getUserDashboard] FAILED: user not found.");
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  console.info("[userController - getUserDashboard] SUCCESS: sending JSON with dashboard data to frontend.");
+  
+  res.json({
+    message: "Welcome to your dashboard",
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+  });
+}
+
+// Check if user exists in database
+const isExistingUser = async ({ username, email }) => {
+  console.log("[userController - registerUser] Fetching email to check if user already exists...");
+  const existingUser = await User.findOne({
+    $or: [{ username: username }, { email: email }],
+  });
+  
+  if (existingUser) {
+    if (existingUser.username === username) {
+      console.warn("[userController - registerUser] FAILED: username already exists!");
+      return true;
+    }
+    if (existingUser.email === email) {
+      console.warn("[userController - registerUser] FAILED: email already exists!");
+      return true;
+    }
+  }
+  return false;
+}
+
 /* Controller functions */
 
 // Register user controller function
@@ -47,23 +100,10 @@ const registerUser = async (req, res, next) => {
   }
 
   try {
-    console.log("[userController - registerUser] Fetching email to check if user already exists...");
-    const existingUser = await User.findOne({
-      $or: [{ username: username }, { email: email }],
-    });
-
-    if (existingUser) {
-      if (existingUser.username === username) {
-        console.warn("[userController - registerUser] FAILED: username already exists!");
-        return res.status(400).json({ message: "Username already in use." });
-      }
-      if (existingUser.email === email) {
-        console.warn("[userController - registerUser] FAILED: email already exists!");
-        return res.status(400).json({ message: "Email already in use." });
-      }
-      return res.status(400).json({ message: "Email and Username already in use." });
-    }
-
+    const userExists = isExistingUser({ username, email });
+    
+    if (userExists) return res.status(400).json({ message: "Username and/or email already in use." });
+    
     const newUser = await createUser({ username, email, password });
     console.info("[userController - registerUser] SUCCESS: user created successfully!");
     res.status(201).json({ message: "User registered successfully", userId: newUser._id });
@@ -90,13 +130,8 @@ const loginUser = async (req, res, next) => {
 
     console.log("[userController - loginUser] Creating token for user...");
     const token = generateToken(user._id);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 1000,
-    });
+    
+    generateCookie(res, token);
 
     console.info("[userController - loginUser] SUCCESS: Login was successful!");
     res.json({ message: "Login successful", token });
@@ -109,28 +144,14 @@ const loginUser = async (req, res, next) => {
 // Need to refactor
 const getUserDashboard = async (req, res) => {
   console.log("[userController - getUserDashboard] Function called");
+  
   const userId = req.user.id;
 
   try {
-    console.log("[userController - getUserDashboard] Fetching user info...");
-    const user = await User.findById(userId).select("-password");
-    if (!user) {
-      console.log("[userController - getUserDashboard] FAILED: user not found.");
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    console.log("[userController - getUserDashboard] SUCCESS: sending JSON with dashboard data to frontend.");
-    res.json({
-      message: "Welcome to your dashboard",
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-    });
+    await getDashboardData(res, userId);
   } catch (error) {
     console.error("[userController - getUserDashboard] ERROR: fetching dashboard failed:", error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 

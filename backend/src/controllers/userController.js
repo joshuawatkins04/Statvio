@@ -12,11 +12,12 @@ const generateToken = (userId) => {
 
 // Function for generating cookie
 const generateCookie = ({ res, token }) => {
+  const ONE_HOUR = 60 * 60 * 1000;
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 60 * 60 * 1000,
+    maxAge: ONE_HOUR,
   });
 };
 
@@ -100,7 +101,7 @@ const registerUser = async (req, res, next) => {
   }
 
   try {
-    const userExists = isExistingUser({ username, email });
+    const userExists = await isExistingUser({ username, email });
     
     if (userExists) return res.status(400).json({ message: "Username and/or email already in use." });
     
@@ -131,7 +132,7 @@ const loginUser = async (req, res, next) => {
     console.log("[userController - loginUser] Creating token for user...");
     const token = generateToken(user._id);
     
-    generateCookie(res, token);
+    generateCookie({ res, token });
 
     console.info("[userController - loginUser] SUCCESS: Login was successful!");
     res.json({ message: "Login successful", token });
@@ -142,13 +143,13 @@ const loginUser = async (req, res, next) => {
 };
 
 // Need to refactor
-const getUserDashboard = async (req, res) => {
+const getUserDashboard = async (req, res, next) => {
   console.log("[userController - getUserDashboard] Function called");
   
   const userId = req.user.id;
 
   try {
-    await getDashboardData(res, userId);
+    await getDashboardData({ res, userId });
   } catch (error) {
     console.error("[userController - getUserDashboard] ERROR: fetching dashboard failed:", error);
     next(error);

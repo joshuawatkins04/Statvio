@@ -37,6 +37,12 @@ const errorHandler = (err, req, res) => {
     return res.status(401).json({ message: "Unauthorized access." });
   }
 
+  // Order Already Captured Error
+  if (err.message.includes("Order already captured")) {
+    console.warn("Error capturing payment:", err.message);
+    return res.status(200).json({ message: "Order already captured" });
+  }
+
   // Default to 500 Server Error
   console.error("[Global - errorHandler] Unhandled Error:", err.message);
   res.status(500).json({ message: "An unexpected server error occurred." });

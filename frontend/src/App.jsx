@@ -11,6 +11,8 @@ import NotificationsPage from "./pages/Notifications";
 import NotFoundPage from "./pages/NotFound";
 
 import SpotifyPage from "./pages/Spotify";
+import MoviesPage from "./pages/Movies";
+import GamingPage from "./pages/Gaming";
 
 import SuccessPage from "./pages/SuccessPage";
 
@@ -51,6 +53,22 @@ function App() {
           element={
             <ProtectedRoute>
               <SpotifyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/movies"
+          element={
+            <ProtectedRoute>
+              <MoviesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/gaming"
+          element={
+            <ProtectedRoute>
+              <GamingPage />
             </ProtectedRoute>
           }
         />

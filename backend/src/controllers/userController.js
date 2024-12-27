@@ -44,18 +44,19 @@ const authenticateUser = async ({ email, password }) => {
 };
 
 // User dashboard business logic
-const getDashboardData = async ({ res, userId }) => {
-  console.log("[userController - getUserDashboard] Fetching user info...");
+const getDashboardData = async ({ res, userId, requestId }) => {
+  // console.log("[userController - getUserDashboard] Fetching user info...");
+  console.log(`[${requestId}] [userController - getDashboardData] Fetching user info...`);
 
   const user = await User.findById(userId).select("-password");
     
   if (!user) {
-    console.warn("[userController - getUserDashboard] FAILED: user not found.");
+    console.warn("[userController - getDashboardData] FAILED: user not found.");
     return res.status(404).json({ message: "User not found" });
   }
 
   console.info("[userController - getUserDashboard] SUCCESS: sending JSON with dashboard data to frontend.");
-  
+
   res.json({
     message: "Welcome to your dashboard",
     user: {
@@ -103,7 +104,7 @@ const registerUser = async (req, res, next) => {
   try {
     const userExists = await isExistingUser({ username, email });
     
-    if (userExists) return res.status(400).json({ message: "Username and/or email already in use." });
+    if (userExists) return res.status(400).json({ message: "Username or email already in use." });
     
     const newUser = await createUser({ username, email, password });
     console.info("[userController - registerUser] SUCCESS: user created successfully!");
@@ -142,14 +143,37 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-// Need to refactor
+const verifyAuth = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      console.warn("[userController - verifyAuth] FAILED: user not found.");
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    console.info("[userController - verifyAuth] SUCCESS: user is authenticated.");
+    res.json({
+      isValid: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+      },
+    });
+  } catch (error) {
+    console.error("[userController - verifyAuth] ERROR:", error);
+    next(error);
+  }
+}
+
+// User dashboard controller function
 const getUserDashboard = async (req, res, next) => {
   console.log("[userController - getUserDashboard] Function called");
   
   const userId = req.user.id;
 
   try {
-    await getDashboardData({ res, userId });
+    await getDashboardData({ res, userId, requestId });
   } catch (error) {
     console.error("[userController - getUserDashboard] ERROR: fetching dashboard failed:", error);
     next(error);
@@ -159,5 +183,6 @@ const getUserDashboard = async (req, res, next) => {
 module.exports = {
   registerUser,
   loginUser,
+  verifyAuth,
   getUserDashboard,
 };

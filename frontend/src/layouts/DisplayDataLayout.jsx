@@ -1,6 +1,6 @@
 import React from "react";
 
-const DefaultLayout = ({ children }) => {
+const DisplayData = ({ children }) => {
   return (
     <div className="min-h-screen p-6 bg-backdrop text-textPrimary transition-colors duration-300">
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -10,4 +10,4 @@ const DefaultLayout = ({ children }) => {
   );
 };
 
-export default DefaultLayout;
+export default DisplayData;

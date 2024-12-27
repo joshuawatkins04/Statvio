@@ -1,46 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { fetchDashboardData } from "../hooks/UserAuthentication/userAuth";
+import { AuthContext } from "../contexts/AuthContext";
 import Subscribe from "./Subscribe";
-import DefaultLayout from "../layouts/defaultLayout";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 const Dashboard = () => {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user, authLoading } = useContext(AuthContext);
 
-  useEffect(() => {
-    const getDashboardData = async () => {
-      try {
-        const data = await fetchDashboardData();
-        setDashboardData(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getDashboardData();
-  }, []);
-
-  if (loading)
+  if (authLoading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-xl">Loading...</div>
       </div>
     );
-  if (error)
+  if (!user)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500 text-xl">Error: {error}</div>
+        <div className="text-red-500 text-xl">Error: User not authenticated.</div>
       </div>
     );
 
   return (
     <DefaultLayout>
       <h1 className="text-3xl font-bold text-center mb-6">Your Dashboard</h1>
-      
+
       {/* User Info Section */}
       <div className="bg-surface text-onSurface rounded-xl shadow-card p-6 mb-6">
         {/* Profile pic replacement */}
@@ -53,13 +36,13 @@ const Dashboard = () => {
           </div>
           <div className="py-6">
             <h2 className="text-xl font-semibold mb-4">User Information</h2>
-            {dashboardData?.user ? (
+            {user ? (
               <div className="">
                 <p>
-                  <strong>Username:</strong> {dashboardData.user.username}
+                  <strong>Username:</strong> {user.username}
                 </p>
                 <p>
-                  <strong>Email:</strong> {dashboardData.user.email}
+                  <strong>Email:</strong> {user.email}
                 </p>
               </div>
             ) : (
@@ -74,7 +57,7 @@ const Dashboard = () => {
         {[
           {
             name: "Music",
-            link: "/dashboard/spotify",
+            link: "/dashboard/music",
             gradient: "from-green-400 to-blue-500",
             buttonColor: "text-green-500",
           },

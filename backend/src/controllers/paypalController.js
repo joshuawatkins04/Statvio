@@ -1,12 +1,12 @@
 const paypalService = require("../services/paypal/paypalService");
 
-const createOrder = async (res, next) => {
+const createOrder = async (req, res, next) => {
   try {
     const url = await paypalService.createOrder();
-    res.redirect(url);
+    return res.redirect(url);
   } catch (error) {
     console.error("Error creating order:", error);
-    next(error);
+    return next(error);
   }
 };
 
@@ -21,18 +21,18 @@ const capturePayment = async (req, res, next) => {
     console.log("Token received for payment capture:", token);
 
     const captureResponse = await paypalService.capturePayment(token);
-    res.json({
+    return res.json({
       message: "Payment captured successfully",
       data: captureResponse,
     });
   } catch (error) {
     console.error("Error capturing order:", error);
-    next(error);
+    return next(error);
   }
 };
 
-const cancelOrder = (res) => {
-  res.redirect("/");
+const cancelOrder = (req, res, next) => {
+  return res.redirect("http://localhost:5173/cancel-order");
 };
 
 module.exports = {

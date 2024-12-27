@@ -15,7 +15,7 @@ const spotifyCallback = async (req, res) => {
     const { accessToken, refreshToken, expiresIn } = await SpotifyAuth.getAccessTokenFromCode(code);
 
     req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt: Date.now() };
-    const frontendUrl = "http://localhost:5173/dashboard/spotify";
+    const frontendUrl = "http://localhost:5173/dashboard/music/spotify";
     res.redirect(frontendUrl);
   } catch (error) {
     console.error(error);

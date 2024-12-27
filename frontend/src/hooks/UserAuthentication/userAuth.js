@@ -4,18 +4,20 @@ const api = axios.create({
   baseURL: "http://localhost:5000/api/auth",
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
+if (!api.interceptors.request.handlers.length) {
+  api.interceptors.request.use(
+    (config) => {
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) {
+        config.headers["Authorization"] = `Bearer ${accessToken}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+  );
+}
 
 export const loginUser = async (email, password) => {
   try {
@@ -46,16 +48,6 @@ export const registerUser = async (username, email, password) => {
     }
   }
 };
-
-export const fetchDashboardData = async () => {
-  try {
-    const response = await api.get("/dashboard");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || "Failed to fetch dashboard data");
-  }
-}
 
 export async function refreshAccessToken() {
   try {

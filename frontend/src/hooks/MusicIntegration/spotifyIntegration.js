@@ -1,13 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
 const spotifyApi = axios.create({
-  baseURL: "http://localhost:5000/music/spotify",
-  withCredentials: true
+  baseURL: "http://localhost:5000/api/music/spotify",
+  withCredentials: true,
 });
 
 spotifyApi.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     console.error("Spotify API error:", error.response?.data || error.message);
     return Promise.reject(error);
   }
@@ -18,9 +18,7 @@ export const getSpotifyStatus = async () => {
     const response = await spotifyApi.get("/status");
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to check Spotify status"
-    );
+    throw new Error(error.response?.data?.message || "Failed to check Spotify status");
   }
 };
 
@@ -29,12 +27,10 @@ export const getSpotifyPlaylists = async () => {
     const response = await spotifyApi.get("/playlists");
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch Spotify playlists"
-    );
+    throw new Error(error.response?.data?.message || "Failed to fetch Spotify playlists");
   }
 };
 
 export const connectToSpotify = () => {
-  window.location.href = "http://localhost:5000/music/spotify/auth/spotify";
+  window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";
 };

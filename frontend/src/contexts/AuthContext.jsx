@@ -10,6 +10,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   const verifyAuth = useCallback(async () => {
     const accessToken = localStorage.getItem("access_token");
@@ -19,16 +20,19 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const response = await api.get("/dashboard");
-      if (response.data) {
+      const response = await api.get("/verify");
+      if (response.data.isValid) {
         setIsAuthenticated(true);
+        setUser(response.data.user);
       } else {
         setIsAuthenticated(false);
+        setUser(null);
       }
     } catch (error) {
       console.error("Authentication failed:", error.message);
       localStorage.removeItem("access_token");
       setIsAuthenticated(false);
+      setUser(null);
     } finally {
       setAuthLoading(false);
     }
@@ -54,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       localStorage.removeItem("access_token");
       setIsAuthenticated(false);
+      setUser(null);
     }
   };
 
@@ -82,6 +87,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         register,
         refreshAuth,
+        user,
       }}
     >
       {children}

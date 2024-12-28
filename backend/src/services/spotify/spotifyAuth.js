@@ -9,7 +9,7 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 class SpotifyAuth {
   static getAuthorisationUrl(
-    scopes = ["user-read-email", "playlist-read-private"]
+    scopes = ["user-read-email", "playlist-read-private", "user-top-read", "user-read-recently-played"]
   ) {
     const params = {
       client_id: clientId,
@@ -33,9 +33,7 @@ class SpotifyAuth {
 
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(
-        `${clientId}:${clientSecret}`
-      ).toString("base64")}`,
+      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
     };
 
     try {
@@ -65,9 +63,7 @@ class SpotifyAuth {
 
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(
-        `${clientId}:${clientSecret}`
-      ).toString("base64")}`,
+      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
     };
 
     try {
@@ -77,11 +73,7 @@ class SpotifyAuth {
       });
       console.log("[SpotifyAuth] Refresh token response:", response.data);
 
-      const {
-        access_token,
-        expires_in,
-        refresh_token: newRefreshToken,
-      } = response.data;
+      const { access_token, expires_in, refresh_token: newRefreshToken } = response.data;
       return {
         accessToken: access_token,
         expiresIn: expires_in,

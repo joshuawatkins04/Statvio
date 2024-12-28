@@ -1,22 +1,24 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthContext } from "./contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
-import ProfilePage from "./pages/Profile";
 import DashboardPage from "./pages/Dashboard";
 import InsightsPage from "./pages/Insights";
 import NotificationsPage from "./pages/Notifications";
 import NotFoundPage from "./pages/NotFound";
+import Navbar from "./components/Navbar/Navbar";
 
+import MusicPage from "./pages/Music";
 import SpotifyPage from "./pages/Spotify";
 import MoviesPage from "./pages/Movies";
 import GamingPage from "./pages/Gaming";
 
 import SuccessPage from "./pages/SuccessPage";
+import CancelPage from "./pages/CancelPage";
 
-function App() {
+function app() {
   const { isAuthenticated, authLoading } = useContext(AuthContext);
 
   const ProtectedRoute = ({ children }) => {
@@ -26,20 +28,20 @@ function App() {
     return isAuthenticated ? children : <Navigate to="/login" />;
   };
 
+  const theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
   return (
     <>
+      <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/dashboard"
           element={
@@ -49,7 +51,15 @@ function App() {
           }
         />
         <Route
-          path="/dashboard/spotify"
+          path="/dashboard/music"
+          element={
+            <ProtectedRoute>
+              <MusicPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/music/spotify"
           element={
             <ProtectedRoute>
               <SpotifyPage />
@@ -96,10 +106,18 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/cancel-order"
+          element={
+            <ProtectedRoute>
+              <CancelPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );
 }
 
-export default App;
+export default app;

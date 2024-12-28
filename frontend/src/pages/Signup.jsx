@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../hooks/UserAuthentication/userAuth";
+import useAuthRedirect from "../hooks/UserAuthentication/userRedirect";
 
 const Signup = () => {
+  useAuthRedirect();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

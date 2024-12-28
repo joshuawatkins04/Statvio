@@ -17,18 +17,18 @@ const Subscribe = () => {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-4">Statly subscription</h2>
-      <p className="mb-6">Statly description</p>
+      <h2 className="text-textPrimary text-2xl font-semibold mb-4">Statly subscription</h2>
+      <p className="text-textSecondary mb-6">Statly description</p>
       <button
         onClick={handlePayment}
         disabled={loading}
         className={`w-full flex items-center justify-center px-4 py-2 rounded-xl ${
-          loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-        } text-white font-semibold transition duration-200`}
+          loading ? "bg-gray-400 cursor-not-allowed" : "bg-white hover:bg-gray-200"
+        } text-textSubtle font-semibold transition duration-200`}
       >
         {loading ? (
           <svg
-            className="animate-spin h-5 w-5 mr-3 text-white"
+            className="animate-spin h-5 w-5 mr-3"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

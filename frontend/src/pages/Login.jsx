@@ -1,8 +1,11 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import useAuthRedirect from "../hooks/UserAuthentication/userRedirect";
 
 const Login = () => {
+  useAuthRedirect();
+
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,10 +24,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col justify-center items-center">
+    <div className="bg-backdrop min-h-screen flex flex-col justify-center items-center">
       {/* Card Container */}
-      <div className="bg-white p-8 shadow-md rounded-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+      <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md">
+        <h1 className="text-textPrimary dark:text-white text-2xl font-bold mb-6 text-center">
           Log In to Statly
         </h1>
         {message && (

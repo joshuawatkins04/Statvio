@@ -1,5 +1,5 @@
 import React from "react";
-import DefaultLayout from "../layouts/defaultLayout";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 const Gaming = () => {
   return (

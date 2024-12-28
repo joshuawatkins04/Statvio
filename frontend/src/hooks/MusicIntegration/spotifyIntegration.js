@@ -31,6 +31,42 @@ export const getSpotifyPlaylists = async () => {
   }
 };
 
+export const getSpotifyOverview = async () => {
+  try {
+    const response = await spotifyApi.get("/overview");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch Spotify overview stats");
+  }
+}
+
+export const getSpotifyTopSongs = async () => {
+  try {
+    const response = await spotifyApi.get("/top-songs");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch Spotify top songs");
+  }
+}
+
+export const getSpotifyTopArtists = async () => {
+  try {
+    const response = await spotifyApi.get("/top-artists");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch Spotify top artists");
+  }
+}
+
+export const getSpotifyListeningHistory = async () => {
+  try {
+    const response = await spotifyApi.get("/listening-history");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch Spotify listening history");
+  }
+}
+
 export const connectToSpotify = () => {
   window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";
 };

@@ -21,11 +21,9 @@ const Dashboard = () => {
     );
 
   return (
-    <DefaultLayout>
-      <h1 className="text-3xl font-bold text-center mb-6">Your Dashboard</h1>
-
+    <DefaultLayout title={"Your Dashboard"}>
       {/* User Info Section */}
-      <div className="bg-surface text-onSurface rounded-xl shadow-card p-6 mb-6">
+      <div className="bg-surface text-onSurface rounded-xl shadow-card p-6 mb-6 shadow-lg">
         {/* Profile pic replacement */}
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="py-6 flex items-center justify-center space-x-8">
@@ -35,9 +33,9 @@ const Dashboard = () => {
             />
           </div>
           <div className="py-6">
-            <h2 className="text-xl font-semibold mb-4">User Information</h2>
+            <h2 className="text-textPrimary text-xl font-semibold mb-4">User Information</h2>
             {user ? (
-              <div className="">
+              <div className="text-textSecondary">
                 <p>
                   <strong>Username:</strong> {user.username}
                 </p>
@@ -58,31 +56,21 @@ const Dashboard = () => {
           {
             name: "Music",
             link: "/dashboard/music",
-            gradient: "from-green-400 to-blue-500",
-            buttonColor: "text-green-500",
           },
           {
             name: "Movies/TV",
             link: "/dashboard/movies",
-            gradient: "from-red-400 to-pink-500",
-            buttonColor: "text-red-500",
           },
           {
             name: "Gaming",
             link: "/dashboard/gaming",
-            gradient: "from-purple-400 to-indigo-500",
-            buttonColor: "text-purple-500",
           },
         ].map((category, index) => (
-          <Link to={category.link} key={index} className="block">
-            <div
-              className={`bg-gradient-to-r ${category.gradient} text-white rounded-xl p-6 shadow-lg transition hover:shadow-xl transform hover:scale-105 cursor-pointer`}
-            >
-              <h3 className="text-lg font-semibold">{category.name}</h3>
-              <p className="mt-2">Explore the latest trends and insights.</p>
-              <button
-                className={`mt-4 bg-white ${category.buttonColor} px-4 py-2 rounded-xl hover:bg-gray-200`}
-              >
+          <Link to={category.link} key={index}>
+            <div className="bg-surface p-6 shadow-lg rounded-xl hover:shadow-xl transition transform hover:scale-105 cursor-pointer">
+              <h3 className="text-textPrimary text-lg font-semibold">{category.name}</h3>
+              <p className="text-textSecondary mt-2">Explore the latest trends and insights.</p>
+              <button className="bg-white text-textSubtle hover:bg-gray-200 font-semibold mt-4 px-4 py-2 rounded-xl transition duration-200">
                 Explore {category.name}
               </button>
             </div>

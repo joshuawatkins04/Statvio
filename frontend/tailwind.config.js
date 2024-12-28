@@ -5,33 +5,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Backdrop and primary colors
-        backdrop: "#121212",
-        surface: "#1e1e1e",
-        onSurface: "#e0e0e0",
-        primary: "#bb86fc",
-        secondary: "#03dac6",
-        error: "#cf6679",
+        // Use CSS variables for colors
+        backdrop: "var(--backdrop)",
+        surface: "var(--surface)",
+        onSurface: "var(--onSurface)",
+        primary: "var(--primary)",
+        secondary: "var(--secondary)",
+        error: "var(--error)",
 
         // Text colors
-        textPrimary: "#ffffff",
-        textSecondary: "#b3b3b3",
+        textPrimary: "var(--textPrimary)",
+        textSecondary: "var(--textSecondary)",
 
         // Borders and outlines
-        outline: "#292929",
+        outline: "var(--outline)",
         accent: {
-          light: "#FBBF24",
-          DEFAULT: "#F59E0B",
-          dark: "#D97706",
+          light: "var(--accent-light)",
+          DEFAULT: "var(--accent)",
+          dark: "var(--accent-dark)",
         },
         highlight: {
-          DEFAULT: "#10B981",
+          DEFAULT: "var(--highlight)",
         },
         neutral: {
-          50: "#FAFAFA",
-          900: "#111827",
+          50: "var(--neutral-50)",
+          900: "var(--neutral-900)",
         },
-        textSubtle: "#4B5563",
+        textSubtle: "var(--textSubtle)",
       },
       fontFamily: {
         sans: ["Roboto", "Helvetica", "Arial", "sans-serif"],
@@ -51,20 +51,20 @@ export default {
           "100%": { opacity: 1 },
         },
       },
-    },
-    screens: {
-      sm: "480px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
-      "3xl": "1920px",
-    },
-    borderRadius: {
-      xl: "1.25rem",
-      md: "0.375rem",
-      "2xl": "1.5rem",
-      full: "9999px",
+      screens: {
+        sm: "480px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+        "3xl": "1920px",
+      },
+      borderRadius: {
+        xl: "1.25rem",
+        md: "0.375rem",
+        "2xl": "1.5rem",
+        full: "9999px",
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

@@ -72,7 +72,7 @@ class SpotifyClient {
         id: item.id,
         name: item.name,
         imageUrl: item.images?.[0]?.url || null,
-      }))
+      }));
     } catch (error) {
       this._handleError(error);
     }
@@ -97,10 +97,7 @@ class SpotifyClient {
 
   _handleError(error) {
     if (error.response) {
-      console.error(
-        `Spotify API error (${error.response.status}):`,
-        error.response.data
-      );
+      console.error(`Spotify API error (${error.response.status}):`, error.response.data);
     } else if (error.request) {
       console.error("No response received:", error.request);
     } else {

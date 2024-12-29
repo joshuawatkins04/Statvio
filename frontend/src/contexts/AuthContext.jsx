@@ -42,6 +42,27 @@ export const AuthProvider = ({ children }) => {
     verifyAuth();
   }, [verifyAuth]);
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await axios.get("http://localhost:5000/api/auth/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
   const login = async (email, password) => {
     console.log("Starting login process...");
     const data = await loginUser(email, password);
@@ -88,6 +109,7 @@ export const AuthProvider = ({ children }) => {
         register,
         refreshAuth,
         user,
+        fetchUser,
       }}
     >
       {children}

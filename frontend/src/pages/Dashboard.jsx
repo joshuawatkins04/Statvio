@@ -1,11 +1,32 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import Subscribe from "./Subscribe";
 import DefaultLayout from "../layouts/DefaultLayout";
+import ProfileImageUpload from "./ProfileImageUpload";
 
 const Dashboard = () => {
   const { user, authLoading } = useContext(AuthContext);
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState(
+    user?.profileImage || "https://www.gravatar.com/avatar/?d=mp"
+  );
+
+  useEffect(() => {
+    if (user && user.profileImage) {
+      setProfileImage(user.profileImage);
+    }
+  }, [user]);
+
+  const handleProfileClick = () => {
+    setIsUploadModalOpen(true);
+  };
+
+  const handleImageUpload = (imageUrl) => {
+    setProfileImage(imageUrl);
+    setIsUploadModalOpen(false);
+  };
 
   if (authLoading)
     return (
@@ -28,8 +49,10 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="py-6 flex items-center justify-center space-x-8">
             <img
-              src="https://www.gravatar.com/avatar/?d=mp"
-              className="w-36 h-36 object-cover rounded-full"
+              src={profileImage}
+              className="w-36 h-36 object-cover rounded-full cursor-pointer"
+              alt="Profile"
+              onClick={handleProfileClick}
             />
           </div>
           <div className="py-6">
@@ -82,6 +105,21 @@ const Dashboard = () => {
       <div className="bg-surface text-onSurface shadow-lg rounded-xl p-6">
         <Subscribe />
       </div>
+
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Upload Profile Picture</h2>
+            <ProfileImageUpload onUploadSuccess={handleImageUpload} />
+            <button
+              onClick={() => setIsUploadModalOpen(false)}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </DefaultLayout>
   );
 };

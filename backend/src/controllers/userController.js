@@ -180,9 +180,28 @@ const getUserDashboard = async (req, res, next) => {
   }
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("[authController - getUser] ERROR:", error.message);
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   verifyAuth,
   getUserDashboard,
+  getUser,
 };

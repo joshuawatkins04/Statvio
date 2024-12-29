@@ -10,5 +10,6 @@ router.post("/login", authLimiter, userController.loginUser);
 
 router.get("/verify", authenticateToken, verifyLimiter, userController.verifyAuth);
 router.get("/dashboard", authenticateToken, userController.getUserDashboard);
+router.get("/user", authenticateToken, userController.getUser);
 
 module.exports = router;

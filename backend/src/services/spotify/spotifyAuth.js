@@ -9,7 +9,7 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 class SpotifyAuth {
   static getAuthorisationUrl(
-    scopes = ["user-read-email", "playlist-read-private", "user-top-read", "user-read-recently-played"]
+    scopes = ["user-read-private", "user-read-email", "playlist-read-private", "playlist-read-collaborative", "user-top-read", "user-read-recently-played"]
   ) {
     const params = {
       client_id: clientId,
@@ -77,7 +77,7 @@ class SpotifyAuth {
       return {
         accessToken: access_token,
         expiresIn: expires_in,
-        expiresIn: newRefreshToken || refreshToken,
+        refreshToken: newRefreshToken || refreshToken,
       };
     } catch (error) {
       SpotifyAuth._handleError(error, "refreshAccessToken");

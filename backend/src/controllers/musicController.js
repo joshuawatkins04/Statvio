@@ -1,5 +1,51 @@
 const { SpotifyAuth, SpotifyClient } = require("../services/spotify");
 
+/* Utility functions */
+const refreshSpotifySession = async (session) => {
+  if (!session.spotify) {
+    throw new Error("Spotify session not found. User may not be authenticated.");
+  }
+  
+  let { accessToken, refreshToken, expiresIn, obtainedAt } = session.spotify || {};
+  const now = Date.now();
+
+  if (now - obtainedAt > expiresIn * 1000) {
+    if (!refreshToken) {
+      throw new Error("Spotify session not found. User may not be authenticated.");
+    }
+    
+    const refreshed = await SpotifyAuth.refreshAccessToken(refreshToken);
+    accessToken = refreshed.accessToken;
+    refreshToken = refreshed.refreshToken;
+    expiresIn = refreshed.expiresIn;
+    obtainedAt = Date.now();
+    session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
+  }
+
+  return new SpotifyClient(accessToken);
+};
+
+const handleSpotifyRequest = (action) => {
+  return async (req, res, next) => {
+    try {
+      const client = await refreshSpotifySession(req.session);
+      const result = await action(client, req);
+      res.json(result);
+    } catch (error) {
+      console.error(`[Spotify API] ERROR: ${error.message}`);
+      if (error.message.includes("Spotify session not found") || error.message.includes("Refresh token not available")) {
+        return res.status(401).send("Authentication required. Please link your Spotify account.");
+      }
+
+      res.status(500).send("An unexpected error occurred.");
+      // next(error);
+    }
+  };
+};
+
+
+/* Controller functions */
+
 const redirectSpotifyAuth = (req, res) => {
   const authoriseUrl = SpotifyAuth.getAuthorisationUrl();
   res.redirect(authoriseUrl);
@@ -23,136 +69,42 @@ const spotifyCallback = async (req, res) => {
   }
 };
 
-const getSpotifyPlaylists = async (req, res, next) => {
-  try {
-    let { accessToken, refreshToken, expiresIn, obtainedAt } = req.session.spotify || {};
-    const now = Date.now();
+const getSpotifyPlaylists = handleSpotifyRequest(async (client) => {
+  const playlists = await client.getUserPlaylists();
+  return { playlists };
+});
 
-    if (now - obtainedAt > expiresIn * 1000) {
-      const refreshed = await SpotifyAuth.refreshAccessToken(refreshToken);
-      accessToken = refreshed.accessToken;
-      refreshToken = refreshed.refreshToken;
-      expiresIn = refreshed.expiresIn;
-      obtainedAt = Date.now();
-      req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
-    }
+const getSpotifyTopSongs = handleSpotifyRequest(async (client) => {
+  const topSongs = await client.getUserTopSongs();
+  return { topSongs };
+});
 
-    const client = new SpotifyClient(accessToken);
-    const playlists = await client.getUserPlaylists();
-    res.json({ playlists });
-  } catch (error) {
-    console.error("[musicController - getSpotifyTopSongs] ERROR: failed to retrieve playlists.");
-    res.status(500).send("Could not fetch playlists");
-    next(error);
-  }
-};
+const getSpotifyTopArtists = handleSpotifyRequest(async (client) => {
+  const topArtists = await client.getUserTopArtists();
+  return { topArtists };
+});
 
-const getSpotifyTopSongs = async (req, res, next) => {
-  try {
-    let { accessToken, refreshToken, expiresIn, obtainedAt } = req.session.spotify || {};
-    const now = Date.now();
+const getSpotifyListeningHistory = handleSpotifyRequest(async (client) => {
+  const listeningHistory = await client.getUserListeningHistory();
+  return { listeningHistory };
+});
 
-    if (now - obtainedAt > expiresIn * 1000) {
-      const refreshed = await SpotifyAuth.refreshAccessToken(refreshToken);
-      accessToken = refreshed.accessToken;
-      refreshToken = refreshed.refreshToken;
-      expiresIn = refreshed.expiresIn;
-      obtainedAt = Date.now();
-      req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
-    }
-
-    const client = new SpotifyClient(accessToken);
-    const topSongs = await client.getUserTopSongs();
-    res.json({ topSongs });
-  } catch (error) {
-    console.error("[musicController - getSpotifyTopSongs] ERROR: failed to retrieve top songs.");
-    next(error);
-  }
-};
-
-const getSpotifyTopArtists = async (req, res, next) => {
-  try {
-    let { accessToken, refreshToken, expiresIn, obtainedAt } = req.session.spotify || {};
-    const now = Date.now();
-
-    if (now - obtainedAt > expiresIn * 1000) {
-      const refreshed = await SpotifyAuth.refreshAccessToken(refreshToken);
-      accessToken = refreshed.accessToken;
-      refreshToken = refreshed.refreshToken;
-      expiresIn = refreshed.expiresIn;
-      obtainedAt = Date.now();
-      req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
-    }
-
-    const client = new SpotifyClient(accessToken);
-    const topArtists = await client.getUserTopArtists();
-    res.json({ topArtists });
-  } catch (error) {
-    console.error("[musicController - getSpotifyTopArtists] ERROR: failed to retrieve top artists.");
-    next(error);
-  }
-};
-
-const getSpotifyListeningHistory = async (req, res, next) => {
-  try {
-    let { accessToken, refreshToken, expiresIn, obtainedAt } = req.session.spotify || {};
-    const now = Date.now();
-
-    if (now - obtainedAt > expiresIn * 1000) {
-      const refreshed = await SpotifyAuth.refreshAccessToken(refreshToken);
-      accessToken = refreshed.accessToken;
-      refreshToken = refreshed.refreshToken;
-      expiresIn = refreshed.expiresIn;
-      obtainedAt = Date.now();
-      req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
-    }
-
-    const client = new SpotifyClient(accessToken);
-    const listeningHistory = await client.getUserListeningHistory();
-    res.json({ listeningHistory });
-  } catch (error) {
-    console.error(
-      "[musicController - getSpotifyListeningHistory] ERROR: failed to retrieve listening history."
-    );
-    next(error);
-  }
-};
-
-const getSpotifyOverview = async (req, res, next) => {
-  try {
-    let { accessToken, refreshToken, expiresIn, obtainedAt } = req.session.spotify || {};
-    const now = Date.now();
-    if (now - obtainedAt > expiresIn * 1000) {
-      const refreshed = await SpotifyAuth.refreshAccessToken(refreshToken);
-      accessToken = refreshed.accessToken;
-      refreshToken = refreshed.refreshToken;
-      expiresIn = refreshed.expiresIn;
-      obtainedAt = Date.now();
-      req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
-    }
-
-    const client = new SpotifyClient(accessToken);
-    const [topSongs, topArtists, listeningHistory, playlists] = await Promise.all([
-      client.getUserTopSongs(),
-      client.getUserTopArtists(),
-      client.getUserListeningHistory(),
-      client.getUserPlaylists(),
-    ]);
-    console.log("Done fetching all Spotify data");
-
-    res.json({
-      topSongs,
-      topArtists,
-      listeningHistory,
-      playlists,
-    });
-  } catch (error) {
-    console.error(
-      "[musicController - getSpotifyListeningHistory] ERROR: failed to retrieve listening history."
-    );
-    next(error);
-  }
-};
+const getSpotifyOverview = handleSpotifyRequest(async (client) => {
+  const [topSongs, topArtists, listeningHistory, playlists] = await Promise.all([
+    client.getUserTopSongs(),
+    client.getUserTopArtists(),
+    client.getUserListeningHistory(),
+    client.getUserPlaylists(),
+  ]);
+  console.log("Done fetching all Spotify data");
+  
+  return {
+    topSongs,
+    topArtists,
+    listeningHistory,
+    playlists,
+  };
+});
 
 const getSpotifyStatus = (req, res) => {
   const isLinked = !!(req.session.spotify && req.session.spotify.accessToken);

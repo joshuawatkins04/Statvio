@@ -42,10 +42,6 @@ export const AuthProvider = ({ children }) => {
     verifyAuth();
   }, [verifyAuth]);
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem("access_token");

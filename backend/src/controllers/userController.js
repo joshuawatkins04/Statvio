@@ -180,6 +180,7 @@ const getUserDashboard = async (req, res, next) => {
   }
 };
 
+// Get user info controller function
 const getUser = async (req, res, next) => {
   try {
     if (!req.user || !req.user.id) {

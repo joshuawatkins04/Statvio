@@ -3,14 +3,16 @@ const { SpotifyAuth, SpotifyClient } = require("../services/spotify");
 /* Utility functions */
 const refreshSpotifySession = async (session) => {
   if (!session.spotify) {
+    console.log("Spotify session not found.");
     throw new Error("Spotify session not found. User may not be authenticated.");
   }
   
-  let { accessToken, refreshToken, expiresIn, obtainedAt } = session.spotify || {};
+  let { accessToken, refreshToken, expiresIn, obtainedAt } = session.spotify;
   const now = Date.now();
 
   if (now - obtainedAt > expiresIn * 1000) {
     if (!refreshToken) {
+      console.log("Refresh token not available.");
       throw new Error("Spotify session not found. User may not be authenticated.");
     }
     
@@ -20,6 +22,9 @@ const refreshSpotifySession = async (session) => {
     expiresIn = refreshed.expiresIn;
     obtainedAt = Date.now();
     session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt };
+    console.log("Spotify session refreshed.");
+  } else {
+    console.log("Spotify session is still valid.");
   }
 
   return new SpotifyClient(accessToken);

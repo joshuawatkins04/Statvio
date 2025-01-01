@@ -6,7 +6,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import ProfileImageUpload from "./ProfileImageUpload";
 
 const Dashboard = () => {
-  const { user, authLoading } = useContext(AuthContext);
+  const { user, isAuthenticated, authLoading } = useContext(AuthContext);
 
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(
@@ -34,7 +34,7 @@ const Dashboard = () => {
         <div className="text-xl">Loading...</div>
       </div>
     );
-  if (!user)
+  if (!isAuthenticated && !user)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-red-500 text-xl">Error: User not authenticated.</div>

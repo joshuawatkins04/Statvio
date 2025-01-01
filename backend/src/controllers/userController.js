@@ -182,6 +182,7 @@ const getUserDashboard = async (req, res, next) => {
 
 // Get user info controller function
 const getUser = async (req, res, next) => {
+  console.log("Get user called");
   try {
     if (!req.user || !req.user.id) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -191,7 +192,7 @@ const getUser = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
-
+    console.log("Got info: ", user);
     res.status(200).json(user);
   } catch (error) {
     console.error("[authController - getUser] ERROR:", error.message);

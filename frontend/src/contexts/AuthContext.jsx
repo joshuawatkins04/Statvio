@@ -12,6 +12,19 @@ export const AuthProvider = ({ children }) => {
   const [authLoading, setAuthLoading] = useState(true);
   const [user, setUser] = useState(null);
 
+  const fetchUser = useCallback(async () => {
+    try {
+      console.log("Fetching user data...");
+      const response = await api.get("/user");
+      console.log("Fetch user response:", response.profileImage);
+      setUser(response.data);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  }, [api]);
+
   const verifyAuth = useCallback(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) {
@@ -23,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.get("/verify");
       if (response.data.isValid) {
         setIsAuthenticated(true);
-        setUser(response.data.user);
+        await fetchUser();
       } else {
         setIsAuthenticated(false);
         setUser(null);
@@ -36,28 +49,11 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setAuthLoading(false);
     }
-  }, []);
+  }, [fetchUser]);
 
   useEffect(() => {
     verifyAuth();
   }, [verifyAuth]);
-
-  const fetchUser = async () => {
-    try {
-      const token = localStorage.getItem("access_token");
-
-      const response = await axios.get("http://localhost:5000/api/auth/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUser(response.data);
-    } catch (error) {
-      setUser(null);
-    } finally {
-      setAuthLoading(false);
-    }
-  }
 
   const login = async (email, password) => {
     console.log("Starting login process...");
@@ -105,7 +101,6 @@ export const AuthProvider = ({ children }) => {
         register,
         refreshAuth,
         user,
-        fetchUser,
       }}
     >
       {children}

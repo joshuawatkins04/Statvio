@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import SelectionLayout from "../layouts/selectionLayout";
+import SelectionLayout from "../layouts/SelectionLayout";
 import DefaultLayout from "../layouts/DefaultLayout";
 import { connectToSpotify } from "../hooks/MusicIntegration/spotifyIntegration";
 

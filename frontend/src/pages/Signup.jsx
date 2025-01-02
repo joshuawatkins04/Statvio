@@ -33,7 +33,7 @@ const Signup = () => {
       {/* Card Container */}
       <div className="bg-white p-8 shadow-md rounded-md w-full max-w-md">
         <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
-          Create Your Statly Account
+          Create Your Statvio Account
         </h1>
         {/* Display Message */}
         {message && (

@@ -11,6 +11,10 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    console.warn("🔗 [REQUEST] URL:", config.baseURL + config.url);
+    console.warn("🔑 [REQUEST] Method:", config.method);
+    console.warn("📝 [REQUEST] Data:", config.data);
+    console.warn("🔒 [REQUEST] Headers:", config.headers);
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;

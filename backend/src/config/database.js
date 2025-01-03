@@ -1,15 +1,17 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
+
+const MONGO_URI = process.env.MONGO_URI;
 
 const connectDatabase = async () => {
-  const uri = process.env.DB_URI;
-  if (!uri) {
-    throw new Error("Missing MongoDB connection URI in env variables.");
+  if (!MONGO_URI) {
+    throw new Error("❌ Missing MongoDB connection URI in environment variables.");
   }
   try {
-    const connection = await mongoose.connect(uri);
-    console.log(`MongoDB Connected: ${connection.connection.host}`);
+    await mongoose.connect(MONGO_URI);
+    console.log("✅ Successfully connected to MongoDB Atlas");
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error("❌ MongoDB connection error:", error.message);
     process.exit(1);
   }
 };

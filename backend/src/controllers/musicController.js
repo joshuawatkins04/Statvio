@@ -1,5 +1,7 @@
 const { SpotifyAuth, SpotifyClient } = require("../services/spotify");
 
+const FRONTEND_SPOTIFY_URL = process.env.FRONTEND_SPOTIFY_URL;
+
 /* Utility functions */
 const refreshSpotifySession = async (session) => {
   if (!session.spotify) {
@@ -66,8 +68,9 @@ const spotifyCallback = async (req, res) => {
     const { accessToken, refreshToken, expiresIn } = await SpotifyAuth.getAccessTokenFromCode(code);
 
     req.session.spotify = { accessToken, refreshToken, expiresIn, obtainedAt: Date.now() };
-    const frontendUrl = "http://localhost:5173/dashboard/music/spotify";
-    res.redirect(frontendUrl);
+    // const frontendUrl = "http://localhost:5173/dashboard/music/spotify";
+    // res.redirect(frontendUrl);
+    res.redirect(FRONTEND_SPOTIFY_URL);
   } catch (error) {
     console.error(error);
     res.status(500).send("Authentication error");

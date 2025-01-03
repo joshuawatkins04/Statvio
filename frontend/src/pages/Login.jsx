@@ -28,14 +28,12 @@ const Login = () => {
       {/* Card Container */}
       <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md">
         <h1 className="text-textPrimary dark:text-white text-2xl font-bold mb-6 text-center">
-          Log In to Statly
+          Log In to Statvio
         </h1>
         {message && (
           <div
             className={`mb-4 p-3 text-center rounded ${
-              message.includes("successful")
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
+              message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
             }`}
           >
             {message}

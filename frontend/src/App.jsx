@@ -28,11 +28,11 @@ function app() {
     return isAuthenticated ? children : <Navigate to="/login" />;
   };
 
-  const theme = localStorage.getItem('theme');
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
+  const theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
   } else {
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove("dark");
   }
 
   return (

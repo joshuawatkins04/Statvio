@@ -1,34 +1,32 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api/auth",
+  // baseURL: "http://localhost:5000/api/auth",
+  baseURL: "https://api.statvio.com/api/auth",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-if (!api.interceptors.request.handlers.length) {
-  api.interceptors.request.use(
-    (config) => {
-      const accessToken = localStorage.getItem("access_token");
-      if (accessToken) {
-        config.headers["Authorization"] = `Bearer ${accessToken}`;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
-  );
-}
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const loginUser = async (email, password) => {
   try {
     const response = await api.post("/login", { email, password });
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw new Error(error.response.data.message || "Login failed");
-    } else {
-      throw new Error("Network error or server is unreachable");
-    }
+    handleApiError(error, "Login failed.");
   }
 };
 
@@ -41,11 +39,7 @@ export const registerUser = async (username, email, password) => {
     });
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw new Error(error.response.data.message || "Registration failed");
-    } else {
-      throw new Error("Network error or server is unreachable");
-    }
+    handleApiError(error, "Login failed.");
   }
 };
 
@@ -56,6 +50,14 @@ export async function refreshAccessToken() {
     return response.data.accessToken;
   } catch (error) {
     throw new Error("Failed to refresh access token.");
+  }
+}
+
+function handleApiError(error, defaultMessage) {
+  if (error.response && error.response.data) {
+    throw new Error(error.response.data.message || defaultMessage);
+  } else {
+    throw new Error("Network error or server is unreachable");
   }
 }
 

@@ -91,7 +91,7 @@ async function createOrder() {
         cancel_url: `${config.BASE_URL}/cancel-order`,
         shipping_preference: "NO_SHIPPING",
         user_action: "PAY_NOW",
-        brand_name: "Statly",
+        brand_name: "Statvio",
       },
     };
 

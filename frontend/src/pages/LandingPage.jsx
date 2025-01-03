@@ -7,7 +7,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <header className="bg-surface dark:bg-surface flex-1 flex flex-col justify-center items-center text-center px-8">
         <h1 className="text-5xl font-extrabold text-neutral-900 dark:text-textPrimary mb-6">
-          Welcome to <span className="text-primary dark:text-primary">Statly</span>
+          Welcome to <span className="text-primary dark:text-primary">Statvio</span>
         </h1>
         <p className="text-lg text-textSubtle dark:text-textSecondary mb-8 max-w-2xl">
           Track your streaming habits with personalized AI insights and multi-platform analytics.
@@ -74,7 +74,7 @@ const LandingPage = () => {
 
       {/* Footer */}
       <footer className="p-6 bg-neutral-50 dark:bg-surface text-center text-sm text-textSubtle dark:text-onSurface border-t border-gray-200 dark:border-gray-700">
-        © {new Date().getFullYear()} Statly. All rights reserved.
+        © {new Date().getFullYear()} Statvio. All rights reserved.
       </footer>
     </div>
   );

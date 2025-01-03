@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <nav className="bg-backdrop dark:bg-backdrop shadow-md flex justify-between items-center p-6 fixed top-0 left-0 w-full">
       <Link to="/" className="text-textPrimary dark:text-textPrimary text-2xl font-bold">
-        Statly
+        Statvio
       </Link>
       <div className="flex items-center space-x-4">
         <ThemeToggle />
@@ -29,10 +29,7 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <Link
-            to="/dashboard"
-            className="relative"
-          >
+          <Link to="/dashboard" className="relative">
             <img
               src={user.profileImage || "https://www.gravatar.com/avatar/?d=mp"}
               alt="Profile"

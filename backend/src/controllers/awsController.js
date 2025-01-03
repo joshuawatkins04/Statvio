@@ -9,6 +9,9 @@ const upload = async (req, res) => {
 
     const imageUrl = await uploadToS3(req.file);
     const userId = req.user.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized." });
+    }
     const updatedUser = await User.findByIdAndUpdate(userId, { profileImage: imageUrl }, { new: true });
     res.status(200).json({ imageUrl: updatedUser.profileImage });
   } catch (error) {

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 const Subscribe = () => {
   const [loading, setLoading] = useState(false);
-  const backendUrl = "http://localhost:5000/api/paypal";
+  // const backendUrl = "http://localhost:5000/api/paypal";
+  const backendUrl = "https://api.statvio.com/api/paypal";
 
   const handlePayment = async () => {
     setLoading(true);
@@ -17,8 +18,8 @@ const Subscribe = () => {
 
   return (
     <>
-      <h2 className="text-textPrimary text-2xl font-semibold mb-4">Statly subscription</h2>
-      <p className="text-textSecondary mb-6">Statly description</p>
+      <h2 className="text-textPrimary text-2xl font-semibold mb-4">Statvio subscription</h2>
+      <p className="text-textSecondary mb-6">Statvio description</p>
       <button
         onClick={handlePayment}
         disabled={loading}

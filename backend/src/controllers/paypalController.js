@@ -1,5 +1,7 @@
 const paypalService = require("../services/paypal/paypalService");
 
+const FRONTEND_PAYPAL_CANCEL_URL = process.env.FRONTEND_PAYPAL_CANCEL_URL;
+
 const createOrder = async (req, res, next) => {
   try {
     const url = await paypalService.createOrder();
@@ -32,7 +34,8 @@ const capturePayment = async (req, res, next) => {
 };
 
 const cancelOrder = (req, res, next) => {
-  return res.redirect("http://localhost:5173/cancel-order");
+  // return res.redirect("http://localhost:5173/cancel-order");
+  return res.redirect(FRONTEND_PAYPAL_CANCEL_URL);
 };
 
 module.exports = {

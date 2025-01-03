@@ -28,6 +28,8 @@ const configureMiddleware = (app) => {
     res.sendStatus(200);
   });
 
+  app.set("trust proxy", true);
+
   app.use(express.json());
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));

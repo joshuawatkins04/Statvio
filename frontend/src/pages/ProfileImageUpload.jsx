@@ -44,7 +44,8 @@ const ProfileImageUpload = ({ onUploadSuccess }) => {
       const response = await axios.post("https://api.statvio.com/api/aws/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : "",
+          withCredentials: true,
         },
       });
       onUploadSuccess(response.data.imageUrl);

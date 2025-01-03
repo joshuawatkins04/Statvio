@@ -69,5 +69,6 @@ export const getSpotifyListeningHistory = async () => {
 };
 
 export const connectToSpotify = () => {
-  window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";
+  // window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";
+  window.location.href = "https://api.statvio.com/api/music/spotify/auth/spotify";
 };

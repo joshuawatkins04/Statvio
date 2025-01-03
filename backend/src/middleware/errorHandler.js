@@ -5,12 +5,18 @@ const handleDuplicateKeyError = (error) => {
 
 const errorHandler = (err, req, res) => {
   console.error("[Global - errorHandler] ERROR:", err);
-  console.error(`[Route]: ${req.method} ${req.originalUrl}`);
-  console.error(`[User IP]: ${req.ip}`);
   
+  const route = req?.method && req?.originalUrl ? `${req.method} ${req.originalUrl}` : "unknown route";
+  const userIp = req?.ip || req?.headers["x-forwarded-for"] || "unknown IP";
+  const userId = req?.user?.id || "unknown user ID";
+  const userEmail = req?.user?.email || "unknown user email";
+
+  console.error(`[Route]: ${route}`);
+  console.error(`[User IP]: ${userIp}`);
+
   if (req.user) {
-    console.error(`[User ID]: ${req.user.id}`);
-    console.error(`[User Email]: ${req.user.email}`);
+    console.error(`[User ID]: ${userId}`);
+    console.error(`[User Email]: ${userEmail}`);
   }
 
   // Authentication error

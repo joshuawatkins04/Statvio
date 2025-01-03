@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
+const botFilter = require("./filterRequests");
 const { globalLimiter } = require("./rateLimiter");
 
 const configureMiddleware = (app) => {
@@ -15,6 +16,8 @@ const configureMiddleware = (app) => {
       credentials: true,
     })
   );
+
+  app.use(botFilter);
 
   app.options("*", (req, res) => {
     res.header("Access-Control-Allow-Origin", req.headers.origin || "*");

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 const Subscribe = () => {
   const [loading, setLoading] = useState(false);
-  const backendUrl = "http://localhost:5000/api/paypal";
+  // const backendUrl = "http://localhost:5000/api/paypal";
+  const backendUrl = "https://api.statvio.com/api/paypal";
 
   const handlePayment = async () => {
     setLoading(true);

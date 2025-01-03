@@ -1,9 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
-import api, {
-  loginUser,
-  registerUser,
-  refreshAccessToken,
-} from "../hooks/UserAuthentication/userAuth";
+import api, { loginUser, registerUser, refreshAccessToken } from "../hooks/UserAuthentication/userAuth";
 
 export const AuthContext = createContext();
 

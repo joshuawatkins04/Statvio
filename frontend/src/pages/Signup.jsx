@@ -32,16 +32,12 @@ const Signup = () => {
     <div className="min-h-screen bg-neutral-50 flex flex-col justify-center items-center">
       {/* Card Container */}
       <div className="bg-white p-8 shadow-md rounded-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
-          Create Your Statvio Account
-        </h1>
+        <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">Create Your Statvio Account</h1>
         {/* Display Message */}
         {message && (
           <div
             className={`mb-4 p-3 text-center rounded ${
-              message.includes("successful")
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
+              message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
             }`}
           >
             {message}
@@ -94,10 +90,7 @@ const Signup = () => {
           </div>
 
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-textSubtle mb-1"
-            >
+            <label htmlFor="confirmPassword" className="block text-textSubtle mb-1">
               Confirm Password
             </label>
             <input

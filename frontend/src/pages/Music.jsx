@@ -11,7 +11,8 @@ const Music = () => {
 
   const handleConnectAppleMusic = async () => {
     console.log("Connecting to Apple Music...");
-    window.location.href = "http://localhost:5000/api/music/apple/auth";
+    window.location.href = "https://api.statvio.com/api/music/apple/auth";
+    // window.location.href = "http://localhost:5000/api/music/apple/auth";
   };
 
   return (

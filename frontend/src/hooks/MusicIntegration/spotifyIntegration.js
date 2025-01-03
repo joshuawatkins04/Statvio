@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const spotifyApi = axios.create({
-  baseURL: "http://localhost:5000/api/music/spotify",
+  // baseURL: "http://localhost:5000/api/music/spotify",
+  baseURL: "https://api.statvio.com/api/music/spotify",
   withCredentials: true,
 });
 
@@ -38,7 +39,7 @@ export const getSpotifyOverview = async () => {
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify overview stats");
   }
-}
+};
 
 export const getSpotifyTopSongs = async () => {
   try {
@@ -47,7 +48,7 @@ export const getSpotifyTopSongs = async () => {
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify top songs");
   }
-}
+};
 
 export const getSpotifyTopArtists = async () => {
   try {
@@ -56,7 +57,7 @@ export const getSpotifyTopArtists = async () => {
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify top artists");
   }
-}
+};
 
 export const getSpotifyListeningHistory = async () => {
   try {
@@ -65,7 +66,7 @@ export const getSpotifyListeningHistory = async () => {
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify listening history");
   }
-}
+};
 
 export const connectToSpotify = () => {
   window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";

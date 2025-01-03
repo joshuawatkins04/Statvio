@@ -47,7 +47,7 @@ const SectionList = ({ title, items }) => {
                 <p className="text-sm text-gray-600">{item.artist || "Unknown Artist"}</p>
               </div>
             </div>
-            
+
             {/* Time Listened */}
             <span className="text-sm text-gray-500">{timeAgo(item.played_at)}</span>
           </li>
@@ -55,7 +55,7 @@ const SectionList = ({ title, items }) => {
       </ul>
     </section>
   );
-}
+};
 
 const SectionGrid = ({ title, items }) => {
   const [isExpanded, setIsExpanded] = useState(false);

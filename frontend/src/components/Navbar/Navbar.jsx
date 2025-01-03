@@ -29,10 +29,7 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <Link
-            to="/dashboard"
-            className="relative"
-          >
+          <Link to="/dashboard" className="relative">
             <img
               src={user.profileImage || "https://www.gravatar.com/avatar/?d=mp"}
               alt="Profile"

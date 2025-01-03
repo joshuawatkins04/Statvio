@@ -33,9 +33,7 @@ const Login = () => {
         {message && (
           <div
             className={`mb-4 p-3 text-center rounded ${
-              message.includes("successful")
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
+              message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
             }`}
           >
             {message}

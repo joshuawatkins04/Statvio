@@ -28,19 +28,15 @@ const SuccessPage = () => {
       }
 
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/paypal/complete-order?token=${token}`
-        );
+        // const response = await axios.get(`http://localhost:5000/api/paypal/complete-order?token=${token}`);
+        const response = await axios.get(`https://api.statvio.com/api/paypal/complete-order?token=${token}`);
         setMessage("Course purchased successfully!");
         console.log("Capture Response:", response.data);
 
         sessionStorage.setItem("processedToken", token);
         setPaymentSuccessful(true);
       } catch (error) {
-        console.error(
-          "Payment capture failed:",
-          error.response?.data || error.message
-        );
+        console.error("Payment capture failed:", error.response?.data || error.message);
         if (error.response?.status === 400) {
           setMessage("Invalid payment token. Please contact support.");
         } else if (error.response?.status === 500) {

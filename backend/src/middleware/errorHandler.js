@@ -14,7 +14,7 @@ const errorHandler = (err, req, res) => {
   console.error(`[Route]: ${route}`);
   console.error(`[User IP]: ${userIp}`);
 
-  if (req.user) {
+  if (req?.user) {
     console.error(`[User ID]: ${userId}`);
     console.error(`[User Email]: ${userEmail}`);
   }

@@ -6,5 +6,22 @@
       "config": { "distDir": "dist" }
     }
   ],
-  "routes": [{ "src": "/(.*)", "dest": "/index.html" }]
+  "routes": [
+    {
+      "src": "^/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
 }

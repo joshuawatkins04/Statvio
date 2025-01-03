@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const spotifyApi = axios.create({
+  baseURL: __SPOTIFY_BASE_URL__,
   // baseURL: "http://localhost:5000/api/music/spotify",
-  baseURL: "https://api.statvio.com/api/music/spotify",
+  // baseURL: "https://api.statvio.com/api/music/spotify",
   withCredentials: true,
 });
 
@@ -69,6 +70,7 @@ export const getSpotifyListeningHistory = async () => {
 };
 
 export const connectToSpotify = () => {
+  window.location.href = __SPOTIFY_AUTH_URL__;
   // window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";
-  window.location.href = "https://api.statvio.com/api/music/spotify/auth/spotify";
+  // window.location.href = "https://api.statvio.com/api/music/spotify/auth/spotify";
 };

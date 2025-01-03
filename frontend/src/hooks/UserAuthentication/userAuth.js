@@ -2,7 +2,8 @@ import axios from "axios";
 
 const api = axios.create({
   // baseURL: "http://localhost:5000/api/auth",
-  baseURL: "https://api.statvio.com/api/auth",
+  baseURL: __AUTH_URL__,
+  // baseURL: "https://api.statvio.com/api/auth",
   headers: {
     "Content-Type": "application/json",
   },

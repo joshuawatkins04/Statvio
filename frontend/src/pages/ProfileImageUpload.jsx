@@ -41,7 +41,8 @@ const ProfileImageUpload = ({ onUploadSuccess }) => {
       setUploading(true);
       const token = localStorage.getItem("access_token");
       // const response = await axios.post("http://localhost:5000/api/aws/upload", formData, {
-      const response = await axios.post("https://api.statvio.com/api/aws/upload", formData, {
+      // const response = await axios.post("https://api.statvio.com/api/aws/upload", formData, {
+      const response = await axios.post(__AWS_UPLOAD_URL__, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: token ? `Bearer ${token}` : "",

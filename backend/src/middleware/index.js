@@ -11,15 +11,16 @@ const configureMiddleware = (app) => {
     cors({
       origin: ["https://www.statvio.com", "https://statvio.com"], // "http://localhost:5173", "http://3.107.192.136",
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
+      allowedHeaders: ["Content-Type", "Authorization", "withCredentials"],
       credentials: true,
     })
   );
 
   app.options("*", (req, res) => {
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, withCredentials");
     res.header("Access-Control-Allow-Credentials", "true");
     res.sendStatus(200);
   });

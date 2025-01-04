@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getSpotifyStatus, getSpotifyOverview } from "../hooks/MusicIntegration/spotifyIntegration";
+import {
+  getSpotifyStatus,
+  getSpotifyOverview,
+  connectToSpotify,
+  unlinkSpotify,
+} from "../hooks/MusicIntegration/spotifyIntegration";
 import DefaultLayout from "../layouts/DefaultLayout";
 
 const SectionList = ({ title, items }) => {
@@ -30,7 +35,7 @@ const SectionList = ({ title, items }) => {
       <ul className="space-y-2">
         {items.map((item, index) => (
           <li
-            key={item.id}
+            key={item.id || `section-list-${index}`}
             className="flex justify-between items-center p-2 bg-surface rounded-md hover:bg-gray-200 dark:hover:bg-gray-400"
           >
             {/* Song Details */}
@@ -83,7 +88,7 @@ const SectionGrid = ({ title, items }) => {
       {/* Content */}
       <ul className={`grid gap-2 ${isExpanded ? "grid-cols-5" : "grid-cols-5"}`}>
         {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
-          <li key={item.id} className="flex flex-col items-center text-center">
+          <li key={item.id || `section-grid-${index}`} className="flex flex-col items-center text-center">
             <img
               src={item.imageUrl || "https://via.placeholder.com/80"}
               alt={item.name}
@@ -104,52 +109,127 @@ const SpotifyStats = () => {
   const [loading, setLoading] = useState(true);
   const [topSongs, setTopSongs] = useState([]);
   const [topArtists, setTopArtists] = useState([]);
-  const [listeningHistory, setListenHistory] = useState([]);
+  const [listeningHistory, setListeningHistory] = useState([]);
   const [playlists, setPlaylists] = useState([]);
+  const [spotifyConnected, setSpotifyConnected] = useState(false);
 
   useEffect(() => {
-    const fetchSpotifyData = async () => {
+    const fetchConnectionStatus = async () => {
       try {
-        const status = await getSpotifyStatus();
-        if (!status.linked) {
-          console.log("Spotify is not connected.");
-          return;
+        const response = await fetch(`${__SPOTIFY_BASE_URL__}/status`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch Spotify status");
         }
 
-        setLoading(true);
-
-        const overviewData = await getSpotifyOverview();
-        if (overviewData) {
-          setTopSongs(overviewData.topSongs);
-          setTopArtists(overviewData.topArtists);
-          setListenHistory(overviewData.listeningHistory);
-          setPlaylists(overviewData.playlists);
-        }
+        const data = await response.json();
+        console.log("[Frontend] Spotify Linked Status:", data.linked);
+        setSpotifyConnected(data.linked);
       } catch (error) {
-        console.error("Error fetching Spotify data:", error);
-      } finally {
-        setLoading(false);
+        console.error("[Frontend] Error fetching Spotify status:", error.message);
       }
     };
 
+    fetchConnectionStatus();
+  }, []);
+
+  const fetchSpotifyData = async () => {
+    try {
+      const status = await getSpotifyStatus();
+      if (!status.linked) {
+        console.log("Spotify is not connected.");
+        setSpotifyConnected(false);
+        return;
+      }
+
+      setSpotifyConnected(true);
+      setLoading(true);
+
+      const overviewData = await getSpotifyOverview();
+      if (overviewData) {
+        setTopSongs(overviewData.topSongs || []);
+        setTopArtists(overviewData.topArtists || []);
+        setListeningHistory(overviewData.listeningHistory || []);
+        setPlaylists(overviewData.playlists || []);
+        console.log("Status after overviewData: ", status);
+      }
+    } catch (error) {
+      console.error("Error fetching Spotify data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchSpotifyData();
   }, []);
+
+  const handleConnectSpotify = () => {
+    connectToSpotify();
+  };
+
+  const handleUnlinkSpotify = async () => {
+    try {
+      await unlinkSpotify();
+      setSpotifyConnected(false);
+      setTopSongs([]);
+      setTopArtists([]);
+      setListeningHistory([]);
+      setPlaylists([]);
+      console.log("Unlinked Spotify successfully.");
+    } catch (error) {
+      console.error("Failed to unlink Spotify:", error);
+    }
+  };
+
+  const handleUpdateData = async () => {
+    console.log("Updating Spotify data...");
+    await fetchSpotifyData();
+  };
 
   if (loading) {
     return <p>Loading data...</p>;
   }
 
-  if (playlists.length === 0) {
-    return <p>No playlists found. Connect Spotify to get your playlists.</p>;
-  }
-
   return (
     <DefaultLayout title={"Your Spotify Stats"}>
-      <div className="mt-8">
-        <SectionGrid title="Recent Top Songs" items={topSongs} />
-        <SectionGrid title="Top Artists" items={topArtists} />
-        <SectionList title="Listening History" items={listeningHistory} />
+      <div className="flex justify-end gap-4 mb-4">
+        {spotifyConnected ? (
+          <>
+            <button onClick={handleUnlinkSpotify} className="px-4 py-2 bg-red-600 text-white rounded">
+              Unlink
+            </button>
+            <button onClick={handleUpdateData} className="px-4 py-2 bg-green-600 text-white rounded">
+              Update Data
+            </button>
+          </>
+        ) : (
+          <button onClick={handleConnectSpotify} className="px-4 py-2 bg-blue-600 text-white rounded">
+            Connect Spotify
+          </button>
+        )}
       </div>
+
+      {/* Render data if linked */}
+      {spotifyConnected && playlists.length > 0 ? (
+        <div className="mt-8">
+          <SectionGrid title="Recent Top Songs" items={topSongs} />
+          <SectionGrid title="Top Artists" items={topArtists} />
+          <SectionList title="Listening History" items={listeningHistory} />
+        </div>
+      ) : (
+        <div className="mt-8">
+          {!spotifyConnected ? (
+            <p>Spotify not connected. Click "Connect Spotify" above.</p>
+          ) : (
+            <p>No playlists found. Try "Update Data" or check your Spotify account.</p>
+          )}
+        </div>
+      )}
     </DefaultLayout>
   );
 };

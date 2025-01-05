@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post("/signup", authLimiter, userController.registerUser);
 router.post("/login", authLimiter, userController.loginUser);
+router.post("/logout", userController.logoutUser);
 
 router.get("/verify", authenticateToken, verifyLimiter, userController.verifyAuth);
 router.get("/dashboard", authenticateToken, userController.getUserDashboard);

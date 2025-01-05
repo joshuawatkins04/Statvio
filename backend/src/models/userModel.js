@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "https://www.gravatar.com/avatar/?d=mp",
     },
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
+    lastLogout: {
+      type: Date,
+      default: null,
+    },
     spotify: {
       linked: { type: Boolean, default: false },
       spotifyId: { type: String },

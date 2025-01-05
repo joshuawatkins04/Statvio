@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 /* Utility functions */
@@ -49,7 +50,7 @@ const getDashboardData = async ({ res, userId, requestId }) => {
   console.log(`[${requestId}] [userController - getDashboardData] Fetching user info...`);
 
   const user = await User.findById(userId).select("-password");
-    
+
   if (!user) {
     console.warn("[userController - getDashboardData] FAILED: user not found.");
     return res.status(404).json({ message: "User not found" });
@@ -65,7 +66,7 @@ const getDashboardData = async ({ res, userId, requestId }) => {
       email: user.email,
     },
   });
-}
+};
 
 // Check if user exists in database
 const isExistingUser = async ({ username, email }) => {
@@ -73,7 +74,7 @@ const isExistingUser = async ({ username, email }) => {
   const existingUser = await User.findOne({
     $or: [{ username: username }, { email: email }],
   });
-  
+
   if (existingUser) {
     if (existingUser.username === username) {
       console.warn("[userController - registerUser] FAILED: username already exists!");
@@ -85,7 +86,7 @@ const isExistingUser = async ({ username, email }) => {
     }
   }
   return false;
-}
+};
 
 /* Controller functions */
 
@@ -103,9 +104,9 @@ const registerUser = async (req, res, next) => {
 
   try {
     const userExists = await isExistingUser({ username, email });
-    
+
     if (userExists) return res.status(400).json({ message: "Username or email already in use." });
-    
+
     const newUser = await createUser({ username, email, password });
     console.info("[userController - registerUser] SUCCESS: user created successfully!");
     res.status(201).json({ message: "User registered successfully", userId: newUser._id });
@@ -132,13 +133,53 @@ const loginUser = async (req, res, next) => {
 
     console.log("[userController - loginUser] Creating token for user...");
     const token = generateToken(user._id);
-    
+
     generateCookie({ res, token });
 
+    user.lastLogin = new Date();
+    await user.save();
+
     console.info("[userController - loginUser] SUCCESS: Login was successful!");
-    res.json({ message: "Login successful", token });
+    res.json({ message: "Login successful", token, userId: user._id });
   } catch (error) {
     console.error("[userController - loginUser] ERROR:", error);
+    next(error);
+  }
+};
+
+const logoutUser = async (req, res, next) => {
+  console.log("[userController - logoutUser] Function called");
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      console.warn("[userController - logoutUser] No userId provided.");
+      return res.status(400).json({ message: "User ID is required for logout." });
+    }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format." });
+    }
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    console.info("[userController - logoutUser] SUCCESS: Token cookie cleared!");
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { lastLogout: new Date() },
+      { new: true }
+    );
+    if (!user) {
+      console.warn("[userController - logoutUser] User not found.");
+      return res.status(404).json({ message: "User not found. "});
+    }
+
+    console.info("[userController - logoutUser] SUCCESS: lastLogout timestamp updated.");
+    res.status(200).json({ message: "Successfully logged out." });
+  } catch (error) {
+    console.error("[userController - logoutUser] ERROR:", error);
     next(error);
   }
 };
@@ -164,12 +205,12 @@ const verifyAuth = async (req, res, next) => {
     console.error("[userController - verifyAuth] ERROR:", error);
     next(error);
   }
-}
+};
 
 // User dashboard controller function
 const getUserDashboard = async (req, res, next) => {
   console.log("[userController - getUserDashboard] Function called");
-  
+
   const userId = req.user.id;
 
   try {
@@ -203,6 +244,7 @@ const getUser = async (req, res, next) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
   verifyAuth,
   getUserDashboard,
   getUser,

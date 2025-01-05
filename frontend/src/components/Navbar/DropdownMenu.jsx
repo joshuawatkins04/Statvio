@@ -39,7 +39,7 @@ const DropdownMenu = () => {
         className="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
       >
         <img
-          src={user.profileImage || "https://www.gravatar.com/avatar/?d=mp"}
+          src={user.profileImageUrl || "https://www.gravatar.com/avatar/?d=mp"}
           alt="Profile"
           onClick={toggleDropdown}
           className="w-10 h-10 rounded-full cursor-pointer"

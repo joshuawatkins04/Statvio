@@ -10,12 +10,12 @@ const Dashboard = () => {
 
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(
-    user?.profileImage || "https://www.gravatar.com/avatar/?d=mp"
+    user?.profileImageUrl || "https://www.gravatar.com/avatar/?d=mp"
   );
 
   useEffect(() => {
-    if (user && user.profileImage) {
-      setProfileImage(user.profileImage);
+    if (user && user.profileImageUrl) {
+      setProfileImage(user.profileImageUrl);
     }
   }, [user]);
 

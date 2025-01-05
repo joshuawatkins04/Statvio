@@ -86,16 +86,33 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const handleStorageChange = (event) => {
-      if (event.key === "access_token") {
-        if (!event.newValue) {
-          console.warn("[AuthContext] Token removed, logging out...");
-          setIsAuthenticated(false);
-          setUser(null);
-          navigate("/login");
-        } else {
-          console.log("[AuthContext] Token changed, verifying...");
-          verifyAuth();
-        }
+      switch (event.key) {
+        case "access_token":
+          if (!event.newValue) {
+            console.warn("[AuthContext] Token removed, logging out...");
+            localStorage.removeItem("user_id");
+            setIsAuthenticated(false);
+            setUser(null);
+            navigate("/login");
+          } else {
+            console.log("[AuthContext] Token changed, verifying...");
+            verifyAuth();
+          }
+          break;
+        case "user_id":
+          if (!event.newValue) {
+            console.warn("[AuthContext] UserId removed, logging out...");
+            localStorage.removeItem("access_token");
+            setIsAuthenticated(false);
+            setUser(null);
+            navigate("/login");
+          } else {
+            console.log("[AuthContext] UserId changed, verifying...");
+            verifyAuth();
+          }
+          break;
+        default:
+          break;
       }
     };
 
@@ -109,6 +126,7 @@ export const AuthProvider = ({ children }) => {
       const data = await loginUser(email, password);
       console.log("Login response data:", data);
       localStorage.setItem("access_token", data.token);
+      localStorage.setItem("user_id", data.userId);
       setIsAuthenticated(true);
       await fetchUser();
       navigate("/dashboard");
@@ -120,14 +138,20 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post("/logout");
-    } catch (error) {
-      console.error("Logout error:", error.message);
-    } finally {
+      console.log("Starting logout process...");
+      const userId = localStorage.getItem("user_id");
+      if (!userId) {
+        console.warn("No user ID found in localStorage.");
+        return;
+      }
+      await api.post("/logout", { userId });
       localStorage.removeItem("access_token");
+      localStorage.removeItem("user_id");
       setIsAuthenticated(false);
       setUser(null);
       navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error.message);
     }
   };
 

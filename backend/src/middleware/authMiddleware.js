@@ -17,12 +17,18 @@ const authenticateToken = (req, res, next) => {
     console.warn("[Debug] No Token Found");
     return res.status(401).json({ message: "Unauthorized" });
   }
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error("[Debug] Token Verification Failed:", err.message);
-      return res.status(403).json({ message: "Forbidden" });
+  jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+    if (error) {
+      console.error("[Debug] Token Verification Failed:", error.message);
+      return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
     }
-    req.user = user;
+    if (!decoded || !decoded.id) {
+      console.error("[Debug] Token payload missing 'id':", decoded);
+      return res.status(403).json({ message: "Forbidden: Invalid token payload" });
+    }
+    console.log("[Debug] Decoded Token Payload:", decoded);
+
+    req.user = { id: decoded.id };
     next();
   });
 };

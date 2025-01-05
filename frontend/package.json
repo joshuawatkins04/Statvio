@@ -12,6 +12,7 @@
   "dependencies": {
     "@paypal/react-paypal-js": "^8.7.0",
     "@tailwindcss/typography": "^0.5.15",
+    "@vercel/analytics": "^1.4.1",
     "axios": "^1.7.9",
     "cropperjs": "^1.6.2",
     "jwt-decode": "^4.0.0",

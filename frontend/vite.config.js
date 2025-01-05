@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
     },
     define: {
+      __SPOTIFY_DASHBOARD__: JSON.stringify(env.VITE_SPOTIFY_DASHBOARD),
       __AUTH_URL__: JSON.stringify(env.VITE_AUTH_URL),
       __SPOTIFY_BASE_URL__: JSON.stringify(env.VITE_SPOTIFY_BASE_URL),
       __SPOTIFY_AUTH_URL__: JSON.stringify(env.VITE_SPOTIFY_AUTH_URL),

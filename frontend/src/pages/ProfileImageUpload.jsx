@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
+import { Cropper } from "react-cropper";
+import "cropperjs/dist/cropper.css";
 
 const ProfileImageUpload = ({ onUploadSuccess }) => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [cropper, setCropper] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -28,20 +31,47 @@ const ProfileImageUpload = ({ onUploadSuccess }) => {
     }
   };
 
+  const getCroppedImage = async () => {
+    if (cropper) {
+      const canvas = cropper.getCroppedCanvas({
+        width: 150,
+        height: 150,
+      });
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject("Canvas is empty");
+            return;
+          }
+          const file = new File([blob], selectedFile.name, {
+            type: selectedFile.type,
+          });
+          resolve(file);
+        }, selectedFile.type);
+      });
+    }
+    return null;
+  };
+
   const handleUpload = async () => {
     if (!selectedFile) {
       setError("No file selected.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("profileImage", selectedFile);
-
     try {
       setUploading(true);
       const token = localStorage.getItem("access_token");
-      // const response = await axios.post("http://localhost:5000/api/aws/upload", formData, {
-      // const response = await axios.post("https://api.statvio.com/api/aws/upload", formData, {
+
+      const croppedFile = await getCroppedImage();
+      if (!croppedFile) {
+        setError("Please crop image before uploading.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("profileImage", croppedFile);
+
       const response = await axios.post(__AWS_UPLOAD_URL__, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -51,6 +81,7 @@ const ProfileImageUpload = ({ onUploadSuccess }) => {
       });
       onUploadSuccess(response.data.imageUrl);
       setUploading(false);
+      setError("");
     } catch (err) {
       setError(err.response?.data?.error || "Upload failed.");
       setUploading(false);
@@ -62,7 +93,32 @@ const ProfileImageUpload = ({ onUploadSuccess }) => {
       <input type="file" accept="image/*" onChange={handleFileChange} />
       {previewUrl && (
         <div className="mt-4">
-          <img src={previewUrl} alt="Preview" className="w-36 h-36 rounded-full" />
+          <Cropper
+            style={{ height: 300, width: "100%" }}
+            src={previewUrl}
+            aspectRatio={1}
+            viewMode={1}
+            guides={true}
+            cropBoxMovable={true}
+            cropBoxResizable={false}
+            background={false}
+            zoomOnWheel={false}
+            zoomable={false}
+            dragMode="none"
+            preview=".img-preview"
+            onInitialized={(instance) => setCropper(instance)}
+            initialAspectRatio={1}
+            ready={() => {
+              if (cropper) {
+                cropper.setCropBoxData({
+                  width: 150,
+                  height: 150,
+                  left: (cropper.getCanvasData().width - 150) / 2,
+                  top: (cropper.getCanvasData().height - 150) / 2,
+                });
+              }
+            }}
+          />
         </div>
       )}
       {error && <p className="text-red-500 mt-2">{error}</p>}

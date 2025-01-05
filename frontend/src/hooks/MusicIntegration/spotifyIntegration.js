@@ -2,10 +2,23 @@ import axios from "axios";
 
 const spotifyApi = axios.create({
   baseURL: __SPOTIFY_BASE_URL__,
-  // baseURL: "http://localhost:5000/api/music/spotify",
-  // baseURL: "https://api.statvio.com/api/music/spotify",
   withCredentials: true,
 });
+
+spotifyApi.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.warn("[spotifyApi] No token found in localStorage.");
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 spotifyApi.interceptors.response.use(
   (response) => response,
@@ -15,9 +28,24 @@ spotifyApi.interceptors.response.use(
   }
 );
 
+export const unlinkSpotify = async () => {
+  try {
+    const response = await spotifyApi.post("/unlink");
+    console.log("[Frontend - unlinkSpotify] Successfully unlinked Spotify account:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "[Frontend - unlinkSpotify] Failed to unlink Spotify:",
+      error.response?.data?.message || error.message
+    );
+    throw new Error(error.response?.data?.message || "Failed to unlink Spotify account.");
+  }
+};
+
 export const getSpotifyStatus = async () => {
   try {
     const response = await spotifyApi.get("/status");
+    console.log("[getSpotifyStatus] Response: ", response.data);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to check Spotify status");
@@ -69,8 +97,11 @@ export const getSpotifyListeningHistory = async () => {
   }
 };
 
-export const connectToSpotify = () => {
-  window.location.href = __SPOTIFY_AUTH_URL__;
-  // window.location.href = "http://localhost:5000/api/music/spotify/auth/spotify";
-  // window.location.href = "https://api.statvio.com/api/music/spotify/auth/spotify";
+export const connectToSpotify = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    window.location.href = `${__SPOTIFY_AUTH_URL__}?token=${token}`;
+  } catch (error) {
+    console.error("Error initiating Spotify auth:", error);
+  }
 };

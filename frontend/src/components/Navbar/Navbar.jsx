@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "../../pages/ThemeToggle";
 import { AuthContext } from "../../contexts/AuthContext";
+import DropdownMenu from "./DropdownMenu";
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
@@ -29,13 +30,9 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <Link to="/dashboard" className="relative">
-            <img
-              src={user.profileImage || "https://www.gravatar.com/avatar/?d=mp"}
-              alt="Profile"
-              className="w-10 h-10 rounded-full cursor-pointer"
-            />
-          </Link>
+          <>
+            <DropdownMenu user={user} />
+          </>
         )}
       </div>
     </nav>

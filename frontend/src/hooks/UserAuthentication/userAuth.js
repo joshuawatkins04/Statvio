@@ -1,9 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: "http://localhost:5000/api/auth",
   baseURL: __AUTH_URL__,
-  // baseURL: "https://api.statvio.com/api/auth",
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,10 +9,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    console.warn("🔗 [REQUEST] URL:", config.baseURL + config.url);
-    console.warn("🔑 [REQUEST] Method:", config.method);
-    console.warn("📝 [REQUEST] Data:", config.data);
-    console.warn("🔒 [REQUEST] Headers:", config.headers);
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;

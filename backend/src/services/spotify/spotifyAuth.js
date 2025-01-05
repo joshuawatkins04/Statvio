@@ -1,15 +1,23 @@
 const axios = require("axios");
 const querystring = require("querystring");
+const User = require("../../models/userModel");
 require("dotenv").config();
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
+const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
 const authUrl = process.env.SPOTIFY_AUTH_URL;
-const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 class SpotifyAuth {
   static getAuthorisationUrl(
-    scopes = ["user-read-private", "user-read-email", "playlist-read-private", "playlist-read-collaborative", "user-top-read", "user-read-recently-played"]
+    scopes = [
+      "user-read-private",
+      "user-read-email",
+      "playlist-read-private",
+      "playlist-read-collaborative",
+      "user-top-read",
+      "user-read-recently-played",
+    ]
   ) {
     const params = {
       client_id: clientId,
@@ -81,6 +89,26 @@ class SpotifyAuth {
       };
     } catch (error) {
       SpotifyAuth._handleError(error, "refreshAccessToken");
+    }
+  }
+
+  static async unlinkUser(userId) {
+    console.log("[SpotifyAuth - unlinkSpotify] Unlinking Spotify API...");
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      user.spotify.accessToken = null;
+      user.spotify.refreshToken = null;
+      user.spotify.linked = false;
+      await user.save();
+
+      console.log("[SpotifyAuth - unlinkSpotify] Spotify account unlinked successfully.");
+      return { success: true, message: "Spotify account unlinked successfully." };
+    } catch (error) {
+      SpotifyAuth._handleError(error, "unlinkUser");
     }
   }
 

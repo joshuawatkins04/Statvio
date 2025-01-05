@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { AuthContext } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
@@ -19,7 +19,7 @@ import SuccessPage from "./pages/SuccessPage";
 import CancelPage from "./pages/CancelPage";
 
 function app() {
-  const { isAuthenticated, authLoading } = useContext(AuthContext);
+  const { isAuthenticated, authLoading } = useAuth();
 
   const ProtectedRoute = ({ children }) => {
     if (authLoading) {

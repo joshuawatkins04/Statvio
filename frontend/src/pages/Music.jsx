@@ -1,19 +1,16 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import SelectionLayout from "../layouts/SelectionLayout";
 import DefaultLayout from "../layouts/DefaultLayout";
-import { connectToSpotify } from "../hooks/MusicIntegration/spotifyIntegration";
 
 const Music = () => {
   const handleConnectSpotify = async () => {
-    connectToSpotify();
+    console.log("Connecting to Apple Music...");
+    window.location.href = __SPOTIFY_DASHBOARD__;
   };
 
   const handleConnectAppleMusic = async () => {
     console.log("Connecting to Apple Music...");
     window.location.href = __APPLE_MUSIC_AUTH_URL__;
-    // window.location.href = "https://api.statvio.com/api/music/apple/auth";
-    // window.location.href = "http://localhost:5000/api/music/apple/auth";
   };
 
   return (

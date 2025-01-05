@@ -1,8 +1,9 @@
 const multer = require("multer");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { Upload } = require("@aws-sdk/lib-storage");
 const s3Client = require("../../config/awsConfig");
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
 const bucketName = process.env.S3_BUCKET_NAME;
@@ -22,8 +23,9 @@ const upload = multer({
   },
 });
 
-const uploadToS3 = async (file) => {
-  const fileName = `${Date.now().toString()}-${file.originalname}`;
+const uploadToS3 = async (file, userId) => {
+  const extension = file.originalname.split(".").pop();
+  const fileName = `${userId}-${uuidv4()}.${extension}`;
 
   try {
     const upload = new Upload({
@@ -37,10 +39,30 @@ const uploadToS3 = async (file) => {
     });
 
     const result = await upload.done();
-    return result.location || `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+
+    return {
+      fileKey: fileName,
+      fileUrl:
+        result.Location || `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`,
+    };
   } catch (error) {
     console.error("[aws - uploadToS3] ERROR: upload error:", error);
+    throw error;
   }
 };
 
-module.exports = { upload, uploadToS3 };
+const deleteFromS3 = async (key) => {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+    });
+    const response = await s3Client.send(command);
+    return response;
+  } catch (error) {
+    console.error("[aws - deleteFromS3] ERROR:", error);
+    throw error;
+  }
+};
+
+module.exports = { upload, uploadToS3, deleteFromS3 };

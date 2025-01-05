@@ -28,8 +28,6 @@ const SuccessPage = () => {
       }
 
       try {
-        // const response = await axios.get(`http://localhost:5000/api/paypal/complete-order?token=${token}`);
-        // const response = await axios.get(`https://api.statvio.com/api/paypal/complete-order?token=${token}`);
         const response = await axios.get(`${__PAYPAL_COMPLETE_ORDER_URL__}=${token}`);
         setMessage("Course purchased successfully!");
         console.log("Capture Response:", response.data);

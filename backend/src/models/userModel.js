@@ -19,11 +19,36 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
+      enum: ["user", "admin"],
       default: "user",
     },
-    profileImage: {
+    profileImageUrl: {
       type: String,
       default: "https://www.gravatar.com/avatar/?d=mp",
+    },
+    profileImageKey: {
+      type: String,
+      default: null,
+    },
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
+    lastLogout: {
+      type: Date,
+      default: null,
+    },
+    spotify: {
+      linked: { type: Boolean, default: false },
+      spotifyId: { type: String },
+      displayName: { type: String },
+      email: { type: String },
+      profileImageUrl: { type: String },
+
+      accessToken: { type: String },
+      refreshToken: { type: String },
+      tokenExpiresAt: { type: Date },
+      lastSyncedAt: { type: Date },
     },
   },
   {

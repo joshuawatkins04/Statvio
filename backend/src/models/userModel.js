@@ -7,15 +7,37 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      validate: {
+        validator: function (username) {
+          const regex = /^[a-zA-Z0-9_]{4,}$/;
+          return regex.test(username);
+        },
+        message: "Please provide a valid username.",
+      },
     },
     email: {
       type: String,
       required: true,
       unique: true,
+      validate: {
+        validator: function (email) {
+          const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+          return regex.test(email);
+        },
+        message: "Please provide a valid email address.",
+      },
     },
     password: {
       type: String,
       required: true,
+      validate: {
+        validator: function (password) {
+          const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          return regex.test(password);
+        },
+        message:
+          "Please provide a valid password.",
+      },
     },
     role: {
       type: String,

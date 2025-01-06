@@ -16,22 +16,23 @@ const Signup = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [usernameCriteria, setUsernameCriteria] = useState({
     length: false,
-    validChars: false,
+    validCharacters: false,
     noSpaces: false,
   });
   const [emailCriteria, setEmailCriteria] = useState({
+    length: false,
     hasAtSymbol: false,
     hasDomain: false,
     hasValidTLD: false,
     noSpaces: false,
-    validChars: false,
+    validCharacters: false,
   });
   const [passwordCriteria, setPasswordCriteria] = useState({
     length: false,
     uppercase: false,
     lowercase: false,
     number: false,
-    specialChars: false,
+    specialCharacters: false,
     matchesConfirm: false,
   });
 
@@ -39,8 +40,8 @@ const Signup = () => {
 
   const validateUsername = (username) => {
     const criteria = {
-      length: username.length >= 4,
-      validChars: /^[a-zA-Z0-9_]*$/.test(username),
+      length: username.length >= 4 && username.length <= 20,
+      validCharacters: /^[a-zA-Z0-9_]*$/.test(username),
       noSpaces: !/\s/.test(username),
     };
     setUsernameCriteria(criteria);
@@ -49,6 +50,7 @@ const Signup = () => {
 
   const validateEmail = (email) => {
     const criteria = {
+      length: email.length >= 5 && email.length <= 45,
       hasAtSymbol: /@/.test(email),
       hasDomain: /@[a-zA-Z0-9.-]+/.test(email),
       hasValidTLD: /\.[a-zA-Z]{2,}$/.test(email),
@@ -61,11 +63,11 @@ const Signup = () => {
 
   const validatePassword = (password, confirmPassword) => {
     const criteria = {
-      length: password.length >= 8,
+      length: password.length >= 8 && password.length <= 40,
       uppercase: /[A-Z]/.test(password),
       lowercase: /[a-z]/.test(password),
       number: /\d/.test(password),
-      specialChars: /[@$!%*?&]/.test(password),
+      specialCharacters: /[@$!%*?&]/.test(password),
       matchesConfirm: password === confirmPassword && confirmPassword !== "",
     };
     setPasswordCriteria(criteria);
@@ -147,18 +149,19 @@ const Signup = () => {
               onFocus={() => setIsUsernameFocused(true)}
               onBlur={() => setIsUsernameFocused(false)}
               placeholder="Enter your username"
+              maxLength={20}
               required
             />
           </div>
           {isUsernameFocused && (
             <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
               <p className={usernameCriteria.length ? "text-green-600" : "text-red-600"}>
-                {usernameCriteria.length ? "✅" : "❌"} At least 4 characters
+                {usernameCriteria.length ? "✅" : "❌"} Between 4 and 20 characters
               </p>
-              <p className={usernameCriteria.length ? "text-green-600" : "text-red-600"}>
-                {usernameCriteria.validChars ? "✅" : "❌"} Only letters, numbers, and underscores
+              <p className={usernameCriteria.validCharacters ? "text-green-600" : "text-red-600"}>
+                {usernameCriteria.validCharacters ? "✅" : "❌"} Only letters, numbers, and underscores
               </p>
-              <p className={usernameCriteria.length ? "text-green-600" : "text-red-600"}>
+              <p className={usernameCriteria.noSpaces ? "text-green-600" : "text-red-600"}>
                 {usernameCriteria.noSpaces ? "✅" : "❌"} No spaces allowed
               </p>
             </div>
@@ -178,12 +181,16 @@ const Signup = () => {
               onChange={handleEmailChange}
               onFocus={() => setIsEmailFocused(true)}
               onBlur={() => setIsEmailFocused(false)}
+              maxLength={45}
               placeholder="you@example.com"
               required
             />
           </div>
           {isEmailFocused && (
             <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
+              <p className={emailCriteria.length ? "text-green-600" : "text-red-600"}>
+                {emailCriteria.length ? "✅" : "❌"} Between 5 and 45 characters
+              </p>
               <p className={emailCriteria.hasAtSymbol ? "text-green-600" : "text-red-600"}>
                 {emailCriteria.hasAtSymbol ? "✅" : "❌"} Contains @ symbol
               </p>
@@ -214,6 +221,7 @@ const Signup = () => {
               onChange={handlePasswordChange}
               onFocus={() => setIsPasswordFocused(true)}
               onBlur={() => setIsPasswordFocused(false)}
+              maxLength={40}
               placeholder="••••••••"
               required
             />
@@ -231,13 +239,14 @@ const Signup = () => {
               onChange={handleConfirmPasswordChange}
               onFocus={() => setIsPasswordFocused(true)}
               onBlur={() => setIsPasswordFocused(false)}
+              maxLength={40}
               placeholder="••••••••"
               required
             />
             {isPasswordFocused && (
               <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
                 <p className={passwordCriteria.length ? "text-green-600" : "text-red-600"}>
-                  {passwordCriteria.length ? "✅" : "❌"} At least 8 characters
+                  {passwordCriteria.length ? "✅" : "❌"} Between 8 and 40 characters
                 </p>
                 <p className={passwordCriteria.uppercase ? "text-green-600" : "text-red-600"}>
                   {passwordCriteria.uppercase ? "✅" : "❌"} At least one uppercase letter
@@ -248,8 +257,8 @@ const Signup = () => {
                 <p className={passwordCriteria.number ? "text-green-600" : "text-red-600"}>
                   {passwordCriteria.number ? "✅" : "❌"} At least one number
                 </p>
-                <p className={passwordCriteria.specialChars ? "text-green-600" : "text-red-600"}>
-                  {passwordCriteria.specialChars ? "✅" : "❌"} At least one special character (@$!%*?&)
+                <p className={passwordCriteria.specialCharacters ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.specialCharacters ? "✅" : "❌"} At least one special character (@$!%*?&)
                 </p>
                 <p className={passwordCriteria.matchesConfirm ? "text-green-600" : "text-red-600"}>
                   {passwordCriteria.matchesConfirm ? "✅" : "❌"} Passwords match

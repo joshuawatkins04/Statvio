@@ -20,9 +20,9 @@ api.interceptors.request.use(
   }
 );
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (usernameOrEmail, password) => {
   try {
-    const response = await api.post("/login", { email, password });
+    const response = await api.post("/login", { usernameOrEmail, password });
     return response.data;
   } catch (error) {
     handleApiError(error, "Login failed.");

@@ -120,10 +120,10 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [verifyAuth, navigate]);
 
-  const login = async (email, password) => {
+  const login = async (usernameOrEmail, password) => {
     try {
       console.log("Starting login process...");
-      const data = await loginUser(email, password);
+      const data = await loginUser(usernameOrEmail, password);
       console.log("Login response data:", data);
       localStorage.setItem("access_token", data.token);
       localStorage.setItem("user_id", data.userId);

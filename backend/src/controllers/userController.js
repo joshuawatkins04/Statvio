@@ -31,12 +31,21 @@ const createUser = async ({ username, email, password }) => {
 };
 
 // Login user business logic
-const authenticateUser = async ({ email, password }) => {
+const authenticateUser = async ({ usernameOrEmail, password }) => {
   console.log("[userController - loginUser] Fetching users email from database...");
 
-  const user = await User.findOne({ email });
-  if (!user || !(await user.comparePassword(password))) {
-    console.warn("[userController - loginUser] FAILED: invalid entries.");
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameOrEmail);
+  const query = isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail };
+  const user = await User.findOne(query);
+
+  if (!user) {
+    console.warn("[userController - authenticateUser] No user found with this email or username.");
+    throw new Error("Invalid username, email or password.");
+  }
+  const isPasswordMatch = await user.comparePassword(password);
+
+  if (!isPasswordMatch) {
+    console.warn("[userController - authenticateUser] Password mismatch.");
     throw new Error("Invalid email or password.");
   }
 
@@ -107,6 +116,16 @@ const registerUser = async (req, res, next) => {
 
     if (userExists) return res.status(400).json({ message: "Username or email already in use." });
 
+    if (username.length <= 4 || username.length >= 20) {
+      return res.status(400).json({ error: "Username must be between 4 and 20 characters long." });
+    }
+    if (email.length <= 5 || email.length >= 45) {
+      return res.status(400).json({ error: "Email must be between 5 and 45 characters long." });
+    }
+    if (password.length <= 8 || password.length >= 40) {
+      return res.status(400).json({ error: "Password must be between 8 and 40 characters long." });
+    }
+
     const newUser = await createUser({ username, email, password });
     console.info("[userController - registerUser] SUCCESS: user created successfully!");
     res.status(201).json({ message: "User registered successfully", userId: newUser._id });
@@ -123,16 +142,17 @@ const registerUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   console.log("[userController - loginUser] Function called");
 
-  const { email, password } = req.body;
+  const { usernameOrEmail, password } = req.body;
 
+  console.log("[userController - loginUser] usernameOrEmail value: ", usernameOrEmail);
   console.log("[userController - loginUser] Checking if all fields are entered");
-  if (!email || !password) {
+  if (!usernameOrEmail || !password) {
     console.warn("[userController - loginUser] FAILED: not all fields were entered.");
     return res.status(400).json({ message: "All fields are required." });
   }
 
   try {
-    const user = await authenticateUser({ email, password });
+    const user = await authenticateUser({ usernameOrEmail, password });
 
     console.log("[userController - loginUser] Creating token for user...");
     const token = generateToken(user._id);

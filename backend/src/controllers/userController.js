@@ -140,7 +140,7 @@ const loginUser = async (req, res, next) => {
     generateCookie({ res, token });
 
     user.lastLogin = new Date();
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     console.info("[userController - loginUser] SUCCESS: Login was successful!");
     res.json({ message: "Login successful", token, userId: user._id });

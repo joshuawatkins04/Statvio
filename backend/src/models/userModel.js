@@ -9,8 +9,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (username) {
-          const regex = /^[a-zA-Z0-9_]{4,}$/;
-          return regex.test(username);
+          return this.isNew || this.isModified("username") ? /^[a-zA-Z0-9_]{4,}$/.test(username) : true;
         },
         message: "Please provide a valid username.",
       },
@@ -21,8 +20,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (email) {
-          const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-          return regex.test(email);
+          return this.isNew || this.isModified("email") ? /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) : true;
         },
         message: "Please provide a valid email address.",
       },
@@ -32,8 +30,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (password) {
-          const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-          return regex.test(password);
+          if (!this.isNew && !this.isModified("password")) return true;
+          if (password.startsWith("$2")) return true;
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
         },
         message:
           "Please provide a valid password.",

@@ -112,6 +112,9 @@ const registerUser = async (req, res, next) => {
     res.status(201).json({ message: "User registered successfully", userId: newUser._id });
   } catch (error) {
     console.error("[userController - registerUser] ERROR: register user failed with error:", error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     next(error);
   }
 };
@@ -166,14 +169,10 @@ const logoutUser = async (req, res, next) => {
     });
     console.info("[userController - logoutUser] SUCCESS: Token cookie cleared!");
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { lastLogout: new Date() },
-      { new: true }
-    );
+    const user = await User.findByIdAndUpdate(userId, { lastLogout: new Date() }, { new: true });
     if (!user) {
       console.warn("[userController - logoutUser] User not found.");
-      return res.status(404).json({ message: "User not found. "});
+      return res.status(404).json({ message: "User not found. " });
     }
 
     console.info("[userController - logoutUser] SUCCESS: lastLogout timestamp updated.");

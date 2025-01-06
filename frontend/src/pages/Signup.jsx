@@ -11,12 +11,102 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isUsernameFocused, setIsUsernameFocused] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [usernameCriteria, setUsernameCriteria] = useState({
+    length: false,
+    validChars: false,
+    noSpaces: false,
+  });
+  const [emailCriteria, setEmailCriteria] = useState({
+    hasAtSymbol: false,
+    hasDomain: false,
+    hasValidTLD: false,
+    noSpaces: false,
+    validChars: false,
+  });
+  const [passwordCriteria, setPasswordCriteria] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    specialChars: false,
+    matchesConfirm: false,
+  });
+
   const navigate = useNavigate();
+
+  const validateUsername = (username) => {
+    const criteria = {
+      length: username.length >= 4,
+      validChars: /^[a-zA-Z0-9_]*$/.test(username),
+      noSpaces: !/\s/.test(username),
+    };
+    setUsernameCriteria(criteria);
+    return Object.values(criteria).every((value) => value === true);
+  };
+
+  const validateEmail = (email) => {
+    const criteria = {
+      hasAtSymbol: /@/.test(email),
+      hasDomain: /@[a-zA-Z0-9.-]+/.test(email),
+      hasValidTLD: /\.[a-zA-Z]{2,}$/.test(email),
+      noSpaces: !/\s/.test(email),
+      validCharacters: /^[a-zA-Z0-9._%+-]+@/.test(email),
+    };
+    setEmailCriteria(criteria);
+    return Object.values(criteria).every(Boolean);
+  };
+
+  const validatePassword = (password, confirmPassword) => {
+    const criteria = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      specialChars: /[@$!%*?&]/.test(password),
+      matchesConfirm: password === confirmPassword && confirmPassword !== "",
+    };
+    setPasswordCriteria(criteria);
+    return Object.values(criteria).every(Boolean);
+  };
+
+  const handleUsernameChange = (e) => {
+    const newUsername = e.target.value;
+    setUsername(newUsername);
+    validateUsername(newUsername);
+  };
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    validateEmail(newEmail);
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    validatePassword(newPassword, confirmPassword);
+  };
+  const handleConfirmPasswordChange = (e) => {
+    const newConfirmPassword = e.target.value;
+    setConfirmPassword(newConfirmPassword);
+    validatePassword(password, newConfirmPassword);
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Password does not match");
+    if (!validateUsername(username)) {
+      setMessage("Username does not meet criteria.");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setMessage("Email does not meet criteria.");
+      return;
+    }
+    if (!validatePassword(password, confirmPassword)) {
+      setMessage("Password does not meet the criteria.");
       return;
     }
     try {
@@ -45,63 +135,127 @@ const Signup = () => {
         )}
         <form onSubmit={handleRegister} className="flex flex-col space-y-4">
           <div>
-            <label htmlFor="username" className="block text-textSubtle mb-1">
+            <label htmlFor="username" className="block text-onSurface mb-1">
               Username
             </label>
             <input
               type="text"
               id="username"
-              className="text-textSubtle w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
+              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
+              onFocus={() => setIsUsernameFocused(true)}
+              onBlur={() => setIsUsernameFocused(false)}
               placeholder="Enter your username"
               required
             />
           </div>
+          {isUsernameFocused && (
+            <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
+              <p className={usernameCriteria.length ? "text-green-600" : "text-red-600"}>
+                {usernameCriteria.length ? "✅" : "❌"} At least 4 characters
+              </p>
+              <p className={usernameCriteria.length ? "text-green-600" : "text-red-600"}>
+                {usernameCriteria.validChars ? "✅" : "❌"} Only letters, numbers, and underscores
+              </p>
+              <p className={usernameCriteria.length ? "text-green-600" : "text-red-600"}>
+                {usernameCriteria.noSpaces ? "✅" : "❌"} No spaces allowed
+              </p>
+            </div>
+          )}
 
           <div>
-            <label htmlFor="email" className="block text-textSubtle mb-1">
+            <label htmlFor="email" className="block text-onSurface mb-1">
               Email
             </label>
             <input
               type="email"
               id="email"
-              className="text-textSubtle w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
+              name="email"
+              autoComplete="email"
+              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
+              onFocus={() => setIsEmailFocused(true)}
+              onBlur={() => setIsEmailFocused(false)}
               placeholder="you@example.com"
               required
             />
           </div>
+          {isEmailFocused && (
+            <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
+              <p className={emailCriteria.hasAtSymbol ? "text-green-600" : "text-red-600"}>
+                {emailCriteria.hasAtSymbol ? "✅" : "❌"} Contains @ symbol
+              </p>
+              <p className={emailCriteria.hasDomain ? "text-green-600" : "text-red-600"}>
+                {emailCriteria.hasDomain ? "✅" : "❌"} Has a valid domain (e.g., example.com)
+              </p>
+              <p className={emailCriteria.hasValidTLD ? "text-green-600" : "text-red-600"}>
+                {emailCriteria.hasValidTLD ? "✅" : "❌"} Ends with valid TLD (e.g., .com)
+              </p>
+              <p className={emailCriteria.noSpaces ? "text-green-600" : "text-red-600"}>
+                {emailCriteria.noSpaces ? "✅" : "❌"} No spaces allowed
+              </p>
+              <p className={emailCriteria.validCharacters ? "text-green-600" : "text-red-600"}>
+                {emailCriteria.validCharacters ? "✅" : "❌"} Valid characters in the local part
+              </p>
+            </div>
+          )}
 
           <div>
-            <label htmlFor="password" className="block text-textSubtle mb-1">
+            <label htmlFor="password" className="block text-onSurface mb-1">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="text-textSubtle w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
+              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => setIsPasswordFocused(false)}
               placeholder="••••••••"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-textSubtle mb-1">
+            <label htmlFor="confirmPassword" className="block text-onSurface mb-1">
               Confirm Password
             </label>
             <input
               type="password"
               id="confirmPassword"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
+              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handleConfirmPasswordChange}
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => setIsPasswordFocused(false)}
               placeholder="••••••••"
               required
             />
+            {isPasswordFocused && (
+              <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
+                <p className={passwordCriteria.length ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.length ? "✅" : "❌"} At least 8 characters
+                </p>
+                <p className={passwordCriteria.uppercase ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.uppercase ? "✅" : "❌"} At least one uppercase letter
+                </p>
+                <p className={passwordCriteria.lowercase ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.lowercase ? "✅" : "❌"} At least one lowercase letter
+                </p>
+                <p className={passwordCriteria.number ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.number ? "✅" : "❌"} At least one number
+                </p>
+                <p className={passwordCriteria.specialChars ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.specialChars ? "✅" : "❌"} At least one special character (@$!%*?&)
+                </p>
+                <p className={passwordCriteria.matchesConfirm ? "text-green-600" : "text-red-600"}>
+                  {passwordCriteria.matchesConfirm ? "✅" : "❌"} Passwords match
+                </p>
+              </div>
+            )}
           </div>
 
           <button

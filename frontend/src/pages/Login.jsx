@@ -24,9 +24,9 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-backdrop min-h-screen flex flex-col justify-center items-center">
+    <div className="bg-backdrop min-h-screen flex flex-col justify-center items-center transition-colors duration-300 pt-28">
       {/* Card Container */}
-      <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md">
+      <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md transition-colors duration-300">
         <h1 className="text-textPrimary dark:text-white text-2xl font-bold mb-6 text-center">
           Log In to Statvio
         </h1>

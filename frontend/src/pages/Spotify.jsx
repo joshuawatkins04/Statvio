@@ -28,7 +28,7 @@ const SectionList = ({ title, items }) => {
   return (
     <section className="bg-surface p-6 mb-8 rounded-xl">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold">{title}</h3>
+        <h3 className="text-xl sm:text-xl font-semibold">{title}</h3>
       </div>
 
       {/* Song List */}
@@ -36,25 +36,25 @@ const SectionList = ({ title, items }) => {
         {items.map((item, index) => (
           <li
             key={item.id || `section-list-${index}`}
-            className="flex justify-between items-center p-2 bg-surface rounded-md hover:bg-gray-200 dark:hover:bg-gray-400"
+            className="flex flex-col sm:flex-row justify-between items-center p-2 bg-surface rounded-md hover:bg-gray-200 dark:hover:bg-gray-400"
           >
             {/* Song Details */}
             <div className="flex items-center space-x-4">
               {/* Fixed-Width Index */}
-              <span className="font-bold w-8 text-right">{index + 1}.</span>
+              <span className="font-bold w-8 text-right sm:text-right">{index + 1}.</span>
               <img
                 src={item.imageUrl || "https://via.placeholder.com/50"}
                 alt={item.name}
                 className="w-12 h-12 object-cover rounded-md"
               />
               <div>
-                <p className="font-medium">{item.name}</p>
-                <p className="text-sm text-gray-600">{item.artist || "Unknown Artist"}</p>
+                <p className="font-medium text-sm sm:text-base">{item.name}</p>
+                <p className="text-sm sm:text-sm text-gray-600">{item.artist || "Unknown Artist"}</p>
               </div>
             </div>
 
             {/* Time Listened */}
-            <span className="text-sm text-gray-500">{timeAgo(item.played_at)}</span>
+            <span className="text-sm sm:text-sm text-gray-500">{timeAgo(item.played_at)}</span>
           </li>
         ))}
       </ul>
@@ -69,8 +69,11 @@ const SectionGrid = ({ title, items }) => {
 
   return (
     <section className="bg-surface p-6 mb-8 rounded-xl">
-      <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={toggleExpand}>
-        <h3 className="text-xl font-semibold mb-4">{title}</h3>
+      <div
+        className="flex items-center justify-between mb-4 cursor-pointer"
+        onClick={toggleExpand}
+      >
+        <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={`w-5 h-5 text-onSurface transition-transform duration-300 ${
@@ -86,15 +89,19 @@ const SectionGrid = ({ title, items }) => {
       </div>
 
       {/* Content */}
-      <ul className={`grid gap-2 ${isExpanded ? "grid-cols-5" : "grid-cols-5"}`}>
+      <ul
+        className={`grid gap-4 ${
+          isExpanded ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" : "grid-cols-2 sm:grid-cols-3"
+        }`}
+      >
         {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
           <li key={item.id || `section-grid-${index}`} className="flex flex-col items-center text-center">
             <img
               src={item.imageUrl || "https://via.placeholder.com/80"}
               alt={item.name}
-              className="w-40 h-40 object-cover rounded-md mb-4"
+              className="w-20 sm:w-24 lg:w-40 h-20 sm:h-24 lg:h-40 object-cover rounded-md mb-2 sm:mb-4"
             />
-            <span className="text-onSurface">
+            <span className="text-xs sm:text-sm text-onSurface">
               <span className="font-bold text-onSurface">{index + 1}. </span>
               {item.name}
             </span>
@@ -197,18 +204,18 @@ const SpotifyStats = () => {
 
   return (
     <DefaultLayout title={"Your Spotify Stats"}>
-      <div className="flex justify-end gap-4 mb-4">
+      <div className="flex flex-wrap justify-end gap-4 mb-4">
         {spotifyConnected ? (
           <>
-            <button onClick={handleUnlinkSpotify} className="px-4 py-2 bg-red-600 text-white rounded">
+            <button onClick={handleUnlinkSpotify} className="px-4 py-2 text-xs sm:text-sm bg-red-600 text-white rounded">
               Unlink
             </button>
-            <button onClick={handleUpdateData} className="px-4 py-2 bg-green-600 text-white rounded">
+            <button onClick={handleUpdateData} className="px-4 py-2 text-xs sm:text-sm bg-green-600 text-white rounded">
               Update Data
             </button>
           </>
         ) : (
-          <button onClick={handleConnectSpotify} className="px-4 py-2 bg-blue-600 text-white rounded">
+          <button onClick={handleConnectSpotify} className="px-4 py-2 text-xs sm:text-sm bg-blue-600 text-white rounded">
             Connect Spotify
           </button>
         )}

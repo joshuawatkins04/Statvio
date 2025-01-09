@@ -121,10 +121,10 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col justify-center items-center">
+    <div className="min-h-screen bg-backdrop flex flex-col justify-center items-center transition-colors duration-300 pt-28">
       {/* Card Container */}
-      <div className="bg-white p-8 shadow-md rounded-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-neutral-900 mb-6 text-center">Create Your Statvio Account</h1>
+      <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md transition-colors duration-300">
+        <h1 className="text-2xl font-bold text-textPrimary dark:text-white mb-6 text-center">Create Your Statvio Account</h1>
         {/* Display Message */}
         {message && (
           <div
@@ -269,7 +269,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="mt-4 bg-accent text-white py-2 rounded-md hover:bg-accent-dark transition"
+            className="mt-4 bg-primary text-white py-2 rounded-md hover:bg-accent-dark transition"
           >
             Sign Up
           </button>

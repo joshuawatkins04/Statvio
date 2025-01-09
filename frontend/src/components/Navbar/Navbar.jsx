@@ -8,7 +8,7 @@ const Navbar = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <nav className="bg-backdrop dark:bg-backdrop shadow-md flex justify-between items-center p-6 fixed top-0 left-0 w-full z-50">
+    <nav className="bg-backdrop dark:bg-backdrop shadow-md flex justify-between items-center p-6 fixed top-0 left-0 w-full z-50 transition-colors duration-300">
       <Link to="/" className="text-textPrimary dark:text-textPrimary text-2xl font-bold">
         Statvio
       </Link>

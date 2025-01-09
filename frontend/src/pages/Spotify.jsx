@@ -28,7 +28,7 @@ const SectionList = ({ title, items }) => {
   return (
     <section className="bg-surface p-6 mb-8 rounded-xl">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl sm:text-xl font-semibold">{title}</h3>
+        <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
       </div>
 
       {/* Song List */}
@@ -41,7 +41,7 @@ const SectionList = ({ title, items }) => {
             {/* Song Details */}
             <div className="flex items-center space-x-4">
               {/* Fixed-Width Index */}
-              <span className="font-bold w-8 text-right sm:text-right">{index + 1}.</span>
+              <span className="font-bold w-8 text-center sm:text-right">{index + 1}.</span>
               <img
                 src={item.imageUrl || "https://via.placeholder.com/50"}
                 alt={item.name}
@@ -49,12 +49,12 @@ const SectionList = ({ title, items }) => {
               />
               <div>
                 <p className="font-medium text-sm sm:text-base">{item.name}</p>
-                <p className="text-sm sm:text-sm text-gray-600">{item.artist || "Unknown Artist"}</p>
+                <p className="text-xs sm:text-sm text-gray-600">{item.artist || "Unknown Artist"}</p>
               </div>
             </div>
 
             {/* Time Listened */}
-            <span className="text-sm sm:text-sm text-gray-500">{timeAgo(item.played_at)}</span>
+            <span className="text-xs sm:text-sm text-gray-500">{timeAgo(item.played_at)}</span>
           </li>
         ))}
       </ul>
@@ -88,20 +88,25 @@ const SectionGrid = ({ title, items }) => {
         </svg>
       </div>
 
-      {/* Content */}
+      {/* Grid Content */}
       <ul
         className={`grid gap-4 ${
-          isExpanded ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" : "grid-cols-2 sm:grid-cols-3"
+          isExpanded
+            ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+            : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
         }`}
       >
         {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
-          <li key={item.id || `section-grid-${index}`} className="flex flex-col items-center text-center">
+          <li
+            key={item.id || `section-grid-${index}`}
+            className="flex flex-col items-center text-center bg-surface rounded-md p-4 shadow hover:shadow-lg transition-shadow"
+          >
             <img
               src={item.imageUrl || "https://via.placeholder.com/80"}
               alt={item.name}
-              className="w-20 sm:w-24 lg:w-40 h-20 sm:h-24 lg:h-40 object-cover rounded-md mb-2 sm:mb-4"
+              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 object-cover rounded-full mb-4"
             />
-            <span className="text-xs sm:text-sm text-onSurface">
+            <span className="text-sm sm:text-base text-onSurface font-medium">
               <span className="font-bold text-onSurface">{index + 1}. </span>
               {item.name}
             </span>

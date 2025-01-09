@@ -7,14 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Use CSS variables for colors
         backdrop: "var(--backdrop)",
         surface: "var(--surface)",
         onSurface: "var(--onSurface)",
         primary: "var(--primary)",
+        primaryHover: "var(--primaryHover)",
         secondary: "var(--secondary)",
         error: "var(--error)",
-
         // Text colors
         textPrimary: "var(--textPrimary)",
         textSecondary: "var(--textSecondary)",

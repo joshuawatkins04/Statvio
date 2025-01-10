@@ -6,6 +6,7 @@ import {
   unlinkSpotify,
 } from "../hooks/MusicIntegration/spotifyIntegration";
 import DefaultLayout from "../layouts/DefaultLayout";
+import LoadingBar from "./LoadingBar";
 
 const SectionList = ({ title, items }) => {
   const timeAgo = (isoTimestamp) => {
@@ -213,7 +214,11 @@ const SpotifyStats = () => {
   }
 
   return (
-    <DefaultLayout title={"Your Spotify Stats"}>
+    <>
+    {loading ? (
+      <LoadingBar />
+    ) : (
+      <DefaultLayout title={"Your Spotify Stats"}>
       <div className="flex flex-wrap justify-end gap-4 mb-4">
         {spotifyConnected ? (
           <>
@@ -248,6 +253,8 @@ const SpotifyStats = () => {
         </div>
       )}
     </DefaultLayout>
+    )}
+    </>
   );
 };
 

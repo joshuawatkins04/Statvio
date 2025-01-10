@@ -1,5 +1,5 @@
 const { SpotifyAuth, SpotifyClient } = require("../services/spotify");
-const User = require("../models/userModel");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const FRONTEND_SPOTIFY_URL = process.env.FRONTEND_SPOTIFY_URL;

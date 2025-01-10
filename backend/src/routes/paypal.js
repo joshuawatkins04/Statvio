@@ -1,5 +1,5 @@
 const express = require("express");
-const paypalController = require("../controllers/paypalController");
+const paypalController = require("../controllers/paypal");
 const router = express.Router();
 
 router.get("/pay", paypalController.createOrder);

@@ -1,5 +1,5 @@
-const SpotifyAuth = require("./spotifyAuth");
-const SpotifyClient = require("./spotifyClient");
+const SpotifyAuth = require("./auth");
+const SpotifyClient = require("./client");
 
 module.exports = {
   SpotifyAuth,

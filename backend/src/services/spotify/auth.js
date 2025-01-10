@@ -1,6 +1,6 @@
 const axios = require("axios");
 const querystring = require("querystring");
-const User = require("../../models/userModel");
+const User = require("../../models/user");
 require("dotenv").config();
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;

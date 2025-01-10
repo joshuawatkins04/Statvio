@@ -1,5 +1,5 @@
 const { uploadToS3, deleteFromS3 } = require("../services/aws/aws");
-const User = require("../models/userModel");
+const User = require("../models/user");
 
 const upload = async (req, res) => {
   try {

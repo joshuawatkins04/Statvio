@@ -10,6 +10,7 @@
   --onSurface: #1a1a1a;
   --primary: #5cc6bb;
   --primaryHover: #48a99e;
+  --primary2: rgba(92, 198, 187, 0.5);
   --secondary: #3b82f6;
   --error: #ef4444;
 
@@ -60,6 +61,10 @@ html {
   transition: background-color 0.3s, color 0.3s;
 }
 
+@keyframes stripes {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 0%; }
+}
 
 @-webkit-keyframes animatetop {
 	from {

@@ -12,6 +12,7 @@ export default {
         onSurface: "var(--onSurface)",
         primary: "var(--primary)",
         primaryHover: "var(--primaryHover)",
+        primary2: "var(--primary2)",
         secondary: "var(--secondary)",
         error: "var(--error)",
         // Text colors

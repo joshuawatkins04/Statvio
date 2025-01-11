@@ -2,7 +2,7 @@ require("dotenv").config();
 // const dotenv = require("dotenv");
 const express = require("express");
 const session = require("express-session");
-const { connectDatabase, migrateSpotifyFields } = require("./config/database");
+const { connectDatabase } = require("./config/database");
 const { configureMiddleware } = require("./middleware/index");
 const errorHandler = require("./middleware/errorHandler");
 const routes = require("./routes/index");

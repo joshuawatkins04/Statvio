@@ -3,11 +3,21 @@ const handleDuplicateKeyError = (error) => {
   return `${duplicateField.charAt(0).toUpperCase() + duplicateField.slice(1)} already in use.`;
 };
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
+  console.log("[Debug - errorHandler] err:", err);
+  console.log("[Debug - errorHandler] req:", req ? "Valid req object" : "Invalid req object");
+  console.log("[Debug - errorHandler] res:", res ? "Valid res object" : "Invalid res object");
+  console.log("[Debug - errorHandler] next:", next ? "Valid next function" : "Invalid next function");
+
+  if (!res || typeof res.status !== "function") {
+    console.error("[Global - errorHandler] Invalid Response Object Detected.");
+    return;
+  }
+
   console.error("[Global - errorHandler] ERROR:", err);
   
   const route = req?.method && req?.originalUrl ? `${req.method} ${req.originalUrl}` : "unknown route";
-  const userIp = req?.ip || req?.headers["x-forwarded-for"] || "unknown IP";
+  const userIp = req?.ip || req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "unknown IP";
   const userId = req?.user?.id || "unknown user ID";
   const userEmail = req?.user?.email || "unknown user email";
 
@@ -44,8 +54,8 @@ const errorHandler = (err, req, res) => {
   }
 
   // Order Already Captured Error
-  if (err.message.includes("Order already captured")) {
-    console.warn("Error capturing payment:", err.message);
+  if (typeof err.message === "string" && err.message.includes("Order already captured")) {
+    console.warn("[Global - errorHandler] Order Already Captured:", err.message);
     return res.status(200).json({ message: "Order already captured" });
   }
 

@@ -10,7 +10,14 @@ const configureMiddleware = (app) => {
 
   app.use(
     cors({
-      origin: ["https://www.statvio.com", "https://statvio.com"], // "http://localhost:5173", "http://3.107.192.136",
+      origin: (origin, callback) => {
+        const allowedOrigins = ["https://www.statvio.com", "https://statvio.com"];
+        if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app"))) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      }, // "http://localhost:5173"
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "withCredentials"],
       credentials: true,
@@ -22,8 +29,7 @@ const configureMiddleware = (app) => {
   app.options("*", (req, res) => {
     res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, withCredentials");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, withCredentials");
     res.header("Access-Control-Allow-Credentials", "true");
     res.sendStatus(200);
   });

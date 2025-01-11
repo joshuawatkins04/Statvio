@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import DefaultLayout from "../../layouts/DefaultLayout";
-import Sidebar from "../../components/Settings/Sidebar";
-import GeneralSettings from "../../components/Settings/GeneralSettings";
-import ManageAccount from "../../components/Settings/ManageAccount";
-import ManageAPIs from "../../components/Settings/ManageApis";
+import Sidebar from "../../components/settings/Sidebar";
+import GeneralSettings from "../../components/settings/GeneralSettings";
+import ManageAccount from "../../components/settings/ManageAccount";
+import ManageAPIs from "../../components/settings/ManageApis";
 
 const Settings = () => {
   const [activeSection, setActiveSection] = useState("General Settings");

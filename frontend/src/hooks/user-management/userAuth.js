@@ -42,6 +42,33 @@ export const registerUser = async (username, email, password) => {
   }
 };
 
+export const updateUsername = async (newUsername) => {
+  try {
+    const response = await api.put("/update-username", { newUsername });
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "Update username failed.");
+  }
+};
+
+export const updateEmail = async (newEmail) => {
+  try {
+    const response = await api.put("/update-email", { newEmail });
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "Update email failed.");
+  }
+};
+
+export const updatePassword = async (newPassword, confirmNewPassword) => {
+  try {
+    const response = await api.put("/update-password", { newPassword, confirmNewPassword });
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "Update password failed.");
+  }
+};
+
 export async function refreshAccessToken() {
   try {
     const response = await api.post("/refresh-token");

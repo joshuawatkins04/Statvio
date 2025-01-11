@@ -18,12 +18,12 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       __SPOTIFY_DASHBOARD__: JSON.stringify(env.VITE_SPOTIFY_DASHBOARD),
+      __SOUNDCLOUD_DASHBOARD__: JSON.stringify(env.VITE_SOUNDCLOUD_DASHBOARD),
       __AUTH_URL__: JSON.stringify(env.VITE_AUTH_URL),
       __SPOTIFY_BASE_URL__: JSON.stringify(env.VITE_SPOTIFY_BASE_URL),
       __SPOTIFY_AUTH_URL__: JSON.stringify(env.VITE_SPOTIFY_AUTH_URL),
       __SOUNDCLOUD_BASE_URL__: JSON.stringify(env.VITE_SOUNDCLOUD_BASE_URL),
       __SOUNDCLOUD_AUTH_URL__: JSON.stringify(env.VITE_SOUNDCLOUD_AUTH_URL),
-      __APPLE_MUSIC_AUTH_URL__: JSON.stringify(env.VITE_APPLE_MUSIC_AUTH_URL),
       __PAYPAL_BASE_URL__: JSON.stringify(env.VITE_PAYPAL_BASE_URL),
       __PAYPAL_COMPLETE_ORDER_URL__: JSON.stringify(env.VITE_PAYPAL_COMPLETE_ORDER_URL),
       __AWS_UPLOAD_URL__: JSON.stringify(env.VITE_AWS_UPLOAD_URL),

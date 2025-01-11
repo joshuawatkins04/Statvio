@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import ThemeToggle from "../../pages/ThemeToggle";
+import ThemeToggle from "../ThemeToggle";
 import { AuthContext } from "../../contexts/AuthContext";
 import DropdownMenu from "./DropdownMenu";
 

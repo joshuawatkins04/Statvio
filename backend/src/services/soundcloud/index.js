@@ -1,5 +1,5 @@
-const SoundcloudAuth = require("./soundcloudAuth");
-const SoundcloudClient = require("./soundcloudClient");
+const SoundcloudAuth = require("./auth");
+const SoundcloudClient = require("./client");
 
 
 module.exports = { 

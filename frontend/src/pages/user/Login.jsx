@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
-import useAuthRedirect from "../hooks/UserAuthentication/userRedirect";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
+import useAuthRedirect from "../../hooks/user-management/UserRedirect";
 
 const Login = () => {
   useAuthRedirect();
@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(usernameOrEmail, password);
-      setMessage("Login successful! Redirecting...");
+      setMessage("Success! Redirecting...");
       navigate("/dashboard");
     } catch (error) {
       setMessage(error.message);
@@ -32,9 +32,10 @@ const Login = () => {
         </h1>
         {message && (
           <div
-            className={`mb-4 p-3 text-center rounded ${
-              message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            className={`mb-4 p-3 text-center rounded-xl ${
+              message.includes("Success!") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
             }`}
+            aria-live="polite"
           >
             {message}
           </div>
@@ -72,7 +73,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="mt-4 bg-primary text-white py-2 rounded-md hover:bg-primary-dark transition"
+            className="mt-4 bg-primary text-white py-2 rounded-md hover:bg-primaryHover transition"
           >
             Log In
           </button>
@@ -80,9 +81,9 @@ const Login = () => {
 
         <div className="mt-4 text-center text-sm text-textSubtle">
           Don’t have an account?{" "}
-          <a href="/signup" className="text-primary hover:underline">
+          <Link to="/signup" className="text-primary hover:underline">
             Sign Up
-          </a>
+          </Link>
         </div>
       </div>
     </div>

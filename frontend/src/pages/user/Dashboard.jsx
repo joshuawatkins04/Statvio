@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import Subscribe from "./Subscribe";
-import DefaultLayout from "../layouts/DefaultLayout";
+import DefaultLayout from "../../layouts/DefaultLayout";
 import ProfileImageUpload from "./ProfileImageUpload";
 
 const Dashboard = () => {
@@ -44,7 +44,7 @@ const Dashboard = () => {
   return (
     <DefaultLayout title={"Your Dashboard"}>
       {/* User Info Section */}
-      <div className="bg-surface text-onSurface rounded-xl shadow-card p-6 mb-6 shadow-lg">
+      <div className="bg-surface text-onSurface rounded-xl shadow-card p-6 mb-6 shadow-lg hover:shadow-xl transition">
         {/* Profile pic replacement */}
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="py-6 flex items-center justify-center space-x-8">
@@ -56,25 +56,70 @@ const Dashboard = () => {
             />
           </div>
           <div className="py-6">
-            <h2 className="text-textPrimary text-xl font-semibold mb-4">User Information</h2>
             {user ? (
-              <div className="text-textSecondary">
-                <p>
-                  <strong>Username:</strong> {user.username}
-                </p>
-                <p>
-                  <strong>Email:</strong> {user.email}
-                </p>
-              </div>
+              <>
+                <div className="mb-4">
+                  <span className="text-textPrimary text-xl font-extrabold">
+                    Welcome <span className="text-primary">{user.username}</span>
+                  </span>
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <Link
+                    to="/manage-profile"
+                    className="text-textSecondary font-semibold hover:underline flex items-center"
+                  >
+                    Manage Profile
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-1 w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                  <Link
+                    to="/manage-api"
+                    className="text-textSecondary font-semibold hover:underline flex items-center"
+                  >
+                    Manage API's
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-1 w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                  <Link
+                    to="/settings"
+                    className="text-textSecondary font-semibold hover:underline flex items-center"
+                  >
+                    Settings
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-1 w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              </>
             ) : (
-              <p>No user data available.</p>
+              <p className="text-textSecondary">User not found</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Categories Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {[
           {
             name: "Music",
@@ -90,10 +135,10 @@ const Dashboard = () => {
           },
         ].map((category, index) => (
           <Link to={category.link} key={index}>
-            <div className="bg-surface p-6 shadow-lg rounded-xl hover:shadow-xl transition transform hover:scale-105 cursor-pointer">
+            <div className="bg-surface text-left p-6 shadow-lg rounded-xl hover:shadow-xl transition">
               <h3 className="text-textPrimary text-lg font-semibold">{category.name}</h3>
               <p className="text-textSecondary mt-2">Explore the latest trends and insights.</p>
-              <button className="bg-white text-textSubtle hover:bg-gray-200 font-semibold mt-4 px-4 py-2 rounded-xl transition duration-200">
+              <button className="border-2 border-black hover:border-surface text-textSecondary hover:text-white dark:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition duration-200">
                 Explore {category.name}
               </button>
             </div>
@@ -102,9 +147,9 @@ const Dashboard = () => {
       </div>
 
       {/* Payment Section */}
-      <div className="bg-surface text-onSurface shadow-lg rounded-xl p-6">
+      {/* <div className="bg-surface text-onSurface shadow-lg rounded-xl p-6">
         <Subscribe />
-      </div>
+      </div> */}
 
       {isUploadModalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">

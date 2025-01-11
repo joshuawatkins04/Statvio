@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import api, { loginUser, registerUser, refreshAccessToken } from "../hooks/UserAuthentication/userAuth";
+import api, { loginUser, registerUser, refreshAccessToken } from "../hooks/user-management/userAuth";
 import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
@@ -129,7 +129,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user_id", data.userId);
       setIsAuthenticated(true);
       await fetchUser();
-      navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error.message);
       throw error;

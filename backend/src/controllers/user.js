@@ -116,13 +116,13 @@ const registerUser = async (req, res, next) => {
 
     if (userExists) return res.status(400).json({ message: "Username or email already in use." });
 
-    if (username.length <= 4 || username.length >= 20) {
+    if (username.length < 4 || username.length > 20) {
       return res.status(400).json({ error: "Username must be between 4 and 20 characters long." });
     }
-    if (email.length <= 5 || email.length >= 45) {
+    if (email.length < 5 || email.length > 45) {
       return res.status(400).json({ error: "Email must be between 5 and 45 characters long." });
     }
-    if (password.length <= 8 || password.length >= 40) {
+    if (password.length < 8 || password.length > 40) {
       return res.status(400).json({ error: "Password must be between 8 and 40 characters long." });
     }
 
@@ -242,7 +242,7 @@ const getUserDashboard = async (req, res, next) => {
 
 // Get user info controller function
 const getUser = async (req, res, next) => {
-  console.log("Get user called");
+  console.log("[userController - getUser] Function called");
   try {
     if (!req.user || !req.user.id) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -255,7 +255,135 @@ const getUser = async (req, res, next) => {
     console.log("Got info: ", user);
     res.status(200).json(user);
   } catch (error) {
-    console.error("[authController - getUser] ERROR:", error.message);
+    console.error("[userController - getUser] ERROR:", error.message);
+    next(error);
+  }
+};
+
+const updateUsername = async (req, res, next) => {
+  console.log("[userController - updateUsername] Function called.");
+  try {
+    const userId = req.user.id;
+    console.log("[userController - updateUsername] userId: ", userId);
+    const { newUsername } = req.body;
+    console.log("[userController - updateUsername] newUsername: ", newUsername);
+
+    if (!newUsername) {
+      console.error("[userController - updateUsername] ERROR: newUsername is required.", newUsername);
+      return res.status(400).json({ message: "New username is required." });
+    }
+
+    console.log("[userController - updateUsername] Checking user exists.");
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    console.log("[userController - updateUsername] Comparing usernames. current: ", user.username, " new: ", newUsername);
+    if (user.username === newUsername) {
+      return res.status(400).json({ message: "New username must be different from the current one." });
+    }
+
+    console.log("[userController - updateUsername] Checking if username already exists on another account.");
+    const existingUser = await User.findOne({ username: newUsername });
+    if (existingUser) {
+      return res.status(409).json({ message: "Username already in use." });
+    }
+
+    console.log("[userController - updateUsername] Saving new username to account.");
+    user.username = newUsername;
+    await user.save();
+
+    return res.status(200).json({ message: "Username updated successfully.", username: user.username });
+  } catch (error) {
+    console.error("[userController - updateUser] ERROR:", error.message);
+    next(error);
+  }
+};
+
+const updateEmail = async (req, res, next) => {
+  console.log("[userController - updateEmail] Function called.");
+  try {
+    const userId = req.user.id;
+    const { newEmail } = req.body;
+
+    if (!newEmail) {
+      return res.status(400).json({ message: "New email is required." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.email === newEmail) {
+      return res.status(400).json({ message: "New email must be different from the current one." });
+    }
+
+    const existingUser = await User.findOne({ email: newEmail });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already in use." });
+    }
+
+    user.email = newEmail;
+    await user.save();
+
+    return res.status(200).json({ message: "Email updated successfully.", email: user.email });
+  } catch (error) {
+    console.error("[userController - updateUser] ERROR:", error.message);
+    next(error);
+  }
+};
+
+const updatePassword = async (req, res, next) => {
+  console.log("[userController - updatePassword] Function called.");
+  try {
+    const { newPassword, confirmNewPassword } = req.body;
+    console.log("[userController - updatePassword] Request Body:", req.body);
+
+    if (!newPassword || !confirmNewPassword) {
+      console.warn("[userController - updatePassword] Missing password fields.");
+      return res.status(400).json({ message: "All password fields are required." });
+    }
+    if (newPassword !== confirmNewPassword) {
+      console.warn("[userController - updatePassword] New passwords do not match.");
+      return res.status(400).json({ message: "New passwords do not match." });
+    }
+    if (newPassword.length < 8 || newPassword.length > 40) {
+      console.warn(
+        `[userController - updatePassword] Invalid new password length: ${newPassword.length}`
+      );
+      return res.status(400).json({ error: "Password must be between 8 and 40 characters long." });
+    }
+    if (confirmNewPassword.length < 8 || confirmNewPassword.length > 40) {
+      console.warn(
+        `[userController - updatePassword] Invalid confirm password length: ${confirmNewPassword.length}`
+      );
+      return res.status(400).json({ error: "Password must be between 8 and 40 characters long." });
+    }
+
+    const userId = req.user.id;
+    console.log("[userController - updatePassword] User ID:", userId);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    console.log("[userController - updatePassword] Checking if new password matches current password.");
+    const isSamePassword = await user.comparePassword(newPassword);
+    if (isSamePassword) {
+      console.warn("[userController - updatePassword] New password is the same as the current password.");
+      return res.status(400).json({ message: "New password must be different from the current password." });
+    }
+
+    console.log("[userController - updatePassword] Updating password.");
+    user.password = newPassword;
+    await user.save();
+    console.log("[userController - updatePassword] Password updated successfully.");
+
+    return res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error("[userController - updateUser] ERROR:", error.message);
     next(error);
   }
 };
@@ -267,4 +395,7 @@ module.exports = {
   verifyAuth,
   getUserDashboard,
   getUser,
+  updateUsername,
+  updateEmail,
+  updatePassword,
 };

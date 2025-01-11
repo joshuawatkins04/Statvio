@@ -13,4 +13,8 @@ router.get("/verify", authenticateToken, verifyLimiter, userController.verifyAut
 router.get("/dashboard", authenticateToken, userController.getUserDashboard);
 router.get("/user", authenticateToken, userController.getUser);
 
+router.put("/update-username", authenticateToken, userController.updateUsername);
+router.put("/update-email", authenticateToken, userController.updateEmail);
+router.put("/update-password", authenticateToken, userController.updatePassword);
+
 module.exports = router;

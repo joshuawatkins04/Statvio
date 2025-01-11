@@ -11,11 +11,16 @@ const DropdownMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
+      closeDropdown();
     } catch (error) {
-      console.error('Logout failed:', error.message);
+      console.error("Logout failed:", error.message);
     }
   };
 
@@ -49,19 +54,27 @@ const DropdownMenu = () => {
         <div className="absolute right-0 mt-2 w-48 bg-surface rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
           <ul className="py-1">
             <li>
-              <Link to="/dashboard" className="block px-4 py-2 text-sm text-textSubtle dark:text-onSurface hover:bg-gray-200 dark:hover:bg-zinc-800 transition duration-200">
+              <Link
+                to="/dashboard"
+                onClick={closeDropdown}
+                className="block px-4 py-2 text-sm text-textSubtle dark:text-white hover:bg-gray-200 dark:hover:bg-zinc-800 transition duration-200"
+              >
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/settings" className="block px-4 py-2 text-sm text-textSubtle dark:text-onSurface hover:bg-gray-200 dark:hover:bg-zinc-800 transition duration-200">
+              <Link
+                to="/settings"
+                onClick={closeDropdown}
+                className="block px-4 py-2 text-sm text-textSubtle dark:text-white hover:bg-gray-200 dark:hover:bg-zinc-800 transition duration-200"
+              >
                 Settings
               </Link>
             </li>
             <li>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-sm text-textSubtle dark:text-onSurface hover:bg-gray-200 dark:hover:bg-zinc-800 transition duration-200"
+                className="block w-full text-left px-4 py-2 text-sm text-textSubtle dark:text-white hover:bg-gray-200 dark:hover:bg-zinc-800 transition duration-200"
               >
                 Logout
               </button>

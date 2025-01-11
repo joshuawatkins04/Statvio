@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../hooks/UserAuthentication/userAuth";
-import useAuthRedirect from "../hooks/UserAuthentication/userRedirect";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../../hooks/user-management/userAuth";
+import useAuthRedirect from "../../hooks/user-management/UserRedirect";
+import { validateUsername, validateEmail, validatePassword } from "../../utils/validation";
 
 const Signup = () => {
   useAuthRedirect();
@@ -14,6 +15,7 @@ const Signup = () => {
   const [isUsernameFocused, setIsUsernameFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
   const [usernameCriteria, setUsernameCriteria] = useState({
     length: false,
     validCharacters: false,
@@ -35,88 +37,64 @@ const Signup = () => {
     specialCharacters: false,
     matchesConfirm: false,
   });
-
   const navigate = useNavigate();
-
-  const validateUsername = (username) => {
-    const criteria = {
-      length: username.length >= 4 && username.length <= 20,
-      validCharacters: /^[a-zA-Z0-9_]*$/.test(username),
-      noSpaces: !/\s/.test(username),
-    };
-    setUsernameCriteria(criteria);
-    return Object.values(criteria).every((value) => value === true);
-  };
-
-  const validateEmail = (email) => {
-    const criteria = {
-      length: email.length >= 5 && email.length <= 45,
-      hasAtSymbol: /@/.test(email),
-      hasDomain: /@[a-zA-Z0-9.-]+/.test(email),
-      hasValidTLD: /\.[a-zA-Z]{2,}$/.test(email),
-      noSpaces: !/\s/.test(email),
-      validCharacters: /^[a-zA-Z0-9._%+-]+@/.test(email),
-    };
-    setEmailCriteria(criteria);
-    return Object.values(criteria).every(Boolean);
-  };
-
-  const validatePassword = (password, confirmPassword) => {
-    const criteria = {
-      length: password.length >= 8 && password.length <= 40,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /\d/.test(password),
-      specialCharacters: /[@$!%*?&]/.test(password),
-      matchesConfirm: password === confirmPassword && confirmPassword !== "",
-    };
-    setPasswordCriteria(criteria);
-    return Object.values(criteria).every(Boolean);
-  };
 
   const handleUsernameChange = (e) => {
     const newUsername = e.target.value;
     setUsername(newUsername);
-    validateUsername(newUsername);
+    const criteria = validateUsername(newUsername);
+    setUsernameCriteria(criteria);
   };
 
   const handleEmailChange = (e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
-    validateEmail(newEmail);
+    const criteria = validateEmail(newEmail);
+    setEmailCriteria(criteria);
   };
 
+  const handlePasswordUpdate = (password, confirmPassword) => {
+    const criteria = validatePassword(password, confirmPassword);
+    setPasswordCriteria(criteria);
+  };
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    validatePassword(newPassword, confirmPassword);
+    handlePasswordUpdate(newPassword, confirmPassword);
   };
   const handleConfirmPasswordChange = (e) => {
     const newConfirmPassword = e.target.value;
     setConfirmPassword(newConfirmPassword);
-    validatePassword(password, newConfirmPassword);
+    handlePasswordUpdate(password, newConfirmPassword);
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!validateUsername(username)) {
+
+    const isUsernameValid = Object.values(usernameCriteria).every((criterion) => criterion);
+    const isEmailValid = Object.values(emailCriteria).every((criterion) => criterion);
+    const isPasswordValid = Object.values(passwordCriteria).every((criterion) => criterion);
+
+    if (!isUsernameValid) {
       setMessage("Username does not meet criteria.");
       return;
     }
-    if (!validateEmail(email)) {
+    if (!isEmailValid) {
       setMessage("Email does not meet criteria.");
       return;
     }
-    if (!validatePassword(password, confirmPassword)) {
+    if (!isPasswordValid) {
       setMessage("Password does not meet the criteria.");
       return;
     }
     try {
       await registerUser(username, email, password);
-      setMessage("Registration successful");
-      navigate("/login");
+      setMessage("Success! Redirecting...");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error) {
-      setMessage("Registration failed: " + error.message);
+      setMessage(error.message);
     }
   };
 
@@ -124,13 +102,16 @@ const Signup = () => {
     <div className="min-h-screen bg-backdrop flex flex-col justify-center items-center transition-colors duration-300 pt-28">
       {/* Card Container */}
       <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md transition-colors duration-300">
-        <h1 className="text-2xl font-bold text-textPrimary dark:text-white mb-6 text-center">Create Your Statvio Account</h1>
+        <h1 className="text-2xl font-bold text-textPrimary dark:text-white mb-6 text-center">
+          Create Your Statvio Account
+        </h1>
         {/* Display Message */}
         {message && (
           <div
-            className={`mb-4 p-3 text-center rounded ${
-              message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            className={`mb-4 p-3 text-center rounded-xl ${
+              message.includes("Success!") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
             }`}
+            aria-live="polite"
           >
             {message}
           </div>
@@ -269,7 +250,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="mt-4 bg-primary text-white py-2 rounded-md hover:bg-accent-dark transition"
+            className="mt-4 bg-primary text-white py-2 rounded-md hover:bg-primaryHover transition"
           >
             Sign Up
           </button>
@@ -277,9 +258,9 @@ const Signup = () => {
 
         <div className="mt-4 text-center text-sm text-textSubtle">
           Already have an account?{" "}
-          <a href="/login" className="text-primary hover:underline">
+          <Link to="/login" className="text-primary hover:underline">
             Log In
-          </a>
+          </Link>
         </div>
       </div>
     </div>

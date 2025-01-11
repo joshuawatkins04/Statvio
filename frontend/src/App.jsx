@@ -2,21 +2,23 @@ import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
-import LoginPage from "./pages/Login";
-import SignupPage from "./pages/Signup";
-import DashboardPage from "./pages/Dashboard";
-import InsightsPage from "./pages/Insights";
-import NotificationsPage from "./pages/Notifications";
-import NotFoundPage from "./pages/NotFound";
-import Navbar from "./components/Navbar/Navbar";
+import LoginPage from "./pages/user/Login";
+import SignupPage from "./pages/user/Signup";
+import DashboardPage from "./pages/user/Dashboard";
+import SettingsPage from "./pages/user/Settings";
+import InsightsPage from "./pages/user/Insights";
+import NotificationsPage from "./pages/user/Notifications";
+import NotFoundPage from "./components/NotFound";
+import Navbar from "./components/navbar/Navbar";
 
-import MusicPage from "./pages/Music";
-import SpotifyPage from "./pages/Spotify";
-import MoviesPage from "./pages/Movies";
-import GamingPage from "./pages/Gaming";
+import MusicPage from "./pages/music/Music";
+import SpotifyPage from "./pages/music/Spotify";
+import SoundcloudPage from "./pages/music/Soundcloud";
+import MoviesPage from "./pages/movies/Movies";
+import GamingPage from "./pages/gaming/Gaming";
 
-import SuccessPage from "./pages/SuccessPage";
-import CancelPage from "./pages/CancelPage";
+import SuccessPage from "./pages/paypal/SuccessPage";
+import CancelPage from "./pages/paypal/CancelPage";
 
 function app() {
   const { isAuthenticated, authLoading } = useAuth();
@@ -51,6 +53,14 @@ function app() {
           }
         />
         <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/dashboard/music"
           element={
             <ProtectedRoute>
@@ -63,6 +73,14 @@ function app() {
           element={
             <ProtectedRoute>
               <SpotifyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/music/soundcloud"
+          element={
+            <ProtectedRoute>
+              <SoundcloudPage />
             </ProtectedRoute>
           }
         />

@@ -59,6 +59,11 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    apisLinked: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     spotify: {
       linked: { type: Boolean, default: false },
       spotifyId: { type: String },

@@ -33,7 +33,7 @@ const EmailForm = () => {
         />
       </div>
       {isFocused && (
-        <div className="mt-2 p-2 text-sm bg-gray-50 border rounded-md">
+        <div className="mt-2 p-2 text-sm bg-surface border rounded-md">
           <p className={criteria.length ? "text-green-600" : "text-red-600"}>
             {criteria.length ? "✅" : "❌"} Between 5 and 45 characters
           </p>
@@ -54,11 +54,11 @@ const EmailForm = () => {
           </p>
         </div>
       )}
-      <div className="flex space-x-4">
+      <div className="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
         <button
           type="submit"
           disabled={!isButtonEnabled}
-          className={`px-6 py-2 rounded-md font-semibold shadow-md transition-colors focus:ring-2 focus:ring-primary ${
+          className={`w-full md:w-auto px-4 py-2 rounded-md font-semibold shadow-md transition-colors focus:ring-2 focus:ring-primary ${
             isButtonEnabled
               ? "bg-primary text-white hover:bg-primaryHover"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -69,7 +69,7 @@ const EmailForm = () => {
         <button
           type="button"
           onClick={handleCancel}
-          className="px-6 py-2 border border-primary text-primary rounded-md font-semibold shadow-md transition-colors hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary"
+          className="w-full md:w-auto px-4 py-2 border border-primary text-primary rounded-md font-semibold shadow-md transition-colors hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary"
         >
           Cancel
         </button>

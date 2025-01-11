@@ -10,7 +10,7 @@ const Sidebar = ({ activeSection, onChange }) => {
           <button
             key={section}
             onClick={() => onChange(section)}
-            className={`w-full text-center py-2 rounded-md ${
+            className={`w-full min-w-0 truncate whitespace-normal text-center py-2 rounded-md ${
               activeSection === section ? "bg-primary text-white" : "hover:bg-surface dark:hover:bg-surface"
             }`}
           >

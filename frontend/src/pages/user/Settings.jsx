@@ -9,6 +9,15 @@ import ManageAPIs from "../../components/settings/ManageApis";
 const Settings = () => {
   const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState("General Settings");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleSectionChange = (section) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveSection(section);
+      setIsTransitioning(false);
+    }, 200);
+  };
 
   useEffect(() => {
     const section = searchParams.get("section");
@@ -41,10 +50,16 @@ const Settings = () => {
 
   return (
     <DefaultLayout>
-      <div className="flex h-screen">
-        <Sidebar activeSection={activeSection} onChange={setActiveSection} />
+      <div className="flex min-h-screen">
+        <Sidebar activeSection={activeSection} onChange={handleSectionChange} />
         <div className="mt-8 w-[1px] bg-gray-300 dark:bg-gray-600"></div>
-        <div className="w-3/4 p-6">{renderSettings()}</div>
+        <div
+          className={`w-3/4 p-6 transition-opacity duration-200 ${
+            isTransitioning ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          {renderSettings()}
+        </div>
       </div>
     </DefaultLayout>
   );

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import Sidebar from "../../components/settings/Sidebar";
 import GeneralSettings from "../../components/settings/GeneralSettings";
@@ -6,7 +7,24 @@ import ManageAccount from "../../components/settings/ManageAccount";
 import ManageAPIs from "../../components/settings/ManageApis";
 
 const Settings = () => {
+  const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState("General Settings");
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    switch (section) {
+      case "manage-profile":
+        setActiveSection("Manage Account");
+        break;
+      case "manage-api":
+        setActiveSection("Manage APIs");
+        break;
+      case "general":
+      default:
+        setActiveSection("General Settings");
+        break;
+    }
+  }, [searchParams]);
 
   const renderSettings = () => {
     switch (activeSection) {

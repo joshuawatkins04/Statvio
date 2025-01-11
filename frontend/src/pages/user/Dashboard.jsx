@@ -64,8 +64,23 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <div className="flex flex-col space-y-1">
+                <Link
+                    to="/settings?section=general"
+                    className="text-textSecondary font-semibold hover:underline flex items-center"
+                  >
+                    General Settings
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-1 w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
                   <Link
-                    to="/manage-profile"
+                    to="/settings?section=manage-profile"
                     className="text-textSecondary font-semibold hover:underline flex items-center"
                   >
                     Manage Profile
@@ -80,25 +95,10 @@ const Dashboard = () => {
                     </svg>
                   </Link>
                   <Link
-                    to="/manage-api"
+                    to="/settings?section=manage-api"
                     className="text-textSecondary font-semibold hover:underline flex items-center"
                   >
                     Manage API's
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="ml-1 w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="text-textSecondary font-semibold hover:underline flex items-center"
-                  >
-                    Settings
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="ml-1 w-4 h-4"

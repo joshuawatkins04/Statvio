@@ -16,7 +16,7 @@ const EmailForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <label className="block text-textPrimary dark:text-textPrimary mb-2">Current Email</label>
-      <p className="p-3 bg-surface dark:bg-surface rounded-md text-textPrimary dark:text-textPrimary">
+      <p className="p-3 text-xs md:text-base bg-surface dark:bg-surface rounded-md text-textPrimary dark:text-textPrimary truncate">
         {criteria.original || "Email not available"}
       </p>
       <div>
@@ -28,7 +28,7 @@ const EmailForm = () => {
           onChange={handleChange}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          className="w-full p-3 border border-gray-300 rounded-md bg-surface dark:bg-surface text-textPrimary dark:text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          className="w-full text-xs md:text-base p-3 border border-gray-300 rounded-md bg-surface dark:bg-surface text-textPrimary dark:text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           maxLength={45}
         />
       </div>

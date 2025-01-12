@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   getSpotifyStatus,
   getSpotifyOverview,
@@ -109,10 +110,19 @@ const SpotifyStats = () => {
 
   return (
     <DefaultLayout title={"Your Spotify Stats"}>
-      <div className="flex flex-wrap justify-center gap-4 mb-4">
+      <div className="flex flex-wrap justify-center gap-2 mb-2">
         {connected ? (
           <>
-            <button
+            <Link to="/settings/manage-api" className="px-4 py-2 text-xs sm:text-sm font-semibold underline">
+              Unlink
+            </Link>
+            <span
+              onClick={handleUpdateData}
+              className="px-4 py-2 text-xs sm:text-sm font-semibold underline cursor-pointer"
+            >
+              Update Data
+            </span>
+            {/* <button
               onClick={handleUnlink}
               className="px-4 py-2 text-xs sm:text-sm bg-red-600 text-white rounded"
             >
@@ -123,16 +133,19 @@ const SpotifyStats = () => {
               className="px-4 py-2 text-xs sm:text-sm bg-green-600 text-white rounded"
             >
               Update Data
-            </button>
+            </button> */}
           </>
         ) : (
           <>
-            <button
+            <Link to="/manage-api" className="px-4 py-2 text-xs sm:text-sm text-blue-600 underline">
+              Connect Spotify
+            </Link>
+            {/* <button
               onClick={handleConnect}
               className="px-4 py-2 text-xs sm:text-sm bg-blue-600 text-white rounded"
             >
               Connect Spotify
-            </button>
+            </button> */}
           </>
         )}
       </div>

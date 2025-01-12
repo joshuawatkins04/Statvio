@@ -15,15 +15,15 @@ const SelectionLayout = ({ title, bodyText, connectToService, buttonText }) => {
   };
 
   return (
-    <div className="bg-surface shadow-lg rounded-xl p-6">
+    <div className="bg-surface shadow-lg rounded-xl p-6 hover:shadow-xl transition">
       <h2 className="text-textPrimary text-2xl font-semibold mb-4">{title}</h2>
       <p className="text-textSecondary mb-6">{bodyText}</p>
       <button
         onClick={handleClick}
         disabled={loading}
-        className={`w-full flex items-center justify-center px-4 py-2 rounded-xl ${
-          loading ? "bg-gray-400 cursor-not-allowed" : "bg-white hover:bg-gray-200"
-        } text-textSubtle font-semibold transition duration-200`}
+        className={`border-2 border-primary hover:text-white hover:border-surface hover:dark:text-white hover:bg-primary text-primary w-full flex items-center justify-center px-4 py-2 rounded-xl ${
+          loading ? "cursor-not-allowed" : ""
+        } font-semibold transition duration-200`}
       >
         {loading ? (
           <svg

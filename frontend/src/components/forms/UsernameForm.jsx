@@ -17,7 +17,7 @@ const UsernameForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <label className="block text-textPrimary dark:text-textPrimary mb-2">Current Username</label>
-      <p className="p-3 bg-surface dark:bg-surface rounded-md text-textPrimary dark:text-textPrimary">
+      <p className="p-3 bg-surface dark:bg-surface rounded-md text-textPrimary dark:text-textPrimary truncate">
         {criteria.original}
       </p>
       <div>

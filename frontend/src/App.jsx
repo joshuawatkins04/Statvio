@@ -5,6 +5,8 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/user/Login";
 import SignupPage from "./pages/user/Signup";
 import DashboardPage from "./pages/user/Dashboard";
+import PrivacyPage from "./pages/user/Privacy";
+import ContactPage from "./pages/user/Contact";
 import SettingsPage from "./pages/user/Settings";
 import InsightsPage from "./pages/user/Insights";
 import NotificationsPage from "./pages/user/Notifications";
@@ -44,6 +46,8 @@ function app() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route
           path="/dashboard"
           element={

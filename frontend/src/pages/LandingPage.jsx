@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Footer from "../components/footer/Footer";
 
 const LandingPage = () => {
   return (
@@ -188,10 +189,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-auto p-6 bg-surface dark:bg-surface text-center text-sm text-textSubtle dark:text-onSurface border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
-        © {new Date().getFullYear()} Statvio. All rights reserved.
-      </footer>
+      <Footer />
     </div>
   );
 };

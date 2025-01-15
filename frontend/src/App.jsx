@@ -7,6 +7,7 @@ import SignupPage from "./pages/user/Signup";
 import DashboardPage from "./pages/user/Dashboard";
 import PrivacyPage from "./pages/user/Privacy";
 import ContactPage from "./pages/user/Contact";
+import TOUPage from "./pages/TOU";
 import SettingsPage from "./pages/user/Settings";
 import InsightsPage from "./pages/user/Insights";
 import NotificationsPage from "./pages/user/Notifications";
@@ -48,6 +49,7 @@ function app() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/terms" element={<TOUPage />} />
         <Route
           path="/dashboard"
           element={

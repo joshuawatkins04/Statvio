@@ -113,7 +113,10 @@ const SpotifyStats = () => {
       <div className="flex flex-wrap justify-center gap-2 mb-2">
         {connected ? (
           <>
-            <Link to="/settings/manage-api" className="px-4 py-2 text-xs sm:text-sm font-semibold underline">
+            <Link
+              to="/settings?section=manage-api"
+              className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
+            >
               Unlink
             </Link>
             <span
@@ -137,7 +140,10 @@ const SpotifyStats = () => {
           </>
         ) : (
           <>
-            <Link to="/manage-api" className="px-4 py-2 text-xs sm:text-sm text-blue-600 underline">
+            <Link
+              to="/settings?section=manage-api"
+              className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
+            >
               Connect Spotify
             </Link>
             {/* <button

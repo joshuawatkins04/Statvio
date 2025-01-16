@@ -11,6 +11,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  const updateApiInfo = useCallback(async () => {
+    try {
+      console.log("Fetching API count...");
+      const response = await api.get("/api-info");
+      console.log("Fetched API info:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch API info:", error.message);
+      throw error;
+    }
+  }, []);
+
   const fetchUser = useCallback(async () => {
     try {
       console.log("Fetching user data...");
@@ -194,6 +206,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         register,
         user,
+        updateApiInfo,
       }}
     >
       {children}

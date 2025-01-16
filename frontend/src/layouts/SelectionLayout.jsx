@@ -21,7 +21,7 @@ const SelectionLayout = ({ title, bodyText, connectToService, buttonText }) => {
       <button
         onClick={handleClick}
         disabled={loading}
-        className={`border-2 border-primary hover:text-white hover:border-surface hover:dark:text-white hover:bg-primary text-primary w-full flex items-center justify-center px-4 py-2 rounded-xl ${
+        className={`border border-outline hover:text-white hover:border-surface hover:bg-primary text-textSecondary w-full flex items-center justify-center px-4 py-2 rounded-xl ${
           loading ? "cursor-not-allowed" : ""
         } font-semibold transition duration-200`}
       >

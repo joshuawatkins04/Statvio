@@ -138,7 +138,7 @@ const Dashboard = () => {
             <div className="bg-surface text-left p-6 shadow-lg rounded-xl hover:shadow-xl transition">
               <h3 className="text-textPrimary text-lg font-semibold">{category.name}</h3>
               <p className="text-textSecondary mt-2">Explore the latest trends and insights.</p>
-              <button className="border-2 border-primary hover:border-surface text-primary hover:text-white hover:dark:text-white dark:text-primary hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition duration-200">
+              <button className="border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition duration-200">
                 Explore {category.name}
               </button>
             </div>

@@ -9,7 +9,6 @@ const Contact = () => {
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Define maximum characters for the message
   const MAX_MESSAGE_LENGTH = 500;
 
   const handleSend = async (e) => {
@@ -17,14 +16,11 @@ const Contact = () => {
     setIsSubmitting(true);
     setStatusMessage("");
 
-    // Simulate form submission (e.g., API call)
     try {
-      // Replace this with your actual form submission logic
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // ADD SEND LOGIC
       setStatusMessage("Your message has been sent successfully!");
-      // Clear form fields
       setName("");
-      setUsername(""); // Clear Username
+      setUsername("");
       setEmail("");
       setPhone("");
       setMessage("");
@@ -61,7 +57,7 @@ const Contact = () => {
             <input
               type="text"
               id="name"
-              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-white dark:bg-surface2 text-onSurface w-full px-4 py-2 border border-outline rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your Name"
@@ -78,7 +74,7 @@ const Contact = () => {
             <input
               type="text"
               id="username"
-              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-white dark:bg-surface2 text-onSurface w-full px-4 py-2 border border-outline rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Your Username"
@@ -94,7 +90,7 @@ const Contact = () => {
             <input
               type="email"
               id="email"
-              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-white dark:bg-surface2 text-textPrimary w-full px-4 py-2 border border-outline rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -111,7 +107,7 @@ const Contact = () => {
             <input
               type="tel"
               id="phone"
-              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-white dark:bg-surface2 text-onSurface w-full px-4 py-2 border border-outline rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="123-456-7890"
@@ -126,7 +122,7 @@ const Contact = () => {
             </label>
             <textarea
               id="message"
-              className="text-onSurface w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary overflow-auto"
+              className="bg-white dark:bg-surface2 text-onSurface w-full px-4 py-2 border border-outline rounded-md focus:outline-none focus:ring-2 focus:ring-primary overflow-auto"
               value={message}
               onChange={(e) => {
                 if (e.target.value.length <= MAX_MESSAGE_LENGTH) {
@@ -143,7 +139,7 @@ const Contact = () => {
                 minHeight: "100px",
               }}
             ></textarea>
-            <div className="absolute bottom-2 right-4 text-sm text-textSubtle">
+            <div className="absolute bottom-2 right-4 text-sm text-onSurface">
               {MAX_MESSAGE_LENGTH - message.length} characters remaining
             </div>
           </div>
@@ -151,7 +147,7 @@ const Contact = () => {
           {/* Send Button */}
           <button
             type="submit"
-            className={`mt-4 border border-gray-300 text-textPrimary hover:text-white hover:border-opacity-0 py-2 rounded-md hover:bg-primary transition ${
+            className={`mt-4 border border-outline text-textSecondary hover:text-white hover:border-surface font-semibold py-2 rounded-md hover:bg-primary transition ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={isSubmitting}

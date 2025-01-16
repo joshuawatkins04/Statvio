@@ -35,6 +35,7 @@
   /* Backdrop and Primary Colors */
   --backdrop: #121212;
   --surface: #1e1e1e;
+	--surface2: #303030;
   --onSurface: #e0e0e0;
   --primary: #5cc6bb;
   --primaryHover: #48a99e;
@@ -47,7 +48,7 @@
   --textSecondary: #b3b3b3;
 
   /* Borders and Outlines */
-  --outline: #292929;
+  --outline: #d1d5db;
   --accent-light: #fbbf24;
   --accent: #f59e0b;
   --accent-dark: #d97706;

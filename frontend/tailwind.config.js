@@ -9,6 +9,7 @@ export default {
       colors: {
         backdrop: "var(--backdrop)",
         surface: "var(--surface)",
+        surface2: "var(--surface2)",
         onSurface: "var(--onSurface)",
         primary: "var(--primary)",
         primaryHover: "var(--primaryHover)",

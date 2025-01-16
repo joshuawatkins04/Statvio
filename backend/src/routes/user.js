@@ -12,6 +12,7 @@ router.post("/logout", userController.logoutUser);
 router.get("/verify", authenticateToken, verifyLimiter, userController.verifyAuth);
 router.get("/dashboard", authenticateToken, userController.getUserDashboard);
 router.get("/user", authenticateToken, userController.getUser);
+router.get("/api-info", authenticateToken, userController.getApiInfo);
 
 router.put("/update-username", authenticateToken, userController.updateUsername);
 router.put("/update-email", authenticateToken, userController.updateEmail);

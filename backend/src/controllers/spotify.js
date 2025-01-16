@@ -168,6 +168,12 @@ const getSpotifyStatus = async (req, res) => {
 
     const isLinked = user.spotify?.linked || false;
 
+    if (isLinked && !user.apisLinked.includes("Spotify")) {
+      user.apisLinked.push("Spotify");
+      user.apiCount = user.apisLinked.length;
+      await user.save();
+    }
+
     console.log("[musicController - getSpotifyStatus] Spotify Linked Status:", isLinked);
     res.json({ linked: isLinked });
   } catch (error) {

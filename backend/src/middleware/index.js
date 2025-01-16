@@ -8,16 +8,24 @@ const { globalLimiter } = require("./rateLimiter");
 const configureMiddleware = (app) => {
   app.use(helmet());
 
+  const allowedOrigins = ["http://localhost:5173", "https://www.statvio.com", "https://statvio.com"];
+
   app.use(
     cors({
       origin: (origin, callback) => {
-        const allowedOrigins = ["https://www.statvio.com", "https://statvio.com"];
-        if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app"))) {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
+        if (!origin) {
+          console.log("No origin detected. Allowing request.");
+          return callback(null, true);
         }
-      }, // "http://localhost:5173"
+
+        if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+          console.log(`Origin ${origin} allowed.`);
+          return callback(null, true);
+        } else {
+          console.log(`Origin ${origin} blocked by CORS.`);
+          return callback(new Error("Not allowed by CORS"));
+        }
+      },
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "withCredentials"],
       credentials: true,

@@ -260,6 +260,29 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const getApiInfo = async (req, res, next) => {
+  console.log("[userController - getApiInfo] Function called.");
+  try {
+    const userId = req.user.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = await User.findById(userId, "apiCount apisLinked");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      apiCount: user.apiCount,
+      apisLinked: user.apisLinked,
+    });
+  } catch (error) {
+    console.error("[userController - getApiInfo] ERROR:", error.message);
+    next(error);
+  }
+};
+
 const updateUsername = async (req, res, next) => {
   console.log("[userController - updateUsername] Function called.");
   try {
@@ -279,7 +302,12 @@ const updateUsername = async (req, res, next) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    console.log("[userController - updateUsername] Comparing usernames. current: ", user.username, " new: ", newUsername);
+    console.log(
+      "[userController - updateUsername] Comparing usernames. current: ",
+      user.username,
+      " new: ",
+      newUsername
+    );
     if (user.username === newUsername) {
       return res.status(400).json({ message: "New username must be different from the current one." });
     }
@@ -350,9 +378,7 @@ const updatePassword = async (req, res, next) => {
       return res.status(400).json({ message: "New passwords do not match." });
     }
     if (newPassword.length < 8 || newPassword.length > 40) {
-      console.warn(
-        `[userController - updatePassword] Invalid new password length: ${newPassword.length}`
-      );
+      console.warn(`[userController - updatePassword] Invalid new password length: ${newPassword.length}`);
       return res.status(400).json({ error: "Password must be between 8 and 40 characters long." });
     }
     if (confirmNewPassword.length < 8 || confirmNewPassword.length > 40) {
@@ -395,6 +421,7 @@ module.exports = {
   verifyAuth,
   getUserDashboard,
   getUser,
+  getApiInfo,
   updateUsername,
   updateEmail,
   updatePassword,

@@ -100,6 +100,10 @@ class SpotifyAuth {
         throw new Error("User not found");
       }
 
+      if (user.apisLinked.includes("Spotify")) {
+        user.apisLinked = user.apisLinked.filter(api => api !== "Spotify");
+        user.apiCount = user.apisLinked.length;
+      }
       user.spotify.accessToken = null;
       user.spotify.refreshToken = null;
       user.spotify.linked = false;

@@ -20,7 +20,9 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (email) {
-          return this.isNew || this.isModified("email") ? /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) : true;
+          return this.isNew || this.isModified("email")
+            ? /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+            : true;
         },
         message: "Please provide a valid email address.",
       },
@@ -34,8 +36,7 @@ const userSchema = new mongoose.Schema(
           if (password.startsWith("$2")) return true;
           return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
         },
-        message:
-          "Please provide a valid password.",
+        message: "Please provide a valid password.",
       },
     },
     role: {
@@ -60,9 +61,12 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     apisLinked: {
+      type: [String],
+      default: [],
+    },
+    apiCount: {
       type: Number,
       default: 0,
-      min: 0,
     },
     spotify: {
       linked: { type: Boolean, default: false },

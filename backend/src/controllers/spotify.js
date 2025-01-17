@@ -134,8 +134,9 @@ const getSpotifyPlaylists = handleSpotifyRequest(async (client) => {
   return { playlists };
 });
 
-const getSpotifyTopSongs = handleSpotifyRequest(async (client) => {
-  const topSongs = await client.getUserTopSongs();
+const getSpotifyTopSongs = handleSpotifyRequest(async (client, req) => {
+  const { time_range: timeRange = "short_term" } = req.query;
+  const topSongs = await client.getUserTopSongs(timeRange);
   return { topSongs };
 });
 

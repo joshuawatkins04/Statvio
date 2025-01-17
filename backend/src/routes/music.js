@@ -5,6 +5,7 @@ const { authenticateToken } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 /* Spotify routes */
+// https://developer.spotify.com/documentation/web-api
 
 // Public routes
 router.get("/spotify/callback", spotifyController.spotifyCallback);
@@ -22,7 +23,6 @@ router.post("/spotify/unlink", authenticateToken, spotifyController.unlinkSpotif
 
 
 /* Soundcloud routes */
-
 // https://developers.soundcloud.com/docs/api/guide#authentication
 
 /*
@@ -33,7 +33,7 @@ router.get("/soundcloud/profile", authenticateToken, soundcloudController.); // 
 router.get("/soundcloud/playlists", authenticateToken, soundcloudController.) // /me/playlists
 router.get("/soundcloud/recent-activity", authenticateToken, soundcloudController.); // /me/activities/all/own
 router.post("/soundcloud/unlink", authenticateToken, soundcloudController.); // https://secure.soundcloud.com/sign-out 
-
 */
+
 
 module.exports = router;

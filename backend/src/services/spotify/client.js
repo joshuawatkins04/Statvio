@@ -54,11 +54,16 @@ class SpotifyClient {
     });
   }
 
-  async getUserTopSongs() {
+  async getUserTopSongs(timeRange = "short_term") {
     console.log("[SpotifyClient - getUserTopSongs] Requesting top songs from Spotify API...");
     return this._retryRequest(async () => {
       try {
-        const response = await this.api.get("/me/top/tracks");
+        const response = await this.api.get("/me/top/tracks", {
+          params: {
+            time_range: timeRange,
+            limit: 50,
+          },
+        });
         const topSongs = response.data.items;
         return topSongs.map((item) => ({
           id: item.id,
@@ -75,7 +80,9 @@ class SpotifyClient {
     console.log("[SpotifyClient - getUserTopArtists] Requesting top artists from Spotify API...");
     return this._retryRequest(async () => {
       try {
-        const response = await this.api.get("/me/top/artists");
+        const response = await this.api.get("/me/top/artists", {
+          limit: 50,
+        });
         const topArtists = response.data.items;
         return topArtists.map((item) => ({
           id: item.id,
@@ -92,10 +99,12 @@ class SpotifyClient {
     console.log("[SpotifyClient - getUserListeningHistory] Requesting listening history from Spotify API...");
     return this._retryRequest(async () => {
       try {
-        const response = await this.api.get("/me/player/recently-played");
+        const response = await this.api.get("/me/player/recently-played", {
+          params: { limit: 50 },
+        });
         const listeningHistory = response.data.items;
         return listeningHistory.map((item) => ({
-          id: item.id,
+          id: item.track.id,
           name: item.track.name,
           artist: item.track.artists?.[0]?.name || null,
           played_at: item.played_at,

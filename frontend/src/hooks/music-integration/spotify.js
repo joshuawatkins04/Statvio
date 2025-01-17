@@ -70,9 +70,12 @@ export const getSpotifyOverview = async () => {
   }
 };
 
-export const getSpotifyTopSongs = async () => {
+export const getSpotifyTopSongs = async (timeRange) => {
+  console.log("Sending timeRange:", timeRange);
   try {
-    const response = await spotifyApi.get("/top-songs");
+    const response = await spotifyApi.get("/top-songs", {
+      params: { time_range: timeRange }
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify top songs");
@@ -94,6 +97,18 @@ export const getSpotifyListeningHistory = async () => {
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify listening history");
+  }
+};
+
+export const newTopSongs = async (time_range) => {
+  try {
+    const response = await getSpotifyTopSongs(time_range);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch Spotify new top songs with timestamp ",
+      timestamp
+    );
   }
 };
 

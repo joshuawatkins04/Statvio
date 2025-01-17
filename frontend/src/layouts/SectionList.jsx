@@ -27,7 +27,7 @@ const SectionList = ({ title, items }) => {
       <ul className="space-y-2">
         {items.map((item, index) => (
           <li
-            key={item.id || `section-list-${index}`}
+            key={`${item.id || 'no-id'}-${index}`}
             className="flex items-start p-2 bg-surface rounded-md hover:bg-gray-200 dark:hover:bg-gray-400 min-h-[70px]"
           >
             <div className="flex-shrink-0 flex items-center w-24 sm:w-28">

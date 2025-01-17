@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import {
   getSpotifyStatus,
   getSpotifyOverview,
-  connectToSpotify,
-  unlinkSpotify,
+  newTopSongs,
+  getSpotifyTopSongs,
 } from "../../hooks/music-integration/spotify";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import SectionGrid from "../../layouts/SectionGrid";
@@ -81,27 +81,20 @@ const SpotifyStats = () => {
     fetchSpotifyData();
   }, []);
 
-  const handleConnect = () => {
-    connectToSpotify();
-  };
-
-  const handleUnlink = async () => {
-    try {
-      await unlinkSpotify();
-      setConnected(false);
-      setTopSongs([]);
-      setTopArtists([]);
-      setListeningHistory([]);
-      setPlaylists([]);
-      console.log("Unlinked Spotify successfully.");
-    } catch (error) {
-      console.error("Failed to unlink Spotify:", error);
-    }
-  };
-
   const handleUpdateData = async () => {
     console.log("Updating Spotify data...");
     await fetchSpotifyData();
+  };
+
+  const changeTopSongs = async (timeRange) => {
+    try {
+      const response = await getSpotifyTopSongs(timeRange);
+      if (response) {
+        setTopSongs(response.topSongs || []);
+      }
+    } catch (error) {
+      console.error("Error updating top songs:", error.message);
+    }
   };
 
   if (loading) {
@@ -125,18 +118,6 @@ const SpotifyStats = () => {
             >
               Update Data
             </span>
-            {/* <button
-              onClick={handleUnlink}
-              className="px-4 py-2 text-xs sm:text-sm bg-red-600 text-white rounded"
-            >
-              Unlink
-            </button>
-            <button
-              onClick={handleUpdateData}
-              className="px-4 py-2 text-xs sm:text-sm bg-green-600 text-white rounded"
-            >
-              Update Data
-            </button> */}
           </>
         ) : (
           <>
@@ -146,19 +127,35 @@ const SpotifyStats = () => {
             >
               Connect Spotify
             </Link>
-            {/* <button
-              onClick={handleConnect}
-              className="px-4 py-2 text-xs sm:text-sm bg-blue-600 text-white rounded"
-            >
-              Connect Spotify
-            </button> */}
           </>
         )}
       </div>
 
       {connected && playlists.length > 0 ? (
         <div className="mt-8">
-          <SectionGrid title="Recent Top Songs" items={topSongs} />
+          <section className="p-6 mb-8 bg-surface rounded-xl">
+            <div className="space-x-2">
+              <button
+                onClick={() => changeTopSongs("short_term")}
+                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition"
+              >
+                4 Weeks
+              </button>
+              <button
+                onClick={() => changeTopSongs("medium_term")}
+                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition"
+              >
+                6 Months
+              </button>
+              <button
+                onClick={() => changeTopSongs("long_term")}
+                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition"
+              >
+                Lifetime
+              </button>
+            </div>
+          </section>
+          <SectionGrid title="Top Songs" items={topSongs} />
           <SectionGrid title="Top Artists" items={topArtists} />
           <SectionList title="Listening History" items={listeningHistory} />
         </div>

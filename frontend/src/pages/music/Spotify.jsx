@@ -3,16 +3,19 @@ import { Link } from "react-router-dom";
 import {
   getSpotifyStatus,
   getSpotifyOverview,
-  newTopSongs,
   getSpotifyTopSongs,
+  getSpotifyTopArtists,
 } from "../../hooks/music-integration/spotify";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import SectionGrid from "../../layouts/SectionGrid";
 import SectionList from "../../layouts/SectionList";
 import LoadingBar from "../../components/LoadingBar";
+import Spinner from "../../components/Spinner";
 
 const SpotifyStats = () => {
   const [loading, setLoading] = useState(true);
+  const [loadingSongs, setLoadingSongs] = useState(false);
+  const [loadingArtists, setLoadingArtists] = useState(false);
   const [progress, setProgress] = useState(0);
   const [connected, setConnected] = useState(false);
   const [topSongs, setTopSongs] = useState([]);
@@ -86,15 +89,37 @@ const SpotifyStats = () => {
     await fetchSpotifyData();
   };
 
-  const changeTopSongs = async (timeRange) => {
+  const fetchTopSongs = async (timeRange) => {
     try {
+      setLoadingSongs(true);
       const response = await getSpotifyTopSongs(timeRange);
       if (response) {
         setTopSongs(response.topSongs || []);
       }
     } catch (error) {
-      console.error("Error updating top songs:", error.message);
+      console.error("Error fetching top songs:", error);
+    } finally {
+      setLoadingSongs(false);
     }
+  };
+
+  const fetchTopArtists = async (timeRange) => {
+    try {
+      setLoadingArtists(true);
+      const response = await getSpotifyTopArtists(timeRange);
+      if (response) {
+        setTopArtists(response.topArtists || []);
+      }
+    } catch (error) {
+      console.error("Error fetching top artists:", error);
+    } finally {
+      setLoadingArtists(false);
+    }
+  };
+
+  const handleTimeRangeChange = async (timeRange) => {
+    fetchTopSongs(timeRange);
+    fetchTopArtists(timeRange);
   };
 
   if (loading) {
@@ -103,62 +128,61 @@ const SpotifyStats = () => {
 
   return (
     <DefaultLayout title={"Your Spotify Stats"}>
-      <div className="flex flex-wrap justify-center gap-2 mb-2">
-        {connected ? (
-          <>
-            <Link
-              to="/settings?section=manage-api"
-              className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
-            >
-              Unlink
-            </Link>
-            <span
-              onClick={handleUpdateData}
-              className="px-4 py-2 text-xs sm:text-sm font-semibold underline cursor-pointer"
-            >
-              Update Data
-            </span>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/settings?section=manage-api"
-              className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
-            >
-              Connect Spotify
-            </Link>
-          </>
-        )}
-      </div>
-
       {connected && playlists.length > 0 ? (
-        <div className="mt-8">
-          <section className="p-6 mb-8 bg-surface rounded-xl">
-            <div className="space-x-2">
+        <>
+          <section className="p-6 mb-8 bg-surface rounded-xl flex flex-row items-center justify-center">
+            <div className="space-x-0 space-y-2 sm:space-x-2 sm:space-y-0">
               <button
-                onClick={() => changeTopSongs("short_term")}
-                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition"
+                onClick={() => handleTimeRangeChange("short_term")}
+                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold px-4 py-2 rounded-xl transition"
               >
                 4 Weeks
               </button>
               <button
-                onClick={() => changeTopSongs("medium_term")}
-                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition"
+                onClick={() => handleTimeRangeChange("medium_term")}
+                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold px-4 py-2 rounded-xl transition"
               >
                 6 Months
               </button>
               <button
-                onClick={() => changeTopSongs("long_term")}
-                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold mt-4 px-4 py-2 rounded-xl transition"
+                onClick={() => handleTimeRangeChange("long_term")}
+                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold px-4 py-2 rounded-xl transition"
               >
                 Lifetime
               </button>
             </div>
+
+            {connected ? (
+              <>
+                <Link
+                  to="/settings?section=manage-api"
+                  className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
+                >
+                  Unlink
+                </Link>
+                <span
+                  onClick={handleUpdateData}
+                  className="px-4 py-2 text-xs sm:text-sm font-semibold underline cursor-pointer"
+                >
+                  Update Data
+                </span>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/settings?section=manage-api"
+                  className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
+                >
+                  Connect Spotify
+                </Link>
+              </>
+            )}
           </section>
-          <SectionGrid title="Top Songs" items={topSongs} />
-          <SectionGrid title="Top Artists" items={topArtists} />
+
+          <SectionGrid title="Top Songs" items={topSongs} loading={loadingSongs} />
+          <SectionGrid title="Top Artists" items={topArtists} loading={loadingArtists} />
           <SectionList title="Listening History" items={listeningHistory} />
-        </div>
+        </>
       ) : (
         <div className="mt-8">
           {!connected ? (

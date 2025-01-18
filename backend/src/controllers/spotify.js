@@ -140,8 +140,9 @@ const getSpotifyTopSongs = handleSpotifyRequest(async (client, req) => {
   return { topSongs };
 });
 
-const getSpotifyTopArtists = handleSpotifyRequest(async (client) => {
-  const topArtists = await client.getUserTopArtists();
+const getSpotifyTopArtists = handleSpotifyRequest(async (client, req) => {
+  const { time_range: timeRange = "short_term" } = req.query;
+  const topArtists = await client.getUserTopArtists(timeRange);
   return { topArtists };
 });
 

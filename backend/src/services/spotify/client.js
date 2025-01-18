@@ -76,12 +76,15 @@ class SpotifyClient {
     });
   }
 
-  async getUserTopArtists() {
+  async getUserTopArtists(timeRange = "short_term") {
     console.log("[SpotifyClient - getUserTopArtists] Requesting top artists from Spotify API...");
     return this._retryRequest(async () => {
       try {
         const response = await this.api.get("/me/top/artists", {
-          limit: 50,
+          params: {
+            time_range: timeRange,
+            limit: 50,
+          },
         });
         const topArtists = response.data.items;
         return topArtists.map((item) => ({

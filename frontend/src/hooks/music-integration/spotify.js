@@ -71,7 +71,7 @@ export const getSpotifyOverview = async () => {
 };
 
 export const getSpotifyTopSongs = async (timeRange) => {
-  console.log("Sending timeRange:", timeRange);
+  console.log("getSpotifyTopSongs Sending timeRange:", timeRange);
   try {
     const response = await spotifyApi.get("/top-songs", {
       params: { time_range: timeRange }
@@ -82,9 +82,12 @@ export const getSpotifyTopSongs = async (timeRange) => {
   }
 };
 
-export const getSpotifyTopArtists = async () => {
+export const getSpotifyTopArtists = async (timeRange) => {
+  console.log("getSpotifyTopArtists Sending timeRange:", timeRange);
   try {
-    const response = await spotifyApi.get("/top-artists");
+    const response = await spotifyApi.get("/top-artists", {
+      params: { time_range: timeRange }
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch Spotify top artists");

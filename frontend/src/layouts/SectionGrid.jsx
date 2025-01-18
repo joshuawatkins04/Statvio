@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import Spinner from "../components/Spinner";
+import SpotifyIcon from "../assets/Primary_Logo_Black_CMYK.svg";
 
-const SectionGrid = ({ title, items }) => {
+const SectionGrid = ({ title, items, loading }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -24,30 +26,39 @@ const SectionGrid = ({ title, items }) => {
       </div>
 
       {/* Grid Content */}
-      <ul
-        className={`grid gap-4 ${
-          isExpanded
-            ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-            : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-        }`}
-      >
-        {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
-          <li
-            key={item.id || `section-grid-${index}`}
-            className="flex flex-col items-center text-center bg-surface p-4 rounded-lg hover:shadow-lg transition-shadow"
-          >
-            <img
-              src={item.imageUrl || "https://via.placeholder.com/80"}
-              alt={item.name}
-              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 object-cover rounded-md mb-4"
-            />
-            <span className="text-sm sm:text-base text-onSurface font-medium">
-              <span className="font-bold text-onSurface">{index + 1}. </span>
-              {item.name}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div>
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <Spinner />
+          </div>
+        ) : (
+          <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-5">
+            {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
+              <li
+                key={item.id || `section-grid-${index}`}
+                className="flex flex-col items-center bg-surface cursor-pointer" // rounded-lg hover:shadow-lg transition-shadow p-4
+              >
+                <div className="max-w-44">
+                  <div className="w-full max-h-44 aspect-square rounded-md overflow-hidden flex justify-center items-center">
+                    <img
+                      src={item.imageUrl || "https://via.placeholder.com/80"}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-sm sm:text-base text-onSurface font-medium line-clamp-2">
+                      <span className="font-bold text-onSurface">{index + 1}. </span>
+                      {item.name}
+                    </span>
+                    <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 };

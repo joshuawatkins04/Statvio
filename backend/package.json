@@ -29,6 +29,8 @@
     "node-cache": "^5.1.2",
     "openai": "^4.77.0",
     "paypal-rest-sdk": "^1.8.1",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }

@@ -13,7 +13,7 @@ const configureMiddleware = (app) => {
   app.use(ipBanMiddleware);
 
   const allowedOrigins = [
-    "http://localhost:5173",
+    //"http://localhost:5173",
     "https://www.statvio.com",
     "https://statvio.com",
     "https://statvio-9z2djbr1t-joshuas-projects-8e2156bf.vercel.app",
@@ -66,7 +66,7 @@ const configureMiddleware = (app) => {
     res.sendStatus(200);
   });
 
-  app.set("trust proxy", false);
+  app.set("trust proxy", true);
 
   app.use(express.json());
   app.use(cookieParser());

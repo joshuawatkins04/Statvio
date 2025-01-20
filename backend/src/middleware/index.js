@@ -4,10 +4,13 @@ const cors = require("cors");
 const helmet = require("helmet");
 const botFilter = require("./filterRequests");
 const { globalLimiter } = require("./rateLimiter");
+const ipBanMiddleware = require("./ipBan");
 const logger = require("../config/logger");
 
 const configureMiddleware = (app) => {
   app.use(helmet());
+  
+  app.use(ipBanMiddleware);
 
   const allowedOrigins = [
     "http://localhost:5173",

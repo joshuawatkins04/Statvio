@@ -1,6 +1,7 @@
 const axios = require("axios");
 const querystring = require("querystring");
 const User = require("../../models/user");
+const logger = require("../../config/logger");
 require("dotenv").config();
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -27,7 +28,7 @@ class SpotifyAuth {
     };
 
     const url = `${authUrl}/authorize?${querystring.stringify(params)}`;
-    console.log("[SpotifyAuth] Authorization URL generated:", url);
+    logger.debug("[SpotifyAuth] Authorization URL generated.", { url });
     return url;
   }
 
@@ -45,13 +46,13 @@ class SpotifyAuth {
     };
 
     try {
-      console.log("[SpotifyAuth] Exchanging code for access token...");
+      logger.debug("[SpotifyAuth] Exchanging code for access token...");
       const response = await axios.post(tokenUrl, querystring.stringify(body), {
         headers,
       });
-      console.log("[SpotifyAuth] Access token response:", response.data);
 
       const { access_token, refresh_token, expires_in } = response.data;
+      logger.info("[SpotifyAuth] Access token received successfully.", { access_token });
       return {
         accessToken: access_token,
         refreshToken: refresh_token,
@@ -75,13 +76,13 @@ class SpotifyAuth {
     };
 
     try {
-      console.log("[SpotifyAuth] Frefreshing access token...");
+      logger.debug("[SpotifyAuth] Refreshing access token...");
       const response = await axios.post(tokenUrl, querystring.stringify(body), {
         headers,
       });
-      console.log("[SpotifyAuth] Refresh token response:", response.data);
 
       const { access_token, expires_in, refresh_token: newRefreshToken } = response.data;
+      logger.info("[SpotifyAuth] Access token refreshed successfully.", { access_token });
       return {
         accessToken: access_token,
         expiresIn: expires_in,
@@ -93,15 +94,16 @@ class SpotifyAuth {
   }
 
   static async unlinkUser(userId) {
-    console.log("[SpotifyAuth - unlinkSpotify] Unlinking Spotify API...");
+    logger.debug("[SpotifyAuth] Unlinking Spotify account...", { userId });
     try {
       const user = await User.findById(userId);
       if (!user) {
+        logger.warn("[SpotifyAuth] User not found.", { userId });
         throw new Error("User not found");
       }
 
       if (user.apisLinked.includes("Spotify")) {
-        user.apisLinked = user.apisLinked.filter(api => api !== "Spotify");
+        user.apisLinked = user.apisLinked.filter((api) => api !== "Spotify");
         user.apiCount = user.apisLinked.length;
       }
       user.spotify.accessToken = null;
@@ -109,7 +111,7 @@ class SpotifyAuth {
       user.spotify.linked = false;
       await user.save();
 
-      console.log("[SpotifyAuth - unlinkSpotify] Spotify account unlinked successfully.");
+      logger.info("[SpotifyAuth] Spotify account unlinked successfully.", { userId });
       return { success: true, message: "Spotify account unlinked successfully." };
     } catch (error) {
       SpotifyAuth._handleError(error, "unlinkUser");
@@ -117,16 +119,13 @@ class SpotifyAuth {
   }
 
   static _handleError(error, methodName) {
-    console.error(`[SpotifyAuth] Error in ${methodName}:`);
-    if (error.response) {
-      console.error(`Status Code: ${error.response.status}`);
-      console.error("Response Data:", error.response.data);
-    } else if (error.request) {
-      console.error("No response received:", error.request);
-    } else {
-      console.error("Error setting up request:", error.message);
-    }
-    throw error;
+    logger.error(`[SpotifyAuth] Error in ${methodName}.`, {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      stack: error.stack,
+    });
+    throw new Error(`SpotifyAuth error in ${methodName}: ${error.message}`);
   }
 }
 

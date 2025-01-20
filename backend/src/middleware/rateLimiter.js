@@ -1,4 +1,13 @@
 const rateLimit = require("express-rate-limit");
+const logger = require("../config/logger");
+
+const rateLimitMessage = (req, res) => {
+  logger.warn("[RateLimiter] Too many requests detected.", {
+    ip: req.ip,
+    path: req.path,
+  });
+  res.status(429).json({ message: "Too many requests, please try again later." });
+};
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -9,7 +18,7 @@ const globalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  message: "Too many requests, try again later.",
+  handler: rateLimitMessage,
 });
 
 const authLimiter = rateLimit({
@@ -18,7 +27,7 @@ const authLimiter = rateLimit({
   skip: (req) => req.method === "OPTIONS",
   standardHeaders: true,
   legacyHeaders: false,
-  message: "Too many requests, try again later.",
+  handler: rateLimitMessage,
 });
 
 const verifyLimiter = rateLimit({
@@ -27,7 +36,7 @@ const verifyLimiter = rateLimit({
   skip: (req) => req.method === "OPTIONS",
   standardHeaders: true,
   legacyHeaders: false,
-  message: "Too many verification requests, please try again.",
+  handler: rateLimitMessage,
 });
 
 module.exports = { globalLimiter, authLimiter, verifyLimiter };

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const logger = require("../config/logger");
 
 const userSchema = new mongoose.Schema(
   {
@@ -101,17 +102,23 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
-    console.log("[userModel] Hasing password...");
+    logger.info("[userModel] Hashing password...");
     this.password = await bcrypt.hash(this.password, 10);
-    console.log("[userModel] Successfully hashed password!");
+    logger.info("[userModel] Password hashed successfully!");
     next();
   } catch (error) {
+    logger.error("[userModel] Error hashing password.", { error: error.message, stack: error.stack });
     next(error);
   }
 });
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    return await bcrypt.compare(enteredPassword, this.password);
+  } catch (error) {
+    logger.error("[userModel] Error comparing passwords.", { error: error.message });
+    throw error;
+  }
 };
 
 const User = mongoose.model("User", userSchema);

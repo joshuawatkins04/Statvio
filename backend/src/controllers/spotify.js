@@ -1,6 +1,7 @@
 const { SpotifyAuth, SpotifyClient } = require("../services/spotify");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const logger = require("../config/logger");
 
 const FRONTEND_SPOTIFY_URL = process.env.FRONTEND_SPOTIFY_URL;
 
@@ -9,7 +10,10 @@ const FRONTEND_SPOTIFY_URL = process.env.FRONTEND_SPOTIFY_URL;
 const refreshSpotifySession = async (userId) => {
   const user = await User.findById(userId);
   if (!user || !user.spotify.linked) {
-    console.log("[Spotify] No valid Spotify session found in the database.");
+    logger.warn(
+      "[spotifyController - refreshSpotifySession] No valid Spotify session found in the database.",
+      { userId }
+    );
     throw new Error("Spotify session not found. User may not be authenticated.");
   }
 
@@ -17,7 +21,9 @@ const refreshSpotifySession = async (userId) => {
   const now = Date.now();
 
   if (!accessToken || !refreshToken) {
-    console.warn("[Spotify] Missing access or refresh token in user data.");
+    logger.warn("[spotifyController - refreshSpotifySession] Missing access or refresh token in user data.", {
+      userId,
+    });
     throw new Error("Spotify tokens missing. Please re-link Spotify.");
   }
 
@@ -32,13 +38,20 @@ const refreshSpotifySession = async (userId) => {
       user.spotify.refreshToken = refreshToken;
       user.spotify.tokenExpiresAt = tokenExpiresAt;
       await user.save();
-      console.log("[Spotify] Spotify token refreshed and updated in database.");
+      logger.debug(
+        "[spotifyController - refreshSpotifySession] Spotify token refreshed and updated in database.",
+        { userId }
+      );
     } catch (error) {
-      console.error("[Spotify] Failed to refresh access token:", error.message);
+      logger.error("[spotifyController - refreshSpotifySession] Failed to refresh access token.", {
+        userId,
+        error: error.message,
+        stack: error.stack,
+      });
       throw new Error("Failed to refresh Spotify access token.");
     }
   } else {
-    console.log("Spotify session is still valid.");
+    logger.debug("[spotifyController - refreshSpotifySession] Spotify session is still valid.", { userId });
   }
 
   return new SpotifyClient(accessToken);
@@ -49,15 +62,18 @@ const handleSpotifyRequest = (action) => {
     try {
       const userId = req.user?.id;
       if (!userId) {
-        console.warn("[handleSpotifyRequest] User ID missing in request.");
+        logger.warn("[spotifyController - handleSpotifyRequest] User ID missing in request.");
         return res.status(401).send("User not authenticated.");
       }
-      console.log("[handleSpotifyRequest] User ID:", userId);
+      logger.debug("[spotifyController - handleSpotifyRequest] User ID found.", { userId });
       const client = await refreshSpotifySession(userId);
       const result = await action(client, req);
       res.json(result);
     } catch (error) {
-      console.error(`[Spotify API] ERROR: ${error.message}`);
+      logger.error(`[spotifyController - handleSpotifyRequest] Error during Spotify request.`, {
+        error: error.message,
+        stack: error.stack,
+      });
       if (
         error.message.includes("Spotify session not found") ||
         error.message.includes("Refresh token not available")
@@ -74,7 +90,7 @@ const handleSpotifyRequest = (action) => {
 
 const redirectSpotifyAuth = (req, res) => {
   if (!req.user || !req.user.id) {
-    console.warn("[SpotifyAuth] User is not authenticated.");
+    logger.warn("[spotifyController - SpotifyAuth] User is not authenticated.");
     return res.status(401).send("User must be logged in to connect Spotify.");
   }
 
@@ -82,7 +98,9 @@ const redirectSpotifyAuth = (req, res) => {
   const authorizeUrl = SpotifyAuth.getAuthorisationUrl();
   const callbackUrl = `${authorizeUrl}&state=${jwtToken}`;
 
-  console.log("[SpotifyAuth] Redirecting to:", callbackUrl);
+  logger.debug("[spotifyController - SpotifyAuth] Redirecting to Spotify authorization URL.", {
+    callbackUrl,
+  });
   res.redirect(callbackUrl);
 };
 
@@ -92,15 +110,18 @@ const spotifyCallback = async (req, res) => {
     const state = req.query.state;
 
     if (!code) {
+      logger.warn("[spotifyController - spotifyCallback] Missing authorization code in query.");
       return res.status(400).send("Authorisation code not found.");
     }
     if (!state) {
+      logger.warn("[spotifyController - spotifyCallback] Missing JWT token in state parameter.");
       return res.status(401).send("Missing JWT token in state parameter.");
     }
 
     const decoded = jwt.verify(state, process.env.JWT_SECRET);
     const userId = decoded?.id;
     if (!userId) {
+      logger.warn("[spotifyController - spotifyCallback] User ID not found in decoded token.");
       return res.status(401).send("User not authenticated.");
     }
 
@@ -108,6 +129,7 @@ const spotifyCallback = async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
+      logger.warn("[spotifyController - spotifyCallback] User not found in database.", { userId });
       return res.status(404).send("User not found.");
     }
 
@@ -120,11 +142,14 @@ const spotifyCallback = async (req, res) => {
     };
     await user.save();
 
-    console.log("[musicController - spotifyCallback] Spotify details saved to database.");
+    logger.debug("[spotifyController - spotifyCallback] Spotify details saved to database.", { userId });
 
     res.redirect(FRONTEND_SPOTIFY_URL);
   } catch (error) {
-    console.error(error);
+    logger.error("[spotifyController - spotifyCallback] Error during Spotify callback.", {
+      error: error.message,
+      stack: error.stack,
+    });
     res.status(500).send("Authentication error");
   }
 };
@@ -160,11 +185,13 @@ const getSpotifyStatus = async (req, res) => {
   try {
     const userId = req.user?.id;
     if (!userId) {
+      logger.warn("[spotifyController - getSpotifyStatus] User not authenticated.");
       return res.status(401).json({ message: "User not authenticated." });
     }
 
     const user = await User.findById(userId);
     if (!user) {
+      logger.warn("[spotifyController - getSpotifyStatus] User not found in database.", { userId });
       return res.status(404).json({ message: "User not found." });
     }
 
@@ -176,29 +203,41 @@ const getSpotifyStatus = async (req, res) => {
       await user.save();
     }
 
-    console.log("[musicController - getSpotifyStatus] Spotify Linked Status:", isLinked);
+    logger.info("[spotifyController - getSpotifyStatus] Spotify linked status fetched.", {
+      userId,
+      isLinked,
+    });
     res.json({ linked: isLinked });
   } catch (error) {
-    console.error("[musicController - getSpotifyStatus] Error:", error.message);
+    logger.error("[spotifyController - getSpotifyStatus] Failed to fetch Spotify status.", {
+      error: error.message,
+      stack: error.stack,
+    });
     res.status(500).json({ message: "Failed to fetch Spotify status." });
   }
 };
 
 const unlinkSpotifyAccount = async (req, res) => {
-  console.log("[musicController - unlinkSpotifyAccount] Initiating Spotify unlink...");
+  logger.debug("[spotifyController - unlinkSpotifyAccount] Initiating Spotify unlink process.");
 
   try {
     const userId = req.user?.id;
     if (!userId) {
+      logger.warn("[spotifyController - unlinkSpotifyAccount] User not authenticated.");
       return res.status(401).json({ message: "User not authenticated." });
     }
 
     await SpotifyAuth.unlinkUser(userId);
-    console.log("[musicController - unlinkSpotifyAccount] Spotify account unlinked successfully.");
+    logger.info("[spotifyController - unlinkSpotifyAccount] Spotify account unlinked successfully.", {
+      userId,
+    });
 
     return res.status(200).json({ message: "Spotify account unlinked successfully." });
   } catch (error) {
-    console.error("[musicController - unlinkSpotifyAccount] Failed to unlink Spotify:", error.message);
+    logger.error("[spotifyController - unlinkSpotifyAccount] Failed to unlink Spotify account.", {
+      error: error.message,
+      stack: error.stack,
+    });
     res.status(500).json({ message: "Failed to unlink Spotify account." });
   }
 };

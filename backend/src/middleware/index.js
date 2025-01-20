@@ -4,33 +4,53 @@ const cors = require("cors");
 const helmet = require("helmet");
 const botFilter = require("./filterRequests");
 const { globalLimiter } = require("./rateLimiter");
+const logger = require("../config/logger");
 
 const configureMiddleware = (app) => {
   app.use(helmet());
 
-  const allowedOrigins = ["http://localhost:5173", "https://www.statvio.com", "https://statvio.com"];
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "https://www.statvio.com",
+    "https://statvio.com",
+    "https://statvio-9z2djbr1t-joshuas-projects-8e2156bf.vercel.app",
+  ];
 
-  app.use(
+  app.use((req, res, next) => {
     cors({
       origin: (origin, callback) => {
-        if (!origin) {
-          console.log("No origin detected. Allowing request.");
+        if (!origin && process.env.NODE_ENV === "development") {
+          logger.info("[CORS] No origin detected. Allowing request in development mode.", {
+            method: req.method,
+            path: req.originalUrl,
+            userAgent: req.headers["user-agent"] || "Unknown",
+            ip: req.ip,
+          });
           return callback(null, true);
         }
+        if (!origin) {
+          logger.warn("[CORS] No origin detected. Blocking request in production.", {
+            method: req.method,
+            path: req.originalUrl,
+            userAgent: req.headers["user-agent"] || "Unknown",
+            ip: req.ip,
+          });
+          return callback(new Error("Not allowed by CORS"));
+        }
 
-        if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
-          console.log(`Origin ${origin} allowed.`);
+        if (allowedOrigins.includes(origin)) {
+          logger.debug("[CORS] Origin allowed.", { origin });
           return callback(null, true);
         } else {
-          console.log(`Origin ${origin} blocked by CORS.`);
+          logger.warn("[CORS] Origin blocked by CORS.", { origin });
           return callback(new Error("Not allowed by CORS"));
         }
       },
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "withCredentials"],
       credentials: true,
-    })
-  );
+    })(req, res, next);
+  });
 
   app.use(botFilter);
 
@@ -39,16 +59,19 @@ const configureMiddleware = (app) => {
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, withCredentials");
     res.header("Access-Control-Allow-Credentials", "true");
+    logger.info("[OPTIONS] Preflight request handled.");
     res.sendStatus(200);
   });
 
-  app.set("trust proxy", true);
+  app.set("trust proxy", false);
 
   app.use(express.json());
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
 
   app.use(globalLimiter);
+
+  logger.info("[Middleware] Middleware configuration completed.");
 };
 
 module.exports = { configureMiddleware };

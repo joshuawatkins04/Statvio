@@ -1,4 +1,5 @@
 const OpenAI = require("openai");
+const logger = require("../../config/logger");
 require("dotenv").config();
 
 const openai = new OpenAI({
@@ -7,7 +8,7 @@ const openai = new OpenAI({
 
 class AiClient {
   async getResponse(userInput) {
-    console.log("[AiClient - getResponse] Getting response from openAi...");
+    logger.info("[AiClient - getResponse] Sending request to OpenAI API.", { userInput });
     try {
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
@@ -25,7 +26,7 @@ class AiClient {
       });
 
       const aiResponse = response.choices[0].message.content.trim();
-      console.log("[AiClient - getResponse] Received response from OpenAi.");
+      logger.info("[AiClient - getResponse] Response received from OpenAI.", { aiResponse });
       return aiResponse;
     } catch (error) {
       this._handleError(error);
@@ -35,11 +36,16 @@ class AiClient {
 
   _handleError(error) {
     if (error.response) {
-      console.error(`OpenAi API error (${error.response.status}):`, error.response.data);
+      logger.error("[AiClient - Error] OpenAI API error.", {
+        status: error.response.status,
+        data: error.response.data,
+      });
     } else if (error.request) {
-      console.error("[AiClient - Error] No response received from OpenAi:", error.request);
+      logger.error("[AiClient - Error] No response received from OpenAI API.", {
+        request: error.request,
+      });
     } else {
-      console.error("[AiClient - Error]", error.message);
+      logger.error("[AiClient - Error] Unexpected error occurred.", { message: error.message });
     }
   }
 }

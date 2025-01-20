@@ -1,32 +1,38 @@
 const jwt = require("jsonwebtoken");
+const logger = require("../config/logger");
 
 const authenticateToken = (req, res, next) => {
   let token = null;
   const authHeader = req.headers["authorization"];
   if (authHeader) {
     token = authHeader.split(" ")[1];
+    logger.debug("[authenticateToken] Token extracted from Authorization header.");
   }
   if (!token && req.query.token) {
     token = req.query.token;
-    console.warn("[Debug] Token fetched from query parameter.");
+    logger.debug("[authenticateToken] Token fetched from query parameter.");
   }
 
-  console.log("[Debug] Token Received:", token);
+  logger.debug(`[authenticateToken] Verifying token for route: ${req.method} ${req.originalUrl}`);
+  logger.debug("[authenticateToken] Token received.", { token });
 
   if (!token) {
-    console.warn("[Debug] No Token Found");
+    logger.warn("[authenticateToken] No token found in the request.");
     return res.status(401).json({ message: "Unauthorized" });
   }
   jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
     if (error) {
-      console.error("[Debug] Token Verification Failed:", error.message);
+      logger.error("[authenticateToken] Token verification failed.", {
+        error: error.message,
+        stack: error.stack,
+      });
       return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
     }
     if (!decoded || !decoded.id) {
-      console.error("[Debug] Token payload missing 'id':", decoded);
+      logger.error("[authenticateToken] Token payload missing 'id'.", { decoded });
       return res.status(403).json({ message: "Forbidden: Invalid token payload" });
     }
-    console.log("[Debug] Decoded Token Payload:", decoded);
+    logger.info("[authenticateToken] Token verified successfully.", { userId: decoded.id });
 
     req.user = { id: decoded.id };
     next();

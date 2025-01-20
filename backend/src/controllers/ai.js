@@ -1,4 +1,5 @@
 const AiClient = require("../services/ai/aiClient");
+const logger = require("../config/logger");
 
 const generateResponse = async (req, res, next) => {
   const userInput = req.body.input;
@@ -12,7 +13,7 @@ const generateResponse = async (req, res, next) => {
     const response = await client.getResponse(userInput);
     res.json({ response });
   } catch (error) {
-    console.error("[aiController - generateResponse] ERROR: failed to retrieve ai response.");
+    logger.error("[aiController - generateResponse] ERROR: failed to retrieve ai response.");
     next(error);
   }
 };

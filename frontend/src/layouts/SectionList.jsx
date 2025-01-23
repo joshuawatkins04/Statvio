@@ -18,7 +18,7 @@ const timeAgo = (isoTimestamp) => {
   return "just now";
 };
 
-const SectionList = ({ title, items }) => {
+const SectionList = ({ title, items, tutorial }) => {
   return (
     <section className="bg-surface p-6 mb-8 rounded-xl">
       <div className="flex items-center justify-between mb-4">
@@ -34,7 +34,7 @@ const SectionList = ({ title, items }) => {
             <div className="flex-shrink-0 flex items-center w-24 sm:w-28">
               <span className="w-8 text-center font-bold">{index + 1}.</span>
               <img
-                src={item.imageUrl || "https://via.placeholder.com/50"}
+                src={item.imageUrl || "https://placehold.co/48x48"}
                 alt={item.name}
                 className="ml-2 w-12 h-12 object-cover rounded-md"
               />
@@ -44,7 +44,17 @@ const SectionList = ({ title, items }) => {
               <div>
                 <div className="flex justify-start">
                   <p className="font-medium text-sm sm:text-base break-words">{item.name}</p>
-                  <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" />
+                  {tutorial ? (
+                    <img
+                      src={"https://placehold.co/20x20"}
+                      alt={item.name}
+                      className="mx-2 w-5 h-5 rounded-full"
+                    />
+                  ) : (
+                    <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" />
+                  )}
+
+                  {/* <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" /> */}
                 </div>
                 <p className="text-xs sm:text-sm text-gray-600 break-words">
                   {item.artist || "Unknown Artist"}

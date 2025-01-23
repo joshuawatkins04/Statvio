@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Spinner from "../components/Spinner";
 import SpotifyIcon from "../assets/Primary_Logo_Black_CMYK.svg";
 
-const SectionGrid = ({ title, items, loading }) => {
+const SectionGrid = ({ title, items, loading, tutorial }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -41,7 +41,7 @@ const SectionGrid = ({ title, items, loading }) => {
                 <div className="max-w-44">
                   <div className="w-full max-h-44 aspect-square rounded-md overflow-hidden flex justify-center items-center">
                     <img
-                      src={item.imageUrl || "https://via.placeholder.com/80"}
+                      src={item.imageUrl || "https://placehold.co/1000x1000"}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
@@ -51,7 +51,15 @@ const SectionGrid = ({ title, items, loading }) => {
                       <span className="font-bold text-onSurface">{index + 1}. </span>
                       {item.name}
                     </span>
-                    <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />
+                    {tutorial ? (
+                      <img
+                        src={"https://placehold.co/20x20"}
+                        alt={item.name}
+                        className="w-5 h-5 rounded-full"
+                      />
+                    ) : (
+                      <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />
+                    )}
                   </div>
                 </div>
               </li>

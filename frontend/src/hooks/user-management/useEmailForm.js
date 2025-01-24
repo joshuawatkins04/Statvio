@@ -42,7 +42,7 @@ const useEmailForm = () => {
     try {
       const response = await updateEmail(email);
       setMessage(response.message || "Email updated successfully!");
-      setCriteria((prev) => ({ ...prev, original: email })); // Update original email in criteria
+      setCriteria((prev) => ({ ...prev, original: email }));
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to update email.");
     }

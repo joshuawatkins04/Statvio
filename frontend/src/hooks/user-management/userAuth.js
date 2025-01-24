@@ -69,6 +69,15 @@ export const updatePassword = async (newPassword, confirmNewPassword) => {
   }
 };
 
+export const updateTutorialStatus = async (tutorialComplete) => {
+  try {
+    const response = await api.put("/update-tutorial-status", { tutorialComplete });
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "Update status failed.");
+  }
+};
+
 export async function refreshAccessToken() {
   try {
     const response = await api.post("/refresh-token");

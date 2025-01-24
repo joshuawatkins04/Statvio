@@ -443,6 +443,36 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
+const updateTutorialStatus = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { tutorialComplete } = req.body;
+
+    if (typeof tutorialComplete !== "boolean") {
+      return res.status(400).json({ message: "Invalid value" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.tutorialComplete === tutorialComplete) {
+      return res.status(400).json({ message: "Value already the same." });
+    } else {
+      user.tutorialComplete = tutorialComplete;
+      await user.save();
+    }
+
+    return res.status(200).json({ message: "Tutorial status updated successfully." });
+  } catch (error) {
+    logger.error("[userController - updateTutorialStatus] Error.", {
+      error: error.message,
+      stack: error.stack,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -454,4 +484,5 @@ module.exports = {
   updateUsername,
   updateEmail,
   updatePassword,
+  updateTutorialStatus,
 };

@@ -17,5 +17,6 @@ router.get("/api-info", authenticateToken, userController.getApiInfo);
 router.put("/update-username", authenticateToken, userController.updateUsername);
 router.put("/update-email", authenticateToken, userController.updateEmail);
 router.put("/update-password", authenticateToken, userController.updatePassword);
+router.put("/update-tutorial-status", authenticateToken, userController.updateTutorialStatus);
 
 module.exports = router;

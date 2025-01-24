@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    tutorialComplete: {
+      type: Boolean,
+      default: false,
+    },
     profileImageUrl: {
       type: String,
       default: "https://www.gravatar.com/avatar/?d=mp",

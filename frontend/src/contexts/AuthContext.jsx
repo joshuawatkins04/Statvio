@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log("Fetching user data...");
       const response = await api.get("/user");
-      console.log("Fetch user response:", response.profileImage);
+      console.log("Fetch user response:", response);
       setUser(response.data);
       setIsAuthenticated(true);
     } catch (error) {

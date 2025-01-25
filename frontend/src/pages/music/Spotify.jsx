@@ -11,6 +11,7 @@ import SectionGrid from "../../layouts/SectionGrid";
 import SectionList from "../../layouts/SectionList";
 import LoadingBar from "../../components/LoadingBar";
 import Spinner from "../../components/Spinner";
+import AI from "../AI";
 
 const SpotifyStats = () => {
   const [loading, setLoading] = useState(true);
@@ -179,6 +180,7 @@ const SpotifyStats = () => {
             )}
           </section>
 
+          <AI items={playlists} />
           <SectionGrid title="Top Songs" items={topSongs} loading={loadingSongs} />
           <SectionGrid title="Top Artists" items={topArtists} loading={loadingArtists} />
           <SectionList title="Listening History" items={listeningHistory} />

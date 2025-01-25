@@ -9,7 +9,8 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react({
         babel: {
-          plugins: mode === "production" ? [["transform-remove-console", { exclude: ["error", "warn"] }]] : [],
+          plugins:
+            mode === "production" ? [["transform-remove-console", { exclude: ["error", "warn"] }]] : [],
         },
       }),
     ],
@@ -20,6 +21,7 @@ export default defineConfig(({ mode }) => {
       __SPOTIFY_DASHBOARD__: JSON.stringify(env.VITE_SPOTIFY_DASHBOARD),
       __SOUNDCLOUD_DASHBOARD__: JSON.stringify(env.VITE_SOUNDCLOUD_DASHBOARD),
       __AUTH_URL__: JSON.stringify(env.VITE_AUTH_URL),
+      __AI_BASE_URL__: JSON.stringify(env.VITE_AI_BASE_URL),
       __SPOTIFY_BASE_URL__: JSON.stringify(env.VITE_SPOTIFY_BASE_URL),
       __SPOTIFY_AUTH_URL__: JSON.stringify(env.VITE_SPOTIFY_AUTH_URL),
       __SOUNDCLOUD_BASE_URL__: JSON.stringify(env.VITE_SOUNDCLOUD_BASE_URL),

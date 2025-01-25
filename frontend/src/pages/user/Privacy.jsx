@@ -1,11 +1,12 @@
 import React from "react";
+import DefaultLayout from "../../layouts/DefaultLayout";
 
 const Privacy = () => {
   return (
-    <div className="text-textPrimary px-6 py-12 mt-24">
-      <div className="max-w-4xl mx-auto bg-backdrop p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold mb-4 text-[var(--primary)]">Privacy Policy</h1>
-        <p className="mb-6 text-[var(--textSecondary)]">Last updated: January 14, 2025</p>
+    <DefaultLayout>
+      <div className="bg-surface p-8 rounded-lg shadow-md">
+        <h1 className="text-3xl font-bold mb-4 text-primary">Privacy Policy</h1>
+        <p className="mb-6 text-textSecondary">Last updated: January 14, 2025</p>
         <p className="mb-4">
           This Privacy Policy describes Our policies and procedures on the collection, use, and disclosure of
           Your information when You use the Service and tells You about Your privacy rights and how the law
@@ -19,13 +20,13 @@ const Privacy = () => {
             href="https://www.privacypolicies.com/privacy-policy-generator/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--primary)] hover:text-[var(--primaryHover)] underline ml-1"
+            className="text-primary hover:text-primaryHover underline ml-1"
           >
             Privacy Policy Generator
           </a>
           .
         </p>
-        <h2 className="text-2xl font-semibold mb-4 text-[var(--primary)]">Interpretation and Definitions</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-primary">Interpretation and Definitions</h2>
         <h3 className="text-xl font-medium mb-2">Interpretation</h3>
         <p className="mb-4">
           The words of which the initial letter is capitalized have meanings defined under the following
@@ -115,7 +116,7 @@ const Privacy = () => {
                 href="https://www.statvio.com"
                 rel="external nofollow noopener"
                 target="_blank"
-                className="text-[var(--primary)] hover:text-[var(--primaryHover)] underline ml-1"
+                className="text-primary hover:text-primaryHover underline ml-1"
               >
                 https://www.statvio.com
               </a>
@@ -130,9 +131,7 @@ const Privacy = () => {
             </p>
           </li>
         </ul>
-        <h2 className="text-2xl font-semibold my-6 text-[var(--primary)]">
-          Collecting and Using Your Personal Data
-        </h2>
+        <h2 className="text-2xl font-semibold my-6 text-primary">Collecting and Using Your Personal Data</h2>
         <h3 className="text-xl font-medium mb-4">Types of Data Collected</h3>
         <h4 className="text-lg font-medium mb-2">Personal Data</h4>
         <p className="mb-4">
@@ -156,10 +155,7 @@ const Privacy = () => {
           We use cookies and similar tracking technologies to enhance your experience. You can learn more
           about our cookie usage by reviewing our Cookies Policy.
         </p>
-        <a
-          href="/cookies-policy"
-          className="text-[var(--primary)] hover:text-[var(--primaryHover)] underline"
-        >
+        <a href="/cookies-policy" className="text-primary hover:text-primaryHover underline">
           Learn more about cookies
         </a>
         <p className="mt-4">
@@ -167,7 +163,7 @@ const Privacy = () => {
           policy on this page.
         </p>
       </div>
-    </div>
+    </DefaultLayout>
   );
 };
 

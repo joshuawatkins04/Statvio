@@ -1,4 +1,5 @@
 const { SpotifyAuth, SpotifyClient } = require("../services/spotify");
+const { generateAnalysis } = require("./ai");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const logger = require("../config/logger");
@@ -159,6 +160,25 @@ const getSpotifyPlaylists = handleSpotifyRequest(async (client) => {
   return { playlists };
 });
 
+const getSpotifySpecificPlaylist = handleSpotifyRequest(async (client, req) => {
+  const { playlist_id: playlistId = "" } = req.query;
+
+  // something like req.playlist_id.id
+
+  // console.log("req: ", req.query);
+  // console.log("playlistID: ", playlistId.id);
+
+  const playlistData = await client.getUserSpecificPlaylist(playlistId.id);
+
+  console.log("Got playlist data, returning response: ", playlistData);
+
+  const response = await generateAnalysis(playlistData);
+
+  console.log("Returning response: ", response);
+
+  return { response };
+});
+
 const getSpotifyTopSongs = handleSpotifyRequest(async (client, req) => {
   const { time_range: timeRange = "short_term" } = req.query;
   const topSongs = await client.getUserTopSongs(timeRange);
@@ -250,6 +270,7 @@ module.exports = {
   getSpotifyTopArtists,
   getSpotifyListeningHistory,
   getSpotifyPlaylists,
+  getSpotifySpecificPlaylist,
   getSpotifyStatus,
   unlinkSpotifyAccount,
 };

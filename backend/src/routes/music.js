@@ -18,9 +18,9 @@ router.get("/spotify/top-artists", authenticateToken, spotifyController.getSpoti
 router.get("/spotify/listening-history", authenticateToken, spotifyController.getSpotifyListeningHistory);
 router.get("/spotify/playlists", authenticateToken, spotifyController.getSpotifyPlaylists);
 router.get("/spotify/status", authenticateToken, spotifyController.getSpotifyStatus);
+router.get("/spotify/analyse-playlist", authenticateToken, spotifyController.getSpotifySpecificPlaylist);
 
 router.post("/spotify/unlink", authenticateToken, spotifyController.unlinkSpotifyAccount);
-
 
 /* Soundcloud routes */
 // https://developers.soundcloud.com/docs/api/guide#authentication
@@ -34,6 +34,5 @@ router.get("/soundcloud/playlists", authenticateToken, soundcloudController.) //
 router.get("/soundcloud/recent-activity", authenticateToken, soundcloudController.); // /me/activities/all/own
 router.post("/soundcloud/unlink", authenticateToken, soundcloudController.); // https://secure.soundcloud.com/sign-out 
 */
-
 
 module.exports = router;

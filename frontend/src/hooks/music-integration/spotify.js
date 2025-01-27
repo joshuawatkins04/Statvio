@@ -74,7 +74,7 @@ export const getSpotifyTopSongs = async (timeRange) => {
   console.log("getSpotifyTopSongs Sending timeRange:", timeRange);
   try {
     const response = await spotifyApi.get("/top-songs", {
-      params: { time_range: timeRange }
+      params: { time_range: timeRange },
     });
     return response.data;
   } catch (error) {
@@ -86,7 +86,7 @@ export const getSpotifyTopArtists = async (timeRange) => {
   console.log("getSpotifyTopArtists Sending timeRange:", timeRange);
   try {
     const response = await spotifyApi.get("/top-artists", {
-      params: { time_range: timeRange }
+      params: { time_range: timeRange },
     });
     return response.data;
   } catch (error) {
@@ -110,6 +110,18 @@ export const newTopSongs = async (time_range) => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message || "Failed to fetch Spotify new top songs with timestamp ",
+      timestamp
+    );
+  }
+};
+
+export const getAnalysis = async (playlistId) => {
+  try {
+    const response = spotifyApi.get("/analyse-playlist", { params: { playlist_id: playlistId } });
+    return response;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch analysis of playlist with AI ",
       timestamp
     );
   }

@@ -3,11 +3,22 @@ import { getSpotifyPlaylists } from "../hooks/music-integration/spotify";
 import {} from "../hooks/ai-integration/ai";
 import SpotifyIcon from "../assets/Primary_Logo_Black_CMYK.svg";
 
+import { getAnalysis } from "../hooks/music-integration/spotify";
+
 const AI = ({ items }) => {
   const [playlistData, setPlaylistData] = useState([]);
 
-  const handlePlaylistSelection = (item) => {
+  const handlePlaylistSelection = async (item) => {
     console.log("Test", item);
+
+    const response = await getAnalysis(item);
+
+    console.log("response: ", response.data);
+    // item is the playlist specific ID
+    // send the ID to backend route for specific playlist data
+    // backend gets data
+    // returns data back here
+    // sets setPlaylistData variable to the data
   };
 
   return (
@@ -16,11 +27,6 @@ const AI = ({ items }) => {
       <button className="p-4 bg-primary rounded-lg text-white">Insights on playlist</button>
 
       <div>
-        {/* {loading ? (
-          <div className="flex justify-center items-center h-40">
-            <Spinner />
-          </div>
-        ) : ( */}
         <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-5">
           {items.slice(0, items.length).map((item, index) => (
             <li

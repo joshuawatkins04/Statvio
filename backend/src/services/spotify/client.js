@@ -58,6 +58,28 @@ class SpotifyClient {
     });
   }
 
+  async getUserSpecificPlaylist(playlist_id) {
+    logger.debug("[SpotifyClient - getUserSpecificPlaylist] Fetching playlist items...");
+    return this._retryRequest(async () => {
+      try {
+        const response = await this.api.get(`/playlists/${playlist_id}/tracks`, {
+          params: {
+            fields: "items(track(name,artists(name))",
+            limit: 50,
+          },
+        });
+        const playlistData = response.data.items;
+        logger.debug("[SpotifyClient - getUserSpecificPlaylist] Successfully fetched playlist data.");
+        return playlistData.map((item) => ({
+          name: item.track.name,
+          artists: item.track.artists.map((artist) => artist.name).join(", "),
+        }));
+      } catch (error) {
+        this._handleError(error);
+      }
+    });
+  }
+
   async getUserTopSongs(timeRange = "short_term") {
     logger.debug("[SpotifyClient - getUserTopSongs] Fetching top songs...");
     return this._retryRequest(async () => {

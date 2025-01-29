@@ -18,4 +18,14 @@ const generateResponse = async (req, res, next) => {
   }
 };
 
-module.exports = { generateResponse };
+const generateAnalysis = async (data) => {
+  try {
+    const client = new AiClient();
+    const response = await client.getResponse(data);
+    return response;
+  } catch (error) {
+    logger.error("[aiController - generateResponse] ERROR: failed to retrieve ai response.");
+  }
+};
+
+module.exports = { generateResponse, generateAnalysis };

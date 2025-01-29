@@ -8,25 +8,53 @@ const openai = new OpenAI({
 
 class AiClient {
   async getResponse(userInput) {
-    logger.info("[AiClient - getResponse] Sending request to OpenAI API.", { userInput });
+    logger.info("[AiClient - getResponse] Sending request to OpenAI API.");
+
+    const formattedInput = userInput
+      .map((song, index) => `${index + 1}. "${song.name}" - ${song.artists}`)
+      .join("\n");
+
     try {
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
-        messages: [ 
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: userInput },
-         ],
-         response_format: {
-          "type": "text"
-         },
-         max_completion_tokens: 2048,
-         temperature: 1,
-         frequency_penalty: 0,
-         presence_penalty: 0
+        messages: [
+          {
+            role: "system",
+            content: `
+              You are a highly skilled music expert.
+              You will receive a list of songs, including their names and artists.
+              Your task is to:
+              - Analyze the provided list and identify the common vibe or theme.
+              - Recommend exactly **6** new songs (no more, no less) that fit the theme but are **not already included**.
+              - Provide each recommendation in the following format:
+        
+              1. **Song Name** - Artist: (very short description)
+
+              - The description must be **concise**, no longer than **8-10 words**.
+              - Do not include any extra commentary before or after the list.
+              - Ensure the list is **always exactly 6 songs**.
+        
+              Example output:
+        
+              1. **Blinding Lights** - The Weeknd: Upbeat synth-pop with retro vibes.
+              2. **Take Me Out** - Franz Ferdinand: Indie rock with danceable energy.
+              3. **Levitating** - Dua Lipa: Catchy disco-pop with funky grooves.
+              4. **R U Mine?** - Arctic Monkeys: Gritty rock with hypnotic riffs.
+              5. **Go Your Own Way** - Fleetwood Mac: Classic rock anthem of independence.
+              6. **Electric Feel** - MGMT: Psychedelic electro-pop with a groovy beat.
+
+              Only return the **6-song list** and nothing else.
+            `,
+          },
+          { role: "user", content: `Song List:\n${formattedInput}` },
+        ],
+        max_completion_tokens: 200,
+        temperature: 0.7,
+        frequency_penalty: 0,
+        presence_penalty: 0.5,
       });
 
       const aiResponse = response.choices[0].message.content.trim();
-      logger.info("[AiClient - getResponse] Response received from OpenAI.", { aiResponse });
       return aiResponse;
     } catch (error) {
       this._handleError(error);

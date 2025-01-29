@@ -162,21 +162,9 @@ const getSpotifyPlaylists = handleSpotifyRequest(async (client) => {
 
 const getSpotifySpecificPlaylist = handleSpotifyRequest(async (client, req) => {
   const { playlist_id: playlistId = "" } = req.query;
-
-  // something like req.playlist_id.id
-
-  // console.log("req: ", req.query);
-  // console.log("playlistID: ", playlistId.id);
-
   const playlistData = await client.getUserSpecificPlaylist(playlistId.id);
-
-  console.log("Got playlist data, returning response: ", playlistData);
-
-  const response = await generateAnalysis(playlistData);
-
-  console.log("Returning response: ", response);
-
-  return { response };
+  const getResponse = await generateAnalysis(playlistData);
+  return { response: getResponse };
 });
 
 const getSpotifyTopSongs = handleSpotifyRequest(async (client, req) => {

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { getSpotifyPlaylists } from "../hooks/music-integration/spotify";
-import {} from "../hooks/ai-integration/ai";
 import SpotifyIcon from "../assets/Primary_Logo_Black_CMYK.svg";
-
 import { getAnalysis } from "../hooks/music-integration/spotify";
+import Spinner from "../components/Spinner";
 
 const AI = ({ items }) => {
-  const [playlistData, setPlaylistData] = useState([]);
+  const [generatedResponse, setGeneratedResponse] = useState("Waiting for a playlist to be selected...");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animationKey, setAnimationKey] = useState(0);
   const [animationDirection, setAnimationDirection] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [loading, setLoading] = useState(false);
   const totalItems = items.length;
 
   useEffect(() => {
@@ -35,23 +34,29 @@ const AI = ({ items }) => {
   };
 
   const handlePlaylistSelection = async (item) => {
-    console.log("Test", item);
+    try {
+      setLoading(true);
 
-    const response = await getAnalysis(item);
+      const getResponse = await getAnalysis(item);
 
-    console.log("response: ", response.data);
-    // item is the playlist specific ID
-    // send the ID to backend route for specific playlist data
-    // backend gets data
-    // returns data back here
-    // sets setPlaylistData variable to the data
+      console.log("API response: ", getResponse);
+      let response = getResponse?.data?.response || "No response received.";
+      console.log("AI Response: ", response);
+
+      setGeneratedResponse(response);
+    } catch (error) {
+      console.error("Error fetching AI response:", error);
+      setGeneratedResponse("Failed to generate response.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="bg-surface p-6 mb-8 rounded-xl relative">
       <div className="md:flex items-center justify-between mb-4">
         <h3 className="text-lg sm:text-xl font-semibold">AI Insights</h3>
-        <button className="p-2 bg-primary rounded-lg text-white">Recommend Songs</button>
+        {/* <button className="p-2 bg-primary rounded-lg text-white">Recommend Songs</button> */}
       </div>
       <div className="flex justify-between items-center relative">
         <button
@@ -72,7 +77,6 @@ const AI = ({ items }) => {
                 : ""
             }`}
           >
-            {/* {items.slice(0, items.length).map((item, index) => ( */}
             {items
               .slice(currentIndex, currentIndex + itemsPerPage)
               .concat(items.slice(0, Math.max(0, currentIndex + itemsPerPage - totalItems)))
@@ -108,13 +112,29 @@ const AI = ({ items }) => {
               ))}
           </ul>
         </div>
-        {/* )} */}
         <button
           onClick={handleNext}
           className="z-10 flex justify-center items-center bg-primary rounded-full mt-0 ml-0 md:ml-2 p-4 h-5 w-5 hover:bg-primaryHover transition text-white font-extrabold top-1/2 transform -translate-y-1/2"
         >
           &gt;
         </button>
+      </div>
+      <div className="md:flex flex-col mt-4 mb-4">
+        <h3 className="text-lg sm:text-xl font-semibold mb-3">AI Response</h3>
+        <div className="break-words">
+          {loading ? (
+            <div className="flex justify-center items-center h-40">
+              <Spinner />
+            </div>
+          ) : (
+            <>
+              {generatedResponse.split("\n").map((line, index) => {
+                const formattedLine = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                return <p key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} className="mb-2" />;
+              })}
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

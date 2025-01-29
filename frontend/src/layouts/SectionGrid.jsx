@@ -25,6 +25,8 @@ const SectionGrid = ({ title, items, loading, tutorial }) => {
         </svg>
       </div>
 
+      <hr className="border-gray-300 my-4" />
+
       {/* Grid Content */}
       <div>
         {loading ? (

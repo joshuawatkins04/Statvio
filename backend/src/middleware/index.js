@@ -7,13 +7,16 @@ const { globalLimiter } = require("./rateLimiter");
 const ipBanMiddleware = require("./ipBan");
 const logger = require("../config/logger");
 
+const fs = require("fs");
+const path = require("path");
+
 const configureMiddleware = (app) => {
   app.use(helmet());
 
   app.use(ipBanMiddleware);
 
   const allowedOrigins = [
-    // "http://localhost:5173",
+    "http://localhost:5173",
     "https://www.statvio.com",
     "https://statvio.com",
     "https://statvio-9z2djbr1t-joshuas-projects-8e2156bf.vercel.app",
@@ -62,6 +65,21 @@ const configureMiddleware = (app) => {
       allowedHeaders: ["Content-Type", "Authorization", "withCredentials"],
       credentials: true,
     })(req, res, next);
+  });
+
+  app.use((req, res, next) => {
+    const start = Date.now();
+
+    res.on("finish", () => {
+      const duration = Date.now() - start;
+      const logEntry = `${new Date().toISOString()} - ${req.method} ${req.originalUrl} - ${
+        res.statusCode
+      } - ${duration}ms\n`;
+
+      fs.appendFileSync(path.join(__dirname, "../logs/api_logs.txt"), logEntry);
+    });
+
+    next();
   });
 
   app.use(botFilter);

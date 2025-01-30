@@ -131,53 +131,54 @@ const SpotifyStats = () => {
     <DefaultLayout title={"Your Spotify Stats"}>
       {connected && playlists.length > 0 ? (
         <>
-          <section className="p-6 mb-8 bg-surface rounded-xl flex flex-row items-center justify-center">
-            <div className="space-x-0 space-y-2 sm:space-x-2 sm:space-y-0">
+          <section className="p-6 mb-8 bg-surface rounded-xl flex flex-col md:flex-row items-center justify-between md:space-x-6 space-y-4 md:space-y-0">
+            <div className="px-5 flex flex-1 justify-center md:justify-end gap-1 xs:gap-10 items-center w-full md:w-auto">
               <button
                 onClick={() => handleTimeRangeChange("short_term")}
-                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold px-4 py-2 rounded-xl transition"
+                className="p-2 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold rounded-xl transition"
               >
                 4 Weeks
               </button>
               <button
                 onClick={() => handleTimeRangeChange("medium_term")}
-                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold px-4 py-2 rounded-xl transition"
+                className="p-2 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold rounded-xl transition"
               >
                 6 Months
               </button>
               <button
                 onClick={() => handleTimeRangeChange("long_term")}
-                className="min-w-32 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold px-4 py-2 rounded-xl transition"
+                className="p-2 border border-outline hover:border-surface text-textSecondary hover:text-white hover:bg-primary font-semibold rounded-xl transition"
               >
                 Lifetime
               </button>
             </div>
 
-            {connected ? (
-              <>
-                <Link
-                  to="/settings?section=manage-api"
-                  className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
-                >
-                  Unlink
-                </Link>
-                <span
-                  onClick={handleUpdateData}
-                  className="px-4 py-2 text-xs sm:text-sm font-semibold underline cursor-pointer"
-                >
-                  Update Data
-                </span>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/settings?section=manage-api"
-                  className="px-4 py-2 text-xs sm:text-sm font-semibold underline"
-                >
-                  Connect Spotify
-                </Link>
-              </>
-            )}
+            <div className="h-px md:h-16 bg-gray-300 w-full md:w-px"></div>
+
+            <div className="px-5 flex flex-1 justify-center md:justify-start gap-1 xs:gap-10 items-center w-full md:w-auto">
+              {connected ? (
+                <>
+                  <Link to="/settings?section=manage-api" className="p-2 text-sm font-semibold underline">
+                    Unlink
+                  </Link>
+                  <span
+                    onClick={handleUpdateData}
+                    className="p-2 text-sm font-semibold underline cursor-pointer"
+                  >
+                    Update Data
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/settings?section=manage-api"
+                    className="p-2 text-xs sm:text-sm font-semibold underline"
+                  >
+                    Connect Spotify
+                  </Link>
+                </>
+              )}
+            </div>
           </section>
 
           <AI items={playlists} />

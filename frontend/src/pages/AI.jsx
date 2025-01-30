@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SpotifyIcon from "../assets/Primary_Logo_Black_CMYK.svg";
 import { getAnalysis } from "../hooks/music-integration/spotify";
 import Spinner from "../components/Spinner";
+import { ChevronDown } from "lucide-react";
 
 const AI = ({ items }) => {
   const [generatedResponse, setGeneratedResponse] = useState(
@@ -12,8 +13,9 @@ const AI = ({ items }) => {
   const [animationDirection, setAnimationDirection] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState(null);
+  const [mode, setMode] = useState("Select Mode");
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const totalItems = items.length;
 
   useEffect(() => {
@@ -38,9 +40,10 @@ const AI = ({ items }) => {
     }
   }, [selectedPlaylist]);
 
-  const handleMode = (selectedMode) => {
-    setMode(selectedMode);
-    console.log("Mode selected:", selectedMode);
+  const handleSelect = (newMode) => {
+    setMode(newMode);
+    setIsOpen(false);
+    console.log("Mode selected:", mode);
   };
 
   const handlePrev = () => {
@@ -71,31 +74,40 @@ const AI = ({ items }) => {
       setGeneratedResponse("Failed to generate response.");
     } finally {
       setLoading(false);
-      setMode("");
+      setMode("Select Mode");
       setSelectedPlaylist("");
     }
   };
 
   return (
     <section className="bg-surface p-6 mb-8 rounded-xl relative">
-      <div className="md:flex items-center justify-between mb-4">
+      <div className="xs:flex items-center justify-between mb-4">
         <h3 className="text-lg sm:text-xl font-semibold pb-2 md:pb-0">AI Insights</h3>
-        <div className="space-x-2">
+        <div className="relative w-48">
           <button
-            onClick={() => handleMode("recommend_songs")}
-            className="p-2 bg-primary hover:bg-primaryHover transition rounded-lg text-white"
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-48 p-2 bg-surface text-textPrimary font-semibold rounded-lg flex items-center justify-between border-2 border-gray-300 hover:border-primary hover:text-primary transition"
           >
-            Recommend Songs
+            {mode}
+            <ChevronDown className="w-4 h-4 text-textPrimary" />
           </button>
-          <button
-            onClick={() => handleMode("playlist_stats")}
-            className="p-2 bg-primary hover:bg-primaryHover transition rounded-lg text-white"
-          >
-            Playlist Stats
-          </button>
-          {/* <button className="mt-4 p-2 bg-primary hover:bg-primaryHover transition rounded-lg text-white">
-          Generate Playlist
-        </button> */}
+
+          {isOpen && (
+            <div className="absolute z-10 left-0 w-48 bg-backdrop text-textSecondary font-semibold rounded-lg shadow-2xl">
+              <div
+                onClick={() => handleSelect("Recommend Songs")}
+                className="p-2 rounded-t-lg hover:bg-surface text-textSecondary hover:text-textPrimary cursor-pointer transition"
+              >
+                Recommend Songs
+              </div>
+              <div
+                onClick={() => handleSelect("Playlist Stats")}
+                className="p-2 rounded-b-lg hover:bg-surface hover:text-textPrimary cursor-pointer transition"
+              >
+                Playlist Stats
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

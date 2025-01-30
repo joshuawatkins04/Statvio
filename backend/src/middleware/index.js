@@ -9,11 +9,11 @@ const logger = require("../config/logger");
 
 const configureMiddleware = (app) => {
   app.use(helmet());
-  
+
   app.use(ipBanMiddleware);
 
   const allowedOrigins = [
-    //"http://localhost:5173",
+    // "http://localhost:5173",
     "https://www.statvio.com",
     "https://statvio.com",
     "https://statvio-9z2djbr1t-joshuas-projects-8e2156bf.vercel.app",
@@ -32,6 +32,15 @@ const configureMiddleware = (app) => {
           return callback(null, true);
         }
         if (!origin) {
+          if (req.originalUrl.startsWith("/api")) {
+            logger.info("[CORS] No origin detected, but allowing internal API request.", {
+              method: req.method,
+              path: req.originalUrl,
+              userAgent: req.headers["user-agent"] || "Unknown",
+              ip: req.ip,
+            });
+            return callback(null, true);
+          }
           logger.warn("[CORS] No origin detected. Blocking request in production.", {
             method: req.method,
             path: req.originalUrl,

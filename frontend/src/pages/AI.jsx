@@ -13,7 +13,7 @@ const AI = ({ items }) => {
   const [animationDirection, setAnimationDirection] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState("Select Mode");
+  const [mode, setMode] = useState("");
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const totalItems = items.length;
@@ -74,7 +74,7 @@ const AI = ({ items }) => {
       setGeneratedResponse("Failed to generate response.");
     } finally {
       setLoading(false);
-      setMode("Select Mode");
+      setMode("");
       setSelectedPlaylist("");
     }
   };
@@ -88,7 +88,7 @@ const AI = ({ items }) => {
             onClick={() => setIsOpen(!isOpen)}
             className="w-48 p-2 bg-surface text-textPrimary font-semibold rounded-lg flex items-center justify-between border-2 border-gray-300 hover:border-primary hover:text-primary transition"
           >
-            {mode}
+            {mode ? mode : "Select Mode"}
             <ChevronDown className="w-4 h-4 text-textPrimary" />
           </button>
 
@@ -161,7 +161,9 @@ const AI = ({ items }) => {
                             : currentIndex + index + 1}
                           .
                         </span>{" "}
-                        {item.name}
+                        <span className={item.name.trim() ? "" : "italic text-gray-400 pr-1"}>
+                          {item.name.trim() ? item.name : "No name"}
+                        </span>
                       </span>
 
                       <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />

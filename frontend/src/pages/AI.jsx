@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SpotifyIcon from "../assets/Primary_Logo_Black_CMYK.svg";
-import { getAnalysis } from "../hooks/music-integration/spotify";
+import { getPlaylistStats, getRecommendedSongs } from "../hooks/music-integration/spotify";
 import Spinner from "../components/Spinner";
 import { ChevronDown } from "lucide-react";
 
@@ -62,7 +62,21 @@ const AI = ({ items }) => {
     try {
       setLoading(true);
 
-      const getResponse = await getAnalysis(item);
+      let getResponse;
+      switch (mode) {
+        case "Recommend Songs":
+          getResponse = await getRecommendedSongs(item);
+          break;
+        case "Playlist Stats":
+          getResponse = await getPlaylistStats(item);
+          break;
+        default:
+          console.warn(`Unknown mode: ${mode}`);
+          setLoading(false);
+          return;
+      }
+
+      // const getResponse = await getRecommendedSongs(item);
 
       console.log("API response: ", getResponse);
       let response = getResponse?.data?.response || "No response received.";

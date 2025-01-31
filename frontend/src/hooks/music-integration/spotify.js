@@ -115,9 +115,22 @@ export const newTopSongs = async (time_range) => {
   }
 };
 
-export const getAnalysis = async (playlistId) => {
+// export const getAnalysis = async (playlistId) => {
+export const getRecommendedSongs = async (playlistId) => {
   try {
-    const response = spotifyApi.get("/analyse-playlist", { params: { playlist_id: playlistId } });
+    const response = spotifyApi.get("/recommend-playlist-songs", { params: { playlist_id: playlistId } });
+    return response;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch analysis of playlist with AI ",
+      timestamp
+    );
+  }
+};
+
+export const getPlaylistStats = async (playlistId) => {
+  try {
+    const response = spotifyApi.get("/analyse-playlist-stats", { params: { playlist_id: playlistId } });
     return response;
   } catch (error) {
     throw new Error(

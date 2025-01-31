@@ -18,7 +18,8 @@ router.get("/spotify/top-artists", authenticateToken, spotifyController.getSpoti
 router.get("/spotify/listening-history", authenticateToken, spotifyController.getSpotifyListeningHistory);
 router.get("/spotify/playlists", authenticateToken, spotifyController.getSpotifyPlaylists);
 router.get("/spotify/status", authenticateToken, spotifyController.getSpotifyStatus);
-router.get("/spotify/analyse-playlist", authenticateToken, spotifyController.getSpotifySpecificPlaylist);
+router.get("/spotify/recommend-playlist-songs", authenticateToken, spotifyController.getRecommendedSongs);
+router.get("/spotify/analyse-playlist-stats", authenticateToken, spotifyController.getPlaylistStats);
 
 router.post("/spotify/unlink", authenticateToken, spotifyController.unlinkSpotifyAccount);
 

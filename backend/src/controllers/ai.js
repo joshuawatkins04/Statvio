@@ -18,14 +18,24 @@ const generateResponse = async (req, res, next) => {
   }
 };
 
-const generateAnalysis = async (data) => {
+const generateRecommendedSongs = async (data) => {
   try {
     const client = new AiClient();
-    const response = await client.getResponse(data);
+    const response = await client.getResponse1(data);
     return response;
   } catch (error) {
-    logger.error("[aiController - generateResponse] ERROR: failed to retrieve ai response.");
+    logger.error("[aiController - generateRecommendedSongs] ERROR: failed to retrieve AI response.");
   }
 };
 
-module.exports = { generateResponse, generateAnalysis };
+const generateStatAnalysis = async (data) => {
+  try {
+    const client = new AiClient();
+    const response = await client.getResponse2(data);
+    return response;
+  } catch (error) {
+    logger.error("[aiController - generateStatAnalysis] ERROR: failed to retrieve AI response.");
+  }
+};
+
+module.exports = { generateResponse, generateRecommendedSongs, generateStatAnalysis };

@@ -99,7 +99,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-backdrop flex flex-col justify-center items-center transition-colors duration-300 pt-28">
+    <div className="min-h-screen bg-backdrop flex flex-col justify-center items-center transition-colors duration-300 pt-28 pr-3 pl-3">
       {/* Card Container */}
       <div className="bg-surface p-8 shadow-md rounded-xl w-full max-w-md transition-colors duration-300">
         <h1 className="text-2xl font-bold text-textPrimary dark:text-white mb-6 text-center">

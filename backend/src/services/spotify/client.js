@@ -27,9 +27,9 @@ class SpotifyClient {
         logger.debug("[SpotifyClient - getUserProfile] Successfully fetched user profile.");
         return {
           id: profile.id,
-          displayName: profile.display_name,
+          display_name: profile.display_name,
           email: profile.email,
-          imageUrl: profile.images?.[0]?.url || null,
+          image_url: profile.images?.[0]?.url || null,
         };
       } catch (error) {
         this._handleError(error);
@@ -49,8 +49,8 @@ class SpotifyClient {
         return playlists.map((item) => ({
           id: item.id,
           name: item.name,
-          trackCount: item.tracks.total,
-          imageUrl: item.images?.[0]?.url || null,
+          track_count: item.tracks.total,
+          image_url: item.images?.[0]?.url || null,
         }));
       } catch (error) {
         this._handleError(error);
@@ -64,15 +64,18 @@ class SpotifyClient {
       try {
         const response = await this.api.get(`/playlists/${playlist_id}/tracks`, {
           params: {
-            fields: "items(track(name,artists(name))",
+            fields: "items(track(name,duration_ms,external_urls(spotify),artists(name))",
             limit: 50,
           },
         });
         const playlistData = response.data.items;
+        console.log(playlistData);
         logger.debug("[SpotifyClient - getUserSpecificPlaylist] Successfully fetched playlist data.");
         return playlistData.map((item) => ({
           name: item.track.name,
           artists: item.track.artists.map((artist) => artist.name).join(", "),
+          duration: item.track.duration_ms,
+          track_url: item.track.external_urls.spotify,
         }));
       } catch (error) {
         this._handleError(error);
@@ -95,7 +98,8 @@ class SpotifyClient {
         return topSongs.map((item) => ({
           id: item.id,
           name: item.name,
-          imageUrl: item.album?.images?.[0]?.url || null,
+          image_url: item.album?.images?.[0]?.url || null,
+          track_url: item.external_urls.spotify,
         }));
       } catch (error) {
         this._handleError(error);
@@ -118,7 +122,8 @@ class SpotifyClient {
         return topArtists.map((item) => ({
           id: item.id,
           name: item.name,
-          imageUrl: item.images?.[0]?.url || null,
+          image_url: item.images?.[0]?.url || null,
+          artist_url: item.external_urls.spotify,
         }));
       } catch (error) {
         this._handleError(error);
@@ -135,12 +140,15 @@ class SpotifyClient {
         });
         const listeningHistory = response.data.items;
         logger.debug("[SpotifyClient - getUserListeningHistory] Successfully fetched listening history.");
+        console.log("\nListening History: \n", listeningHistory[0].track.artists);
         return listeningHistory.map((item) => ({
           id: item.track.id,
           name: item.track.name,
           artist: item.track.artists?.[0]?.name || null,
           played_at: item.played_at,
-          imageUrl: item.track.album?.images?.[0]?.url || null,
+          image_url: item.track.album?.images?.[0]?.url || null,
+          track_url: item.track.external_urls.spotify,
+          artist_url: item.track.artists[0].external_urls.spotify,
         }));
       } catch (error) {
         this._handleError(error);

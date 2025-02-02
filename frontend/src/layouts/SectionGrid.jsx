@@ -36,11 +36,9 @@ const SectionGrid = ({ title, items, loading, tutorial }) => {
         ) : (
           <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-5">
             {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
-              <a href={item.track_url || item.artist_url} target="_blank" rel="noopener noreferrer">
-                <li
-                  key={item.id || `section-grid-${index}`}
-                  className="flex flex-col items-center bg-surface"
-                >
+              // <a href={item.track_url || item.artist_url} target="_blank" rel="noopener noreferrer">
+              <li key={item.id || `section-grid-${index}`} className="flex flex-col items-center bg-surface">
+                <a href={item.track_url || item.artist_url} target="_blank" rel="noopener noreferrer">
                   <div className="max-w-44">
                     <div className="w-full max-h-44 aspect-square rounded-md overflow-hidden flex justify-center items-center">
                       <img
@@ -65,8 +63,9 @@ const SectionGrid = ({ title, items, loading, tutorial }) => {
                       )}
                     </div>
                   </div>
-                </li>
-              </a>
+                </a>
+              </li>
+              // </a>
             ))}
           </ul>
         )}

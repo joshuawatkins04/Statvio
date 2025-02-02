@@ -30,67 +30,51 @@ const SectionList = ({ title, items, tutorial }) => {
 
       <ul className="space-y-2">
         {items.slice(0, showItems ? items.length : 10).map((item, index) => (
-          <>
-            <li
-              key={`${item.id || "no-id"}-${index}`}
-              className="flex items-start p-2 bg-surface rounded-md hover:bg-gray-200 dark:hover:bg-gray-400 min-h-[70px]"
-            >
-              <div className="flex-shrink-0 flex items-center w-24 sm:w-28">
-                <span className="w-8 text-center font-bold">{index + 1}.</span>
-                <a href={item.track_url} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={item.image_url || "https://placehold.co/48x48"}
-                    alt={item.name}
-                    className="ml-2 w-12 h-12 object-cover rounded-md"
-                  />
-                </a>
-              </div>
+          <li
+            key={`${item.id || "no-id"}-${index}`}
+            className="flex items-start p-2 bg-surface rounded-md hover:bg-gray-200 dark:hover:bg-gray-400 min-h-[70px]"
+          >
+            <div className="flex-shrink-0 flex items-center w-24 sm:w-28">
+              <span className="w-8 text-center font-bold">{index + 1}.</span>
+              <a href={item.track_url} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={item.image_url || "https://placehold.co/48x48"}
+                  alt={item.name}
+                  className="ml-2 w-12 h-12 object-cover rounded-md"
+                />
+              </a>
+            </div>
 
-              <div className="flex-1 ml-4 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
-                  <div className="flex justify-start">
+            <div className="flex-1 ml-4 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="flex justify-start">
+                  <a href={item.track_url} target="_blank" rel="noopener noreferrer">
+                    <p className="font-medium text-sm sm:text-base break-words">{item.name}</p>
+                  </a>
+                  {tutorial ? (
+                    <img
+                      src={"https://placehold.co/20x20"}
+                      alt={item.name}
+                      className="mx-2 w-5 h-5 rounded-full"
+                    />
+                  ) : (
                     <a href={item.track_url} target="_blank" rel="noopener noreferrer">
-                      <p className="font-medium text-sm sm:text-base break-words">{item.name}</p>
+                      <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" />
                     </a>
-                    {tutorial ? (
-                      <img
-                        src={"https://placehold.co/20x20"}
-                        alt={item.name}
-                        className="mx-2 w-5 h-5 rounded-full"
-                      />
-                    ) : (
-                      <a href={item.track_url} target="_blank" rel="noopener noreferrer">
-                        <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" />
-                      </a>
-                    )}
-
-                    {/* <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" /> */}
-                  </div>
-                  <p className="text-xs sm:text-sm text-gray-600 break-words">
-                    <a href={item.artist_url} target="_blank" rel="noopener noreferrer">
-                      {item.artist || "Unknown Artist"}
-                    </a>
-                  </p>
+                  )}
                 </div>
-
-                <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
-                  {timeAgo(item.played_at)}
-                </span>
+                <p className="text-xs sm:text-sm text-gray-600 break-words">
+                  <a href={item.artist_url} target="_blank" rel="noopener noreferrer">
+                    {item.artist || "Unknown Artist"}
+                  </a>
+                </p>
               </div>
 
-              {/* <div className="flex flex-col justify-start">
-                <p className="font-medium text-sm sm:text-base break-words">{item.name}</p>
-                <p className="text-xs sm:text-sm text-gray-600 break-words">
-                  {item.artist || "Unknown Artist"}
-                </p>
-                <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />
-              </div> */}
-
-              {/* <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0 ml-4">
-              {timeAgo(item.played_at)}
-            </span> */}
-            </li>
-          </>
+              <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
+                {timeAgo(item.played_at)}
+              </span>
+            </div>
+          </li>
         ))}
         {items.length > 10 && (
           <button

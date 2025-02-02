@@ -27,19 +27,15 @@ const SpotifyStats = () => {
   useEffect(() => {
     const fetchConnectionStatus = async () => {
       try {
-        const response = await fetch(`${__SPOTIFY_BASE_URL__}/status`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        });
+        const status = await getSpotifyStatus();
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch Spotify status");
+        if (!status.linked) {
+          console.log("Spotify is not connected.");
+          setConnected(false);
+          return;
         }
 
-        const data = await response.json();
-        console.log("[Frontend] Spotify Linked Status:", data.linked);
-        setConnected(data.linked);
+        setConnected(status.linked);
       } catch (error) {
         console.error("[Frontend] Error fetching Spotify status:", error.message);
       }
@@ -156,28 +152,12 @@ const SpotifyStats = () => {
             <div className="h-px md:h-16 bg-gray-300 w-full md:w-px"></div>
 
             <div className="px-5 flex flex-1 justify-center md:justify-start gap-1 xs:gap-10 items-center w-full md:w-auto">
-              {connected ? (
-                <>
-                  <Link to="/settings?section=manage-api" className="p-2 text-sm font-semibold underline">
-                    Unlink
-                  </Link>
-                  <span
-                    onClick={handleUpdateData}
-                    className="p-2 text-sm font-semibold underline cursor-pointer"
-                  >
-                    Update Data
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/settings?section=manage-api"
-                    className="p-2 text-xs sm:text-sm font-semibold underline"
-                  >
-                    Connect Spotify
-                  </Link>
-                </>
-              )}
+              <Link to="/settings?section=manage-api" className="p-2 text-sm font-semibold underline">
+                Unlink
+              </Link>
+              <span onClick={handleUpdateData} className="p-2 text-sm font-semibold underline cursor-pointer">
+                Update Data
+              </span>
             </div>
           </section>
 

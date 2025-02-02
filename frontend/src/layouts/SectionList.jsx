@@ -37,17 +37,21 @@ const SectionList = ({ title, items, tutorial }) => {
             >
               <div className="flex-shrink-0 flex items-center w-24 sm:w-28">
                 <span className="w-8 text-center font-bold">{index + 1}.</span>
-                <img
-                  src={item.imageUrl || "https://placehold.co/48x48"}
-                  alt={item.name}
-                  className="ml-2 w-12 h-12 object-cover rounded-md"
-                />
+                <a href={item.track_url} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={item.image_url || "https://placehold.co/48x48"}
+                    alt={item.name}
+                    className="ml-2 w-12 h-12 object-cover rounded-md"
+                  />
+                </a>
               </div>
 
               <div className="flex-1 ml-4 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
                   <div className="flex justify-start">
-                    <p className="font-medium text-sm sm:text-base break-words">{item.name}</p>
+                    <a href={item.track_url} target="_blank" rel="noopener noreferrer">
+                      <p className="font-medium text-sm sm:text-base break-words">{item.name}</p>
+                    </a>
                     {tutorial ? (
                       <img
                         src={"https://placehold.co/20x20"}
@@ -55,13 +59,17 @@ const SectionList = ({ title, items, tutorial }) => {
                         className="mx-2 w-5 h-5 rounded-full"
                       />
                     ) : (
-                      <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" />
+                      <a href={item.track_url} target="_blank" rel="noopener noreferrer">
+                        <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" />
+                      </a>
                     )}
 
                     {/* <img src={SpotifyIcon} alt="Spotify" className="mx-2 w-5 h-5" /> */}
                   </div>
                   <p className="text-xs sm:text-sm text-gray-600 break-words">
-                    {item.artist || "Unknown Artist"}
+                    <a href={item.artist_url} target="_blank" rel="noopener noreferrer">
+                      {item.artist || "Unknown Artist"}
+                    </a>
                   </p>
                 </div>
 

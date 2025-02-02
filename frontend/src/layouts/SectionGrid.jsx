@@ -36,35 +36,37 @@ const SectionGrid = ({ title, items, loading, tutorial }) => {
         ) : (
           <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-5">
             {items.slice(0, isExpanded ? items.length : 5).map((item, index) => (
-              <li
-                key={item.id || `section-grid-${index}`}
-                className="flex flex-col items-center bg-surface cursor-pointer" // rounded-lg hover:shadow-lg transition-shadow p-4
-              >
-                <div className="max-w-44">
-                  <div className="w-full max-h-44 aspect-square rounded-md overflow-hidden flex justify-center items-center">
-                    <img
-                      src={item.imageUrl || "https://placehold.co/1000x1000"}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-sm sm:text-base text-onSurface font-medium line-clamp-2">
-                      <span className="font-bold text-onSurface">{index + 1}. </span>
-                      {item.name}
-                    </span>
-                    {tutorial ? (
+              <a href={item.track_url || item.artist_url} target="_blank" rel="noopener noreferrer">
+                <li
+                  key={item.id || `section-grid-${index}`}
+                  className="flex flex-col items-center bg-surface"
+                >
+                  <div className="max-w-44">
+                    <div className="w-full max-h-44 aspect-square rounded-md overflow-hidden flex justify-center items-center">
                       <img
-                        src={"https://placehold.co/20x20"}
+                        src={item.image_url || "https://placehold.co/1000x1000"}
                         alt={item.name}
-                        className="w-5 h-5 rounded-full"
+                        className="w-full h-full object-cover"
                       />
-                    ) : (
-                      <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />
-                    )}
+                    </div>
+                    <div className="flex justify-between mt-2">
+                      <span className="text-sm sm:text-base text-onSurface font-medium line-clamp-2">
+                        <span className="font-bold text-onSurface">{index + 1}. </span>
+                        {item.name}
+                      </span>
+                      {tutorial ? (
+                        <img
+                          src={"https://placehold.co/20x20"}
+                          alt={item.name}
+                          className="w-5 h-5 rounded-full"
+                        />
+                      ) : (
+                        <img src={SpotifyIcon} alt="Spotify" className="w-5 h-5" />
+                      )}
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
+              </a>
             ))}
           </ul>
         )}

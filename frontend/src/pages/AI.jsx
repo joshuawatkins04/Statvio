@@ -162,7 +162,7 @@ const AI = ({ items }) => {
                   <div className="max-w-44">
                     <div className="w-full max-h-44 aspect-square rounded-md overflow-hidden flex justify-center items-center">
                       <img
-                        src={item.imageUrl || "https://placehold.co/1000x1000"}
+                        src={item.image_url || "https://placehold.co/1000x1000"}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />

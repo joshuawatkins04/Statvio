@@ -69,7 +69,6 @@ class SpotifyClient {
           },
         });
         const playlistData = response.data.items;
-        console.log(playlistData);
         logger.debug("[SpotifyClient - getUserSpecificPlaylist] Successfully fetched playlist data.");
         return playlistData.map((item) => ({
           name: item.track.name,
@@ -140,7 +139,6 @@ class SpotifyClient {
         });
         const listeningHistory = response.data.items;
         logger.debug("[SpotifyClient - getUserListeningHistory] Successfully fetched listening history.");
-        console.log("\nListening History: \n", listeningHistory[0].track.artists);
         return listeningHistory.map((item) => ({
           id: item.track.id,
           name: item.track.name,

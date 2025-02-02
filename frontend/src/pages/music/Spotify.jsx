@@ -187,9 +187,15 @@ const SpotifyStats = () => {
           <SectionList title="Listening History" items={listeningHistory} />
         </>
       ) : (
-        <div className="mt-8">
+        <div className="mt-8 text-center">
           {!connected ? (
-            <p>Spotify not connected. Click "Connect Spotify" above.</p>
+            <p>
+              Spotify not connected. Click{" "}
+              <Link to="/settings?section=manage-api" className="font-semibold underline">
+                Connect Spotify
+              </Link>{" "}
+              to connect.
+            </p>
           ) : (
             <p>No playlists found. Try "Update Data" or check your Spotify account.</p>
           )}

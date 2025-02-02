@@ -1,38 +1,3 @@
-// const logger = require("../config/logger");
-
-// const bannedIps = new Map();
-// const BAN_DURATION = 24 * 60 * 60 * 1000;
-// let totalBanCount = 0;
-
-// function getBannedIpCount() {
-//   return bannedIps.size;
-// }
-
-// function ipBanMiddleware(req, res, next) {
-//   const ip = req.ip;
-//   const path = req.path;
-
-//   const banExpiration = bannedIps.get(ip);
-//   if (banExpiration > Date.now()) {
-//     logger.warn("Blocked request from banned IP", { ip, path });
-//     return res.status(403).json({ error: "Forbidden" });
-//   } else {
-//     bannedIps.delete(ip);
-//   }
-
-//   if (!path.startsWith("/api")) {
-//     bannedIps.set(ip, Date.now() + BAN_DURATION);
-//     logger.warn("Banning IP for suspicious path", { ip, path });
-//     totalBanCount++;
-//     logger.info(`Total ban count: ${totalBanCount}. Current number of banned IPs: ${getBannedIpCount()}`);
-//     return res.status(403).json({ error: "Forbidden" });
-//   }
-
-//   next();
-// }
-
-// module.exports = ipBanMiddleware;
-
 const logger = require("../config/logger");
 
 const BAN_DURATION = 24 * 60 * 60 * 1000;
@@ -43,7 +8,7 @@ let totalBanCount = 0;
 const bannedIps = new Map();
 const suspiciousRequests = new Map();
 
-const allowedPaths = ["/api", "/favicon.ico", "/robots.txt", "/manifest.json", "/static", "/assets"];
+const allowedPaths = ["/", "/api", "/favicon.ico", "/robots.txt", "/manifest.json", "/static", "/assets"];
 
 function isPathAllowed(path) {
   return allowedPaths.some((allowed) => path.startsWith(allowed));

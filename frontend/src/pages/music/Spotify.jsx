@@ -170,11 +170,16 @@ const SpotifyStats = () => {
         <div className="mt-8 text-center">
           {!connected ? (
             <p>
-              Spotify not connected. Click{" "}
-              <Link to="/settings?section=manage-api" className="font-semibold underline">
-                Connect Spotify
-              </Link>{" "}
-              to connect.
+              <p className="font-bold">In development mode.</p>
+              To be added to the list of users for testing, contact joshua@watkinsfamily.com.au with First and
+              Last Name and Email of your Spotify account.
+              <p className="mt-2">
+                Spotify not connected. Click{" "}
+                <Link to="/settings?section=manage-api" className="font-semibold underline">
+                  Connect Spotify
+                </Link>{" "}
+                to connect.
+              </p>
             </p>
           ) : (
             <p>No playlists found. Try "Update Data" or check your Spotify account.</p>

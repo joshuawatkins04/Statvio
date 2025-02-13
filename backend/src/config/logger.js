@@ -32,15 +32,14 @@ const logger = createLogger({
       maxFiles: "14d",
     }),
     new DailyRotateFile({
-      filename: `${logDirectory}/%DATE%-combined.log`,
+      filename: `${logDirectory}/%DATE%-main.log`,
+      level: "info",
       datePattern: "YYYY-MM-DD",
       maxSize: "20m",
       maxFiles: "14d",
     }),
   ],
-  exceptionHandlers: [
-    new transports.File({ filename: `${logDirectory}/exceptions.log` }),
-  ],
+  exceptionHandlers: [new transports.File({ filename: `${logDirectory}/exceptions.log`, level: "error" })],
 });
 
 logger.on("error", (err) => {

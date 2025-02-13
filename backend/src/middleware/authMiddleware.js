@@ -24,7 +24,6 @@ const authenticateToken = (req, res, next) => {
     if (error) {
       logger.error("[authenticateToken] Token verification failed.", {
         error: error.message,
-        stack: error.stack,
       });
       return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
     }

@@ -16,7 +16,7 @@ const configureMiddleware = (app) => {
   // app.use(ipBanMiddleware);
 
   const allowedOrigins = [
-    "http://localhost:5173",
+    // "http://localhost:5173",
     "https://www.statvio.com",
     "https://statvio.com",
     "https://statvio-9z2djbr1t-joshuas-projects-8e2156bf.vercel.app",
@@ -67,20 +67,20 @@ const configureMiddleware = (app) => {
     })(req, res, next);
   });
 
-  // app.use((req, res, next) => {
-  //   const start = Date.now();
+  /*app.use((req, res, next) => {
+    const start = Date.now();
 
-  //   res.on("finish", () => {
-  //     const duration = Date.now() - start;
-  //     const logEntry = `${new Date().toISOString()} - ${req.method} ${req.originalUrl} - ${
-  //       res.statusCode
-  //     } - ${duration}ms\n`;
+    res.on("finish", () => {
+      const duration = Date.now() - start;
+      const logEntry = `${new Date().toISOString()} - ${req.method} ${req.originalUrl} - ${
+        res.statusCode
+      } - ${duration}ms\n`;
 
-  //     fs.appendFileSync(path.join(__dirname, "../logs/api_logs.txt"), logEntry);
-  //   });
+      fs.appendFileSync(path.join(__dirname, "../logs/api_logs.txt"), logEntry);
+    });
 
-  //   next();
-  // });
+    next();
+  });*/
 
   // app.use(botFilter);
 

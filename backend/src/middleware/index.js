@@ -13,7 +13,7 @@ const path = require("path");
 const configureMiddleware = (app) => {
   app.use(helmet());
 
-  app.use(ipBanMiddleware);
+  // app.use(ipBanMiddleware);
 
   const allowedOrigins = [
     "http://localhost:5173",
@@ -50,7 +50,7 @@ const configureMiddleware = (app) => {
             userAgent: req.headers["user-agent"] || "Unknown",
             ip: req.ip,
           });
-          return callback(new Error("Not allowed by CORS"));
+          return res.status(403).json({ message: "Not allowed by CORS" });
         }
 
         if (allowedOrigins.includes(origin)) {
@@ -58,7 +58,7 @@ const configureMiddleware = (app) => {
           return callback(null, true);
         } else {
           logger.warn("[CORS] Origin blocked by CORS.", { origin });
-          return callback(new Error("Not allowed by CORS"));
+          return res.status(403).json({ message: "Not allowed by CORS" });
         }
       },
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -67,22 +67,22 @@ const configureMiddleware = (app) => {
     })(req, res, next);
   });
 
-  app.use((req, res, next) => {
-    const start = Date.now();
+  // app.use((req, res, next) => {
+  //   const start = Date.now();
 
-    res.on("finish", () => {
-      const duration = Date.now() - start;
-      const logEntry = `${new Date().toISOString()} - ${req.method} ${req.originalUrl} - ${
-        res.statusCode
-      } - ${duration}ms\n`;
+  //   res.on("finish", () => {
+  //     const duration = Date.now() - start;
+  //     const logEntry = `${new Date().toISOString()} - ${req.method} ${req.originalUrl} - ${
+  //       res.statusCode
+  //     } - ${duration}ms\n`;
 
-      fs.appendFileSync(path.join(__dirname, "../logs/api_logs.txt"), logEntry);
-    });
+  //     fs.appendFileSync(path.join(__dirname, "../logs/api_logs.txt"), logEntry);
+  //   });
 
-    next();
-  });
+  //   next();
+  // });
 
-  app.use(botFilter);
+  // app.use(botFilter);
 
   app.options("*", (req, res) => {
     res.header("Access-Control-Allow-Origin", req.headers.origin || "*");

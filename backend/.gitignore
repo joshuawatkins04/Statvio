@@ -1,6 +1,7 @@
 server.js
 
 # Logs
+api_logs.txt
 logs/
 *.log
 npm-debug.log*

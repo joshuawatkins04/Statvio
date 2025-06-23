@@ -15,8 +15,10 @@ const filterWarnMessage = format((info) => {
     : undefined;
 });
 
-const excludeWarnMessage = form((info) => {
-  return info.message.includes("[CORS] No origin detected. Blocking request in production.") ? false : info;
+const excludeWarnMessage = format((info) => {
+  return info.message.includes("[CORS] No origin detected. Blocking request in production.")
+    ? undefined
+    : info;
 });
 
 const logFormat = format.combine(

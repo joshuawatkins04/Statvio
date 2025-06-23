@@ -32,7 +32,7 @@ const createUser = async ({ username, email, password }) => {
 };
 
 // Login user business logic
-const authenticateUser = async ({ usernameOrEmail, password }) => {
+const authenticateUser = async ({ res, usernameOrEmail, password }) => {
   const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameOrEmail);
   const query = isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail };
   logger.debug("[userController - authenticateUser] Authenticating user.", { usernameOrEmail });
@@ -40,13 +40,15 @@ const authenticateUser = async ({ usernameOrEmail, password }) => {
   const user = await User.findOne(query);
   if (!user) {
     logger.warn("[userController - authenticateUser] User not found.", { usernameOrEmail });
-    throw new Error("Invalid username, email or password.");
+    res.status(401).json({ message: "Incorrect email or password" });
+    return null;
   }
   const isPasswordMatch = await user.comparePassword(password);
 
   if (!isPasswordMatch) {
     logger.warn("[userController - authenticateUser] Password mismatch.", { usernameOrEmail });
-    throw new Error("Invalid email or password.");
+    res.status(401).json({ message: "Incorrect email or password" });
+    return null;
   }
 
   logger.info("[userController - authenticateUser] User authenticated successfully.", { userId: user._id });
@@ -151,7 +153,10 @@ const loginUser = async (req, res, next) => {
   }
 
   try {
-    const user = await authenticateUser({ usernameOrEmail, password });
+    const user = await authenticateUser({ res, usernameOrEmail, password });
+    if (!user) {
+      return;
+    }
 
     const token = generateToken(user._id);
     generateCookie({ res, token });

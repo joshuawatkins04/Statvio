@@ -6,7 +6,7 @@ const handleDuplicateKeyError = (error) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  logger.debug("[Debug - errorHandler] err:", { error: err});
+  logger.debug("[Debug - errorHandler] err:", { error: err });
   logger.debug("[Debug - errorHandler] req:", req ? "Valid req object" : "Invalid req object");
   logger.debug("[Debug - errorHandler] res:", res ? "Valid res object" : "Invalid res object");
   logger.debug("[Debug - errorHandler] next:", next ? "Valid next function" : "Invalid next function");
@@ -17,9 +17,10 @@ const errorHandler = (err, req, res, next) => {
   }
 
   logger.error("[Global - errorHandler] ERROR:", { error: err });
-  
+
   const route = req?.method && req?.originalUrl ? `${req.method} ${req.originalUrl}` : "unknown route";
-  const userIp = req?.ip || req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "unknown IP";
+  const userIp =
+    req?.ip || req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "unknown IP";
   const userId = req?.user?.id || "unknown user ID";
   const userEmail = req?.user?.email || "unknown user email";
 
@@ -63,7 +64,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Default to 500 Server Error
-  logger.error("[Global - errorHandler] Unhandled Error:", { message: err.message, stack: err.stack  });
+  logger.error("[Global - errorHandler] Unhandled Error:", { message: err.message, stack: err.stack });
   res.status(500).json({ message: "An unexpected server error occurred." });
 };
 

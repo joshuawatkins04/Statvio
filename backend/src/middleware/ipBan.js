@@ -49,14 +49,12 @@ function ipBanMiddleware(req, res, next) {
       logger.info(`Total ban count: ${totalBanCount}. Current number of banned IPs: ${getBannedIpCount()}`);
       return res.status(403).json({ error: "Forbidden" });
     }
-  } else {
-    if (suspiciousRequests.has(ip)) {
-      const recentTimestamps = suspiciousRequests.get(ip).filter((ts) => now - ts < SUSPICIOUS_WINDOW);
-      if (recentTimestamps.length === 0) {
-        suspiciousRequests.delete(ip);
-      } else {
-        suspiciousRequests.set(ip, recentTimestamps);
-      }
+  } else if (suspiciousRequests.has(ip)) {
+    const recentTimestamps = suspiciousRequests.get(ip).filter((ts) => now - ts < SUSPICIOUS_WINDOW);
+    if (recentTimestamps.length === 0) {
+      suspiciousRequests.delete(ip);
+    } else {
+      suspiciousRequests.set(ip, recentTimestamps);
     }
   }
 

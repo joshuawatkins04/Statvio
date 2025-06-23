@@ -67,21 +67,6 @@ const configureMiddleware = (app) => {
     })(req, res, next);
   });
 
-  /*app.use((req, res, next) => {
-    const start = Date.now();
-
-    res.on("finish", () => {
-      const duration = Date.now() - start;
-      const logEntry = `${new Date().toISOString()} - ${req.method} ${req.originalUrl} - ${
-        res.statusCode
-      } - ${duration}ms\n`;
-
-      fs.appendFileSync(path.join(__dirname, "../logs/api_logs.txt"), logEntry);
-    });
-
-    next();
-  });*/
-
   // app.use(botFilter);
 
   app.options("*", (req, res) => {

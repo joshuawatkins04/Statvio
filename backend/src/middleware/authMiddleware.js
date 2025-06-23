@@ -27,7 +27,7 @@ const authenticateToken = (req, res, next) => {
       });
       return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
     }
-    if (!decoded || !decoded.id) {
+    if (!decoded?.id) {
       logger.error("[authenticateToken] Token payload missing 'id'.", { decoded });
       return res.status(403).json({ message: "Forbidden: Invalid token payload" });
     }

@@ -90,7 +90,7 @@ const handleSpotifyRequest = (action) => {
 /* Controller functions */
 
 const redirectSpotifyAuth = (req, res) => {
-  if (!req.user || !req.user.id) {
+  if (!req.user?.id) {
     logger.warn("[spotifyController - SpotifyAuth] User is not authenticated.");
     return res.status(401).send("User must be logged in to connect Spotify.");
   }

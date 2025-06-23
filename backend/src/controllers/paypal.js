@@ -49,7 +49,6 @@ const capturePayment = async (req, res, next) => {
 };
 
 const cancelOrder = (req, res, next) => {
-  // return res.redirect("http://localhost:5173/cancel-order");
   logger.info("[paypalController - cancelOrder] Redirecting to cancel URL.", {
     url: FRONTEND_PAYPAL_CANCEL_URL,
   });

@@ -255,7 +255,7 @@ const getUserDashboard = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   logger.debug("[userController - getUser] Function called");
   try {
-    if (!req.user || !req.user.id) {
+    if (!req.user?.id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 

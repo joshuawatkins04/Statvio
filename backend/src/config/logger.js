@@ -23,9 +23,13 @@ const excludeWarnMessage = format((info) => {
 
 const logFormat = format.combine(
   format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+  format.errors({ stack: true }),
   format.printf(({ timestamp, level, message, stack, ...metadata }) => {
+    const time = typeof timestamp === "string" ? timestamp : new Date().toISOString();
+    const outputMessage = stack || message;
+    const safeMessage = typeof outputMessage === "string" ? outputMessage : JSON.stringify(outputMessage);
     const meta = Object.keys(metadata).length ? JSON.stringify(metadata) : "";
-    return `${timestamp} [${level.toUpperCase()}]: ${stack || message} ${meta}`;
+    return `${time} [${level.toUpperCase()}]: ${safeMessage} ${meta}`;
   })
 );
 

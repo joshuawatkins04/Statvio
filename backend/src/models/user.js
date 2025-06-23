@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (username) {
-          return this.isNew || this.isModified("username") ? /^[a-zA-Z0-9_]{4,}$/.test(username) : true;
+          return this.isNew || this.isModified("username") ? /^\w{4,}$/.test(username) : true;
         },
         message: "Please provide a valid username.",
       },

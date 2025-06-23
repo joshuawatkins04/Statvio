@@ -1,6 +1,8 @@
 sitemap.js
 routesConfig.js
 
+.env.production
+
 # Logs
 logs
 *.log

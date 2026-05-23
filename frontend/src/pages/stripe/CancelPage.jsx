@@ -4,15 +4,11 @@ import { useNavigate } from "react-router-dom";
 const CancelPage = () => {
   const navigate = useNavigate();
 
-  const handleReturn = () => {
-    navigate("/");
-  };
-
   return (
     <div>
-      <h2>Payment Cancelled</h2>
-      <p>You have cancelled the payment process.</p>
-      <button onClick={handleReturn}>Go Back to Home</button>
+      <h2>Checkout Cancelled</h2>
+      <p>Your subscription checkout was cancelled. No charge was made.</p>
+      <button onClick={() => navigate("/dashboard")}>Back to Dashboard</button>
     </div>
   );
 };

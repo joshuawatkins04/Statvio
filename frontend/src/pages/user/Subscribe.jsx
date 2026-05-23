@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { startCheckout } from "../../hooks/payments/stripe";
 
 const Subscribe = () => {
   const [loading, setLoading] = useState(false);
@@ -6,7 +7,8 @@ const Subscribe = () => {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      window.location.href = `${__PAYPAL_BASE_URL__}/pay`;
+      const url = await startCheckout();
+      window.location.href = url;
     } catch (error) {
       console.error("Error initiating payment:", error);
       alert("Failed to initiate payment. Please try again.");

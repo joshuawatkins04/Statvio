@@ -20,8 +20,8 @@ import SoundcloudPage from "./pages/music/Soundcloud";
 import MoviesPage from "./pages/movies/Movies";
 import GamingPage from "./pages/gaming/Gaming";
 
-import SuccessPage from "./pages/paypal/SuccessPage";
-import CancelPage from "./pages/paypal/CancelPage";
+import SuccessPage from "./pages/stripe/SuccessPage";
+import CancelPage from "./pages/stripe/CancelPage";
 
 function app() {
   const { isAuthenticated, authLoading } = useAuth();
@@ -123,7 +123,7 @@ function app() {
           }
         />
         <Route
-          path="/complete-order"
+          path="/subscribe/success"
           element={
             <ProtectedRoute>
               <SuccessPage />
@@ -131,7 +131,7 @@ function app() {
           }
         />
         <Route
-          path="/cancel-order"
+          path="/subscribe/cancel"
           element={
             <ProtectedRoute>
               <CancelPage />

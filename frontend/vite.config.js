@@ -26,8 +26,7 @@ export default defineConfig(({ mode }) => {
       __SPOTIFY_AUTH_URL__: JSON.stringify(env.VITE_SPOTIFY_AUTH_URL),
       __SOUNDCLOUD_BASE_URL__: JSON.stringify(env.VITE_SOUNDCLOUD_BASE_URL),
       __SOUNDCLOUD_AUTH_URL__: JSON.stringify(env.VITE_SOUNDCLOUD_AUTH_URL),
-      __PAYPAL_BASE_URL__: JSON.stringify(env.VITE_PAYPAL_BASE_URL),
-      __PAYPAL_COMPLETE_ORDER_URL__: JSON.stringify(env.VITE_PAYPAL_COMPLETE_ORDER_URL),
+      __STRIPE_BASE_URL__: JSON.stringify(env.VITE_STRIPE_BASE_URL),
       __AWS_UPLOAD_URL__: JSON.stringify(env.VITE_AWS_UPLOAD_URL),
     },
   };

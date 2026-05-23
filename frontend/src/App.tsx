@@ -1,20 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { Route, Routes } from "react-router-dom"
+import { Navbar } from "@/components/layout/Navbar"
+import { NotFound } from "@/components/NotFound"
+import { LandingPage } from "@/pages/LandingPage"
+import { Login } from "@/pages/auth/Login"
+import { Signup } from "@/pages/auth/Signup"
 
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   )
 }
 
